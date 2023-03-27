@@ -1,0 +1,6 @@
+.env
+.env.production
+/manager
+
+oneChange.php
+/.idea

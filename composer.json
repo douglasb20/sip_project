@@ -1,0 +1,31 @@
+{
+    "name": "amaris/api",
+    "type": "library",
+    "description": "Servico de Api",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "Core\\": "Core/"
+        },
+        "files":[
+            "Config/dbConfig.php",
+            "Config/funcoes.php",
+            "Config/mysqliExpression.php",
+            "Config/bootstrap.php",
+            "Config/Constants.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Douglas A. Silva",
+            "email": "douglaassgenesis@gmail.com.br"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0",
+        "vlucas/phpdotenv": "^5.4",
+        "firebase/php-jwt": "^6.3"
+    }
+}
