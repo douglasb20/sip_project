@@ -13,19 +13,25 @@
 }
 
 body{
-    min-height: 100vh;
-    height: 100vh;
-    min-width: 100vw;
-    box-sizing: border-box;
+    height     : 100vh;
+    min-height : 100vh;
+    min-width  : 100vw;
+    display    : inline-block;
 }
 
 footer{
     position    : absolute;
     bottom      : 0;
+    padding-left : 300px;
     display     : grid;
     place-items : center;
     width       : 100vw;
     padding     : 10px 0px;
+    transition: all 0.4s;
+}
+.toggle-sidebar footer
+{
+    padding-left: 0px;
 }
 
 

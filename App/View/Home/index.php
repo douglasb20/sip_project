@@ -1,8 +1,6 @@
 <?php $this->captureStart('css'); ?>
 <style>
-body{
-    background-color: #f1e8b8
-}
+
 </style>
 <?php $this->captureEnd('css'); ?>
 
@@ -17,6 +15,7 @@ body{
             Ele é projetado para tornar o desenvolvimento de APIs muito mais fácil e eficiente.
             Com este framework, você pode criar APIs de alta qualidade de forma muito mais rápida do que antes. 
             Se precisar de ajuda, nossa equipe de suporte estará pronta para ajudá-lo. Obrigado por escolher o nosso mini framework!</h1>
+            <button type="button" class="btn btn-primary" id="alerta" >Alertar</button>
     </div>
 <?php $this->captureEnd('body'); ?>
 
@@ -24,7 +23,9 @@ body{
 <?php $this->captureStart('js'); ?>
 
 <script>
-    
+    $("#alerta").click(() => {
+        alerta("Oii")
+    })
 </script>
 
 <?php $this->captureEnd('js'); ?>

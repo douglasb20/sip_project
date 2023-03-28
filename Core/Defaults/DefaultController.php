@@ -18,6 +18,10 @@ class DefaultController{
     private $classDivContainer = 'container';
     private $showFooter        = true;
 
+    private $typeAuth           = "jwt";
+
+    private $mostraMenu = true;
+
     public $ControleDAO;
     
     private $post              = [];
@@ -37,7 +41,7 @@ class DefaultController{
             if($validate){
                 $this->validateAuth();
             }
-        }catch(\Exception $e){ 
+        }catch(Exception $e){ 
             throw($e);
         }
     }
@@ -47,7 +51,7 @@ class DefaultController{
             // if($this->masterMysqli != null){
             //     mysqli_close($this->masterMysqli);
             // }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -63,7 +67,7 @@ class DefaultController{
             
             $this->masterMysqli = $GLOBALS['_DB_MYSQLI'];
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -82,7 +86,7 @@ class DefaultController{
                 
             }
             spl_autoload_register( array($this,"pathsToAutoload") );
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -99,7 +103,7 @@ class DefaultController{
             foreach ($models as  $model) {
                 include_once $model;
             }
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -211,7 +215,7 @@ class DefaultController{
             }
             $GLOBALS[ '_PUT' ] = $data;
             return;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -241,7 +245,7 @@ class DefaultController{
             // unset($_GET);
             // unset($_POST);
             // unset($_REQUEST);
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -260,14 +264,15 @@ class DefaultController{
             }else{
                 throw new Exception("Erro de validação", 401);
             }
-        }catch(\Exception $e){
+        }catch(Exception $e){
 
             switch($e->getMessage()){
                 case "Signature verification failed":
-                    throw new \Exception("Assinatura do token inválida.", 401);
+                    throw new Exception("Assinatura do token inválida.", 401);
                 break;
+
                 case "Expired token":
-                    throw new \Exception("Token expirado.", 401);
+                    throw new Exception("Token expirado.", 401);
                 break;
 
                 default:
@@ -280,16 +285,32 @@ class DefaultController{
 
     public function validateAuth(){
         try{
-            $dados = (array)$this->extractToken();
-            
-            if(empty($dados)){
-                throw new Exception("Token recebido incorretamente.");
+
+            switch($this->typeAuth){
+                case "jwt":
+                    $dados = (array)$this->extractToken();
+                    
+                    if(empty($dados)){
+                        throw new Exception("Token recebido incorretamente.");
+                    }
+        
+                    $GLOBALS['_ID_USUARIO'] = $dados['id'];
+        
+                    (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
+                break;
+                case "session":
+                    
+                break;
             }
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
 
-            $GLOBALS['_ID_USUARIO'] = $dados['id'];
-
-            (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
-        }catch(\Exception $e){
+    public function SetTypeAuth(string $type){
+        try{
+            $this->typeAuth = $type;
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -302,7 +323,7 @@ class DefaultController{
             ];
 
             $this->ControleDAO->insert($bindControle); 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -320,7 +341,7 @@ class DefaultController{
 
             return $this->get;
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -340,7 +361,7 @@ class DefaultController{
             
             return $post;
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -360,7 +381,7 @@ class DefaultController{
             
             return $put;
             
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -373,7 +394,7 @@ class DefaultController{
     public function getRequest(): string|array|null{
         try{
             return $this->request;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -386,7 +407,7 @@ class DefaultController{
     * converte array em variáveis na view => https://www.php.net/manual/en/function.extract.php
     * 
     * @access protected 
-    * @param rota da view
+    * @param string $rota rota da view
     */
     public function render(?string $rota = null, ?array $data = []){
         try{
@@ -423,9 +444,15 @@ class DefaultController{
                     throw new Exception( "Não achou " . $file_route , -1);
                 }
             }
+
+            if($this->mostraMenu){
+                $this->captureStart("menu");
+                include_once(ROOT_PATH . "/App/View/menu.php");
+                $this->captureEnd("menu");
+            }
             
             
-            include_once(ROOT_PATH . "/App/View/layout.php");    
+            include_once(ROOT_PATH . "/App/View/layout.php"); 
             
             return $this;
 
@@ -504,6 +531,21 @@ class DefaultController{
         }
     }
 
+    protected function setShowMenu(bool $show): void{
+        try{
+            $this->mostraMenu = $show;
+        }catch (Exception $e) {
+            throw $e;
+        }
+    }
+    protected function getShowMenu(): bool{
+        try{
+            return $this->mostraMenu;
+        }catch (Exception $e) {
+            throw $e;
+        }
+    }
+
     protected function setShowFooter(bool $show): void{
         try{
             $this->showFooter = $show;
@@ -565,7 +607,7 @@ class DefaultController{
             header("Content-Type: application/json");
             echo json_encode($this->retorno);
             
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -581,7 +623,7 @@ class DefaultController{
         try{
             $content = file_get_contents($caminho_completo);
             if($content == false){
-                throw new \Exception('Arquivo não encontrado');
+                throw new Exception('Arquivo não encontrado');
             }
             header("Cache-Control: maxage=1");
             header("Pragma: public");
@@ -593,7 +635,7 @@ class DefaultController{
                 ob_clean(); // Esse cara é importante , limpa a saída pra não aparecer sujeira no arquivo
             }
             echo $content;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -609,7 +651,7 @@ class DefaultController{
         try{
             $content = file_get_contents($caminho_completo);
             if($content == false){
-                throw new \Exception('Arquivo não encontrado');
+                throw new Exception('Arquivo não encontrado');
             }
             header("Cache-Control: maxage=1");
             header("Pragma: public");
@@ -621,7 +663,7 @@ class DefaultController{
                 ob_clean(); // Esse cara é importante , limpa a saída pra não aparecer sujeira no arquivo
             }
             echo $content;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -638,7 +680,7 @@ class DefaultController{
         try{
             $content = file_get_contents($caminho_completo);
             if($content == false){
-                throw new \Exception('Arquivo não encontrado');
+                throw new Exception('Arquivo não encontrado');
             }
             if($novo_nome_arquivo != ''){
                 $nome_do_arquivo = $novo_nome_arquivo;
@@ -650,7 +692,7 @@ class DefaultController{
             header('Pragma: public');
             ob_clean(); // Esse cara é importante , limpa a saída pra não aparecer sujeira no arquivo
             echo $content;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -669,7 +711,7 @@ class DefaultController{
             header('Content-Disposition: attachment; filename="'.$nome_do_arquivo.'"');
             ob_clean(); // Esse cara é importante , limpa a saída pra não aparecer sujeira no arquivo
             echo $texto;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -701,7 +743,7 @@ class DefaultController{
     protected function eliminaSQLInjection($request){
             try{
                 return $this->percorrePalavras($request);  
-            }catch(\Exception $e){
+            }catch(Exception $e){
                 throw $e;
             }
     }
@@ -759,7 +801,7 @@ class DefaultController{
                     $parametro = implode(" ",$parametro);
                 }
                 return $parametro;
-            }catch(\Exception $e){
+            }catch(Exception $e){
                 throw $e;
             }
         }
@@ -780,7 +822,7 @@ class DefaultController{
                 $bind = $this->masterMysqli->real_escape_string($bind);
             }
             return $bind;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -798,7 +840,7 @@ class DefaultController{
     protected function validateToken($token){
         try{
             decrypt($token);
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }

@@ -16,9 +16,7 @@ class Controller extends \Core\Defaults\DefaultController{
     }
     public function index(){
         try{
-            $this->setTituloPagina("Página inicial");
-            $this->setClassDivContainer("container-fluid p-0");
-            
+            $this->setShowMenu(true);
             $this->render("Home");
         }catch(\Exception $e){
             throw $e;
