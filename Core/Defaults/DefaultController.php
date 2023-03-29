@@ -18,7 +18,7 @@ class DefaultController{
     private $classDivContainer = 'container';
     private $showFooter        = true;
 
-    private $typeAuth           = "jwt";
+    private static $typeAuth           = "jwt";
 
     private $mostraMenu = true;
 
@@ -29,7 +29,7 @@ class DefaultController{
     private $get               = [];
     private $request           = [];
 
-    public function __construct(?bool $validate = true){
+    public function __construct(){
         try{
             
             $this->iniciaBd();
@@ -38,9 +38,7 @@ class DefaultController{
                 $this->_parsePut();
             }
             $this->processaRequest();
-            if($validate){
-                $this->validateAuth();
-            }
+
         }catch(Exception $e){ 
             throw($e);
         }
@@ -286,7 +284,7 @@ class DefaultController{
     public function validateAuth(){
         try{
 
-            switch($this->typeAuth){
+            switch(self::$typeAuth){
                 case "jwt":
                     $dados = (array)$this->extractToken();
                     
@@ -299,7 +297,8 @@ class DefaultController{
                     (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
                 break;
                 case "session":
-                    
+                    $autenticado = getSsessao("autenticado") === "true";
+                    return $autenticado;
                 break;
             }
         }catch(Exception $e){
@@ -309,7 +308,7 @@ class DefaultController{
 
     public function SetTypeAuth(string $type){
         try{
-            $this->typeAuth = $type;
+            self::$typeAuth = $type;
         }catch(Exception $e){
             throw $e;
         }
@@ -451,7 +450,6 @@ class DefaultController{
                 $this->captureEnd("menu");
             }
             
-            
             include_once(ROOT_PATH . "/App/View/layout.php"); 
             
             return $this;
@@ -467,7 +465,7 @@ class DefaultController{
     * @access protected 
     * @param parte do corpo
     */
-    protected function captureStart($name): void{
+    protected function captureStart(string $name): void{
         try{
             ob_start();
         }catch(Exception $e){
@@ -481,12 +479,18 @@ class DefaultController{
     * @access protected 
     * @param parte do corpo
     */
-    protected function captureEnd($name): void{
+    protected function captureEnd(string $name): void{
         try{
+            $capture = ob_get_contents();
+            // $capture = preg_replace('/\@(\w*?)(\([^)]*\))([\s\S]*?)\@end(\w*)/', '$1$2{$3}', $capture);
 
-            // feito esse replace para adaptar a nova regra de abrir "link" ao clicar no table, 
-            // fazendo ter oportunidade de abrir em nova janela ao clicar com o botao do meio do mouse
-            $this->render[$name] = ob_get_contents();
+            $resultado = preg_replace_callback("/{{(.*?)}}/", function($matches){
+                $chave = $matches[1];
+                extract($this->view);
+                return eval("return {$chave};");
+            }, $capture);
+
+            $this->render[(string)$name] = $resultado;
             ob_end_clean();
         }catch(Exception $e){
             throw $e;
@@ -531,9 +535,10 @@ class DefaultController{
         }
     }
 
-    protected function setShowMenu(bool $show): void{
+    protected function setShowMenu(bool $show){
         try{
             $this->mostraMenu = $show;
+            return $this;
         }catch (Exception $e) {
             throw $e;
         }
@@ -599,6 +604,7 @@ class DefaultController{
             if($Exception->getCode() === 404){
                 $this->setClassDivContainer("container-fluid p-0")
                 ->setTituloPagina("Página não encontrada")
+                ->setShowMenu(false)
                 ->render("404");
 
                 return;

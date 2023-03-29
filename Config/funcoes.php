@@ -477,6 +477,7 @@ function convertDateToScreen($data, $separator = "/") {
 
 function mask($val, $mask){
     $maskared = '';
+    $val = (string) $val;
     $k = 0;
     for($i = 0; $i<=strlen($mask)-1; $i++)
     {

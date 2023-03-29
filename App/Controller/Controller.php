@@ -8,16 +8,30 @@ class Controller extends \Core\Defaults\DefaultController{
         try{
             $this->setTituloPagina("Página inicial");
             $this->setClassDivContainer("container-fluid p-0");
+            $this->setShowMenu(false);
             
             $this->render("404");
         }catch(\Exception $e){
             throw $e;
         }
     }
-    public function index(){
+
+    public function CheckSession(){
         try{
-            $this->setShowMenu(true);
-            $this->render("Home");
+            
+            if(!$this->validateAuth()){
+                route()->redirect("login");
+            }
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function testes(){
+        try {
+
+            $this->setShowMenu(false)
+            ->render("login");
         }catch(\Exception $e){
             throw $e;
         }

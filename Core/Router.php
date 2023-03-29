@@ -20,6 +20,7 @@ class Router{
     private static array $executeBefore         = [];
     private static null | bool $validateByGroup = false;
     private static null | bool $groupValidate = null;
+    private static string $direction = "";
 
     public static function baseUrl($subfolder){
         self::$subfolder = $subfolder;
@@ -29,9 +30,13 @@ class Router{
         return self::$subfolder;
     }
 
-    public static function getRouteList(bool $print= false): mixed{
+    public static function getRouteList(bool $all = false ,bool $print= false): mixed{
         self::initiateRoutes();
         $routes = self::$routes;
+
+        if($all){
+            $routes = [...$routes['get'], ...$routes['post'],...$routes['put'], ...$routes['delete']];
+        }
 
         if(!$print){
             return $routes;
@@ -41,7 +46,7 @@ class Router{
 
     }
 
-    private static function pull($type, $uri, string|callable $action, $validate){
+    private static function pull($type, $uri, string|callable $action){
         try{
             self::$lastRouteAdded = [];
             $getFileInfo          = debug_backtrace()[1];
@@ -90,22 +95,13 @@ class Router{
                     $array_regex[] = $val;
                 }
             }
-
-            $choiceValidade = $validate === null ? true : $validate;
-
-            if( $validate === null){
-                if(self::$validateByGroup){
-                    $choiceValidade = self::$groupValidate;
-                }
-            }
             
             $novo = [
                 "id"       => uniqid("", true),
                 "uri"      => str_replace("?","",$uri),
                 "action"   => $action,
                 "regex"    => join("\/", $array_regex),
-                "validate" => $choiceValidade,
-                "type"     => str_contains(str_replace("?","",$uri),"404") ? 'web' : strtolower($fileCalled),
+                "type"     => self::$direction,
                 "alias"    => "",
                 "method"   => $type
             ];
@@ -129,54 +125,54 @@ class Router{
                 self::$lastRouteAdded[] = $add;
             }
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
-    public static function match(array $types, string $uri, string|callable $action=null,bool $validate = null){
+    public static function match(array $types, string $uri, string|callable $action=null){
         try{
             foreach($types as $type){
-                self::pull(strtolower($type), $uri, $action, $validate);
+                self::pull(strtolower($type), $uri, $action);
             }
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
-    public static function get(string $uri=null, string|callable $action=null,bool | null $validate = null){
+    public static function get(string $uri=null, string|callable $action=null){
         try{
-            self::pull('get', $uri, $action, $validate);
+            self::pull('get', $uri, $action);
             return new self;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
-    public static function post(string $uri=null, string|callable $action=null,bool $validate = null){
+    public static function post(string $uri=null, string|callable $action=null){
         try{
-            self::pull('post', $uri, $action, $validate);
+            self::pull('post', $uri, $action);
             
             return new self;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
-    public static function put(string $uri=null, string|callable $action=null,bool $validate = null){
+    public static function put(string $uri=null, string|callable $action=null){
         try{
-            self::pull('put', $uri, $action, $validate);
+            self::pull('put', $uri, $action);
             return new self;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
-    public static function delete(string $uri=null, string|callable $action=null,bool $validate = null){
+    public static function delete(string $uri=null, string|callable $action=null){
         try{
-            self::pull('delete', $uri, $action, $validate);
+            self::pull('delete', $uri, $action);
             return new self;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -185,7 +181,7 @@ class Router{
         try{
             array_push(self::$executeBefore,  $action);
             return new self;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -210,23 +206,19 @@ class Router{
                         $controllerWithNamespace = CONTROLLER_NAMESPACE . $controller;
 
                         if(!class_exists($controllerWithNamespace)){
-                            throw new \Exception("Este controller {$controller} não existe.",-1);
+                            throw new Exception("Este controller {$controller} não existe.",-1);
                         }
                         
                         if(!method_exists($controllerWithNamespace, $action)){
-                            throw new \Exception("O método {$action} não existe no controller {$controller}.",-1);
+                            throw new Exception("O método {$action} não existe no controller {$controller}.",-1);
                         }
 
-                        (new $controllerWithNamespace( $data['uri']['validate'] ) )->$action();
+                        (new $controllerWithNamespace )->$action();
                     }
                 }
             }
             
             if(is_callable($data['uri']['action'])){
-                if($data['uri']['validate']){
-                    (new \Core\Defaults\DefaultController)->validateAuth();
-                }
-
                 call_user_func($data['uri']['action'], ...$data['parsed'][0] );
             }else{
                 
@@ -234,19 +226,19 @@ class Router{
                 $controllerWithNamespace = CONTROLLER_NAMESPACE . $controller;
     
                 if(!class_exists($controllerWithNamespace)){
-                    throw new \Exception("Este controller {$controller} não existe.",-1);
+                    throw new Exception("Este controller {$controller} não existe.",-1);
                 }
                 
                 if(!method_exists($controllerWithNamespace, $action)){
-                    throw new \Exception("O método {$action} não existe no controller {$controller}.",-1);
+                    throw new Exception("O método {$action} não existe no controller {$controller}.",-1);
                 }
                 
-                (new $controllerWithNamespace( $data['uri']['validate'] ) )->$action();
+                (new $controllerWithNamespace)->$action();
             }
             
             self::$executeBefore = [];
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -274,7 +266,7 @@ class Router{
             }
             
             return $matchedUri;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -298,7 +290,7 @@ class Router{
             }
 
             return $matchedUri;
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -356,13 +348,13 @@ class Router{
                 }
 
                 if($withAnotherType){
-                    throw new \Exception("Rota não encontrada para o método {$_SERVER['REQUEST_METHOD']}." , 405);
+                    throw new Exception("Rota não encontrada para o método {$_SERVER['REQUEST_METHOD']}." , 405);
                 }else{
-                    throw new \Exception("", 404);
+                    throw new Exception("", 404);
                 }
             }
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
@@ -389,31 +381,22 @@ class Router{
         return [$bindingFields, $uri];
     }
     
-    public static function group(string $prefix,callable $callback, $validate = null){
+    public static function group(string $prefix,callable $callback){
         try{
-            
-            $localValidate =self::$groupValidate;
-            $localValidateByGroup = self::$validateByGroup;
-            
-            array_push(self::$group, trim($prefix,"/"));
 
-            self::$groupValidate = $validate;
-            self::$validateByGroup = $validate !== null; 
-            
+            array_push(self::$group, trim($prefix,"/"));
             call_user_func($callback);
             array_pop(self::$group);
-
-            self::$validateByGroup = $localValidateByGroup; 
-            self::$groupValidate = $localValidate;
             
-        }catch(\Exception $e){
+        }catch(Exception $e){
             throw $e;
         }
     }
 
     public static function redirect(string $rota){
         try{
-            header("location: $rota");
+            $route = self::link($rota);
+            header("location: {$route}"  );
         }catch(Exception $e){
             throw $e;
         }
@@ -435,12 +418,41 @@ class Router{
         
     }
 
+    public static function link(string $route){
+        try{
+            $links = self::getRouteList(true);
+
+            if(str_contains($route, "/")){
+                $indexFound = array_search(trim($route, "/"), array_column($links, "uri"));
+
+                if(gettype($indexFound) === "integer"){
+                    return ("/" . trim($links[$indexFound]["uri"], "/") );
+                }else{
+                    throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
+                }
+            }else{
+                $indexFound = array_search($route, array_column($links, "alias"));
+
+                if(gettype($indexFound) === "integer"){
+                    return ("/" . trim($links[$indexFound]["uri"], "/") );
+                }else{
+                    throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
+                }
+            }
+            
+        }catch(Exception $e){
+            throw $e;
+        }
+    }
+
     private static function initiateRoutes(){
         try{
+            self::$direction = "web";
             require_once(__DIR__ . "/../routes/Web.php");
+            self::get("/404","Controller@errorPage");
+            
+            self::$direction = "api";
             require_once(__DIR__ . "/../routes/Api.php");
-
-            self::get("/404","Controller@errorPage", false);
 
             return new self;
         }catch(Exception $e){

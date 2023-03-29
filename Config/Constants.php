@@ -10,6 +10,7 @@ define("MODEL_PATH", "App/Model/");
 
 if(isset($_SERVER['REQUEST_SCHEME'])){
     define("URL_ROOT", ($_SERVER['REQUEST_SCHEME'] === "http" ? "http://"  :  "http://") . $_SERVER['HTTP_HOST'] .'/'. trim($_ENV['BASE_URL'],"/") );
+    define("URL_IMAGES", URL_ROOT . "assets/images");
 }
 
 ?>

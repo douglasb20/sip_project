@@ -6,6 +6,16 @@ use App\Classes\UsersClass;
 
 class AuthController extends Controller{
 
+    public function Index(){
+        try{
+            $this->setShowMenu(false)
+            ->setClassDivContainer("container d-flex justify-content-center h-100")
+            ->render("Login");
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
     public function Authentication(){
         try{
             
@@ -34,6 +44,15 @@ class AuthController extends Controller{
         }catch(\Exception $e){
             $this->masterMysqli->rollback();
             http_response_code(401);
+            throw $e;
+        }
+    }
+
+    public function AuthLogin(){
+        try{
+            
+            $this->retorna();
+        }catch(\Exception $e){
             throw $e;
         }
     }
