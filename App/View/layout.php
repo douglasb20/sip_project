@@ -72,7 +72,7 @@
     <!-- Inicio - Footer -->
     <?php 
         if($this->getShowFooter()){
-            include_once './footer.php'; 
+            include_once ROOT_PATH . '\App\View\footer.php'; 
         }
     ?>
     <!-- Fim - Footer -->
