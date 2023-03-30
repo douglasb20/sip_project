@@ -72,7 +72,7 @@
     <!-- Inicio - Footer -->
     <?php 
         if($this->getShowFooter()){
-            include __DIR__ . './footer.php'; 
+            include './footer.php'; 
         }
     ?>
     <!-- Fim - Footer -->
