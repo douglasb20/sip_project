@@ -3,13 +3,20 @@
 namespace App\Controller;
 
 use App\Classes\UsersClass;
+use Exception;
 
 class AuthController extends Controller{
 
     public function Index(){
         try{
+            if($this->validateAuth()){
+                route()->redirect("home");
+                return;
+            }
+
             $this->setShowMenu(false)
-            ->setClassDivContainer("container d-flex justify-content-center h-100")
+            ->setTituloPagina("SIP Lanteca")
+            ->setClassDivContainer("container d-flex justify-content-center align-items-center h-100")
             ->render("Login");
         }catch(\Exception $e){
             throw $e;
@@ -50,8 +57,20 @@ class AuthController extends Controller{
 
     public function AuthLogin(){
         try{
+            $data = $this->getPost();
+            (new UsersClass)->AuthenticateLoginUser($data['username'], $data['password']);
             
             $this->retorna();
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function AuthLogout(){
+        try{
+            $this->setShowMenu(false);
+            clearSessao();
+            route()->redirect("login");
         }catch(\Exception $e){
             throw $e;
         }

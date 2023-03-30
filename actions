@@ -25,7 +25,7 @@ class {$argv[1]}Controller extends Controller{
 
 namespace App\Classes;
 
-class {$argv[1]}Class extends \App\Defaults\DefaultClassController{
+class {$argv[1]}Class extends \Core\Defaults\DefaultClassController{
 
 }
 
@@ -55,7 +55,7 @@ class {$argv[1]}Class extends \App\Defaults\DefaultClassController{
 
 namespace App\Model;
 
-class {$nameDao}DAO extends \App\Defaults\DefaultModel{
+class {$nameDao}DAO extends \Core\Defaults\DefaultModel{
     public \$tabela = '{$tableName}';
 }
 

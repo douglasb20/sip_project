@@ -18,20 +18,9 @@ class Controller extends \Core\Defaults\DefaultController{
 
     public function CheckSession(){
         try{
-            
             if(!$this->validateAuth()){
                 route()->redirect("login");
             }
-        }catch(\Exception $e){
-            throw $e;
-        }
-    }
-
-    public function testes(){
-        try {
-
-            $this->setShowMenu(false)
-            ->render("login");
         }catch(\Exception $e){
             throw $e;
         }

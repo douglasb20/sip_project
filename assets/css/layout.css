@@ -13,7 +13,7 @@
 }
 
 body{
-    height     : 100vh;
+    height     : 100vh !important;
     min-height : 100vh;
     min-width  : 100vw;
     display    : inline-block;
@@ -32,6 +32,12 @@ footer{
 .toggle-sidebar footer
 {
     padding-left: 0px;
+}
+.invalid{
+    border-color: #f00 !important;
+}
+.invalid ~ .fa-regular{
+    color: #f00
 }
 
 

@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-    <title><?=(empty($this->titulo_pagina) ? 'AmarisFramework' : $this->titulo_pagina)?></title>
+    <title><?=(empty($this->titulo_pagina) ? 'LTCFibra' : "LTCFibra | " . $this->titulo_pagina)?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- <link rel="shortcut icon" href="/_arquitetura/public/img/favicon.png"> -->
@@ -19,6 +19,8 @@
 
     <!-- Javascript -->
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery/jquery-3.6.3.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>
@@ -33,6 +35,23 @@
     
     ?>
     <main id="main" class="main">
+        <div class="pagetitle">
+            <?php
+                $bread = $this->getBreadcrumb();
+            ?>
+            <h1><?=end($bread)?></h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <?php foreach($bread as $key => $b){
+                        $active = count($bread) - 1 === $key ? "active" : "";
+                    ?>
+
+                    <li class="breadcrumb-item <?=$active?>"><?=$b?></li>
+                    
+                    <?php }?>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
         <div class="<?= $this->getClassDivContainer() ?>">
             <?php echo $this->render['body']; ?>
         </div>

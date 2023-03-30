@@ -20,7 +20,6 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
 
     public function AuthenticateUser($email, $password){
         try{
-            date_default_timezone_set("America/Sao_Paulo");
 
             $user = $this->UsersDAO->getAll(" user_email = '".strtolower( $email)."' "  );
 
@@ -53,6 +52,29 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             $this->UsersDAO->update(["user_lastlogin" => date("Y-m-d H:i:s")], "id =".$user['id']);
 
             return JWT::encode($token, $_ENV['KEY_JWT'], 'HS256');
+
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function AuthenticateLoginUser($user, $password){
+        try{
+            $user = $this->UsersDAO->getAll(" user_login = '".strtoupper( $user)."' "  );
+
+            if(empty($user)){
+                throw new \Exception("Usuário não encontrado.",401);
+            }
+
+            $user = $user[0];
+
+            if(!password_verify( $password, $user['user_pass'] )){
+                throw new \Exception("Senha não confere.",401);
+            }
+            
+            SetSessao("autenticado", true);
+            SetSessao("id_usuario", $user['id']);
+            SetSessao("nome_usuario", $user['user_fullname']);
 
         }catch(\Exception $e){
             throw $e;

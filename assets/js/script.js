@@ -37,13 +37,26 @@ $.fn.serializeObject = function() {
 };
 
 $(document).ajaxStart(function() {
-    $('body').LoadingOverlay("show",{image:""});
+    $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin"});
+    
 });
 $(document).ajaxComplete(function(event, xhr, settings) {
 
     $('body').LoadingOverlay("hide");
 
 });
+
+$.ajaxSetup({
+    error: function (data) {
+        $('body').LoadingOverlay("hide");
+        if (data.responseJSON) {
+            alerta(data.responseJSON.mensagem, "Erro de requisição", "error");
+        } else {
+            alerta("Ocorreu um erro inesperado, tente denovo em alguns minutos.", "Erro de requisição", "error");
+        }
+        
+    }
+})
 
 const caixaAlerta = Swal.mixin(
     {
@@ -197,33 +210,33 @@ function required_elements(elements) {
         if (!$(this).prop("disabled")) {
 
             if ($(this).val() == '' || $(this).val() == null) {
-                $(this).addClass("obrigatorio");
+                $(this).addClass("invalid");
 
                 result['valid'] = false;
                 result['elements'].push($(this));
 
                 //Caso for select 2 , jogo a classe obrigatório no select 2 , assim vai mostrar o campo vermelho
                 if ($(this).hasClass('select2-hidden-accessible')) {
-                    $(this).next().children().children().addClass('obrigatorio');
+                    $(this).next().children().children().addClass('invalid');
                 }
 
                 // CKeditor
                 if ($(this).next().hasClass('cke')) {
-                    $(this).next().addClass('obrigatorio');
+                    $(this).next().addClass('invalid');
                 }
             } else {
 
-                //Caso for select 2 ,removo obrigatorio
+                //Caso for select 2 ,removo invalid
                 if ($(this).hasClass('select2-hidden-accessible')) {
-                    $(this).next().children().children().removeClass('obrigatorio');
+                    $(this).next().children().children().removeClass('invalid');
                 } else {
-                    $(this).removeClass("obrigatorio");
+                    $(this).removeClass("invalid");
                 }
 
                 // CKeditor
 
                 if ($(this).next().hasClass('cke')) {
-                    $(this).next().removeClass('obrigatorio');
+                    $(this).next().removeClass('invalid');
                 }
             }
         }

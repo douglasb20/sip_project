@@ -512,11 +512,15 @@ function base64UrlEncode($text){
     );
 }
 
+function AllSessao(){
+    return $_SESSION;
+}
+
 function SetSessao(string $key, string $value){
     $_SESSION[$key] = $value;
 }
-function getSsessao(string $key){
-    return $_SESSION[$key];
+function getSessao(string $key){
+    return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 }
 
 function removeSessao(string $key){

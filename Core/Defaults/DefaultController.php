@@ -8,26 +8,26 @@ use Firebase\JWT\Key;
 class DefaultController{
 
     public $masterMysqli;
-    public $id_usuario         = "";
-    public $retorno            = [];
-    public $preventXss         = false;
-    public $view               = [];
-    public $data               = [];
-    public $render             = array('css' =>'','body' => '', 'js' =>'', 'menu' => '');
-    public $titulo_pagina      = "";
-    private $classDivContainer = 'container';
-    private $showFooter        = true;
+    public DefaultModel $ControleDAO;
+    public string $id_usuario         = "";
+    public array $retorno             = [];
+    public bool $preventXss           = false;
+    public array $view                = [];
+    public array $data                = [];
+    public array $render              = array('css' =>'','body' => '', 'js' =>'', 'menu' => '');
+    public string $titulo_pagina      = "";
+    private string $classDivContainer = 'container';
+    private bool $showFooter          = true;
+    private array $breadcrumb         = [];
+    private bool $mostraMenu          = true;
 
-    private static $typeAuth           = "jwt";
+    private static string $typeAuth   = "jwt";
 
-    private $mostraMenu = true;
+    private array $post               = [];
+    private array $put                = [];
+    private array $get                = [];
+    private array $request            = [];
 
-    public $ControleDAO;
-    
-    private $post              = [];
-    private $put               = [];
-    private $get               = [];
-    private $request           = [];
 
     public function __construct(){
         try{
@@ -41,16 +41,6 @@ class DefaultController{
 
         }catch(Exception $e){ 
             throw($e);
-        }
-    }
-
-    public function __destruct() {
-        try{
-            // if($this->masterMysqli != null){
-            //     mysqli_close($this->masterMysqli);
-            // }
-        } catch (Exception $e) {
-            throw $e;
         }
     }
 
@@ -297,7 +287,7 @@ class DefaultController{
                     (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
                 break;
                 case "session":
-                    $autenticado = getSsessao("autenticado") === "true";
+                    $autenticado = getSessao("autenticado") ? true : false;
                     return $autenticado;
                 break;
             }
@@ -444,7 +434,7 @@ class DefaultController{
                 }
             }
 
-            if($this->mostraMenu){
+            if($this->mostraMenu && getSessao("autenticado")){
                 $this->captureStart("menu");
                 include_once(ROOT_PATH . "/App/View/menu.php");
                 $this->captureEnd("menu");
@@ -513,6 +503,26 @@ class DefaultController{
 
             return $this;
         } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function setBreadcrumb(array $items){
+        try{
+            $this->breadcrumb = $items;
+            // $ultimo = end($items);
+            $this->titulo_pagina = empty($this->titulo_pagina) ? ucwords( end($items) ) : $this->titulo_pagina;
+
+            return $this;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function getBreadcrumb(){
+        try{
+            return $this->breadcrumb;
+        }catch(\Exception $e){
             throw $e;
         }
     }
