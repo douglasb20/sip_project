@@ -9,11 +9,11 @@ class Db{
 
     function __construct(){
         try{
-            $host     = $_ENV['HOST'];
+            $host     = $_ENV['DBHOST'];
             $username = $_ENV['DBUSER'];
-            $passwd   = $_ENV['PASSWD'];
+            $passwd   = $_ENV['DBPWD'];
             $dbname   = $_ENV['DBNAME'];
-            $port     = $_ENV['PORT'];
+            $port     = $_ENV['DBPORT'];
 
             $this->mysqli = new mysqli($host,$username,$passwd,$dbname, $port);
             $this->mysqli->set_charset("utf8");

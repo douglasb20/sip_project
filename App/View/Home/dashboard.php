@@ -9,18 +9,19 @@
     <div class="col-8">
         <div class="row">
         <div class="col-12">
-              <div class="card">
+            
+                <div class="card">
 
-                <div class="card-body">
-                    <h5 class="card-title">Status de ligação por hora </h5>
+                    <div class="card-body">
+                        <h5 class="card-title">Status de ligação por hora </h5>
 
-                    <!-- Line Chart -->
-                    <div id="reportsChart"></div>
-                    <!-- End Line Chart -->
+                        <!-- Line Chart -->
+                        <div id="reportsChart"></div>
+                        <!-- End Line Chart -->
+
+                    </div>
 
                 </div>
-
-              </div>
             </div><!-- End Reports -->
         </div>
         
@@ -31,9 +32,14 @@
 <?php $this->captureStart('js'); ?>
 
 <script>
+    let chart = JSON.parse('{{$chart}}');
+    let horas = JSON.parse('{{$horas}}');
+
+    console.log(horas)
+    console.log(chart)
     document.addEventListener("DOMContentLoaded", () => {
         new ApexCharts(document.querySelector("#reportsChart"), {
-            series: JSON.parse('{{$chart}}'),
+            series: chart,
             chart: {
                 height: 350,
                 type: 'area',
@@ -72,7 +78,7 @@
             },
             xaxis: {
                 type: 'datetime',
-                categories: JSON.parse('{{$horas}}')
+                categories: horas
             },
             tooltip: {
                 x: {

@@ -10,16 +10,16 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     function __construct()
     {
-        $host     = "localhost";
-        $username = "root";
-        $passwd   = "";
-        $dbname   = "asteriskcdrdb";
-        $port     = "3306";
+        $host     = $_ENV['CDRDBHOST'];
+        $username = $_ENV['CDRDBUSER'];
+        $passwd   = $_ENV['CDRDBPWD'];
+        $dbname   = $_ENV['CDRDBNAME'];
+        $port     = $_ENV['CDRDBPORT'];
 
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
         $this->tabela = "cdr";
-        $this->data = "2023-03-25";
+        $this->data = date("Y-m-d");
 
         parent::__construct($this->mysqli);
     }
@@ -98,7 +98,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                     $dadosGraf["ANSWERED"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
-                    $dadosGraf["ANSWERED"]["data"] = 0;
+                    $dadosGraf["ANSWERED"]["data"][] = 0;
                 }
 
                 if(in_array("NO ANSWER",array_column($novoDado, "disposition"))){
