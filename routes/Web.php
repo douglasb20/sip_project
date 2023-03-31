@@ -1,4 +1,6 @@
 <?php
+
+use App\Services\CdrService;
 use Core\Router;
 
 // Router::get("/","HomeController@index", false);
@@ -8,7 +10,8 @@ Router::get("/logout", "AuthController@AuthLogout")->name("logout");
 Router::get("/esqueci_minha_senha", "AuthController@Index")->name("esqueci-senha");
 
 Router::get("/teste", function(){
-    echo gmdate("H:i:s", "63");
+    $cdr = new CdrService;
+    printar($cdr->GetDataDashboard());
 });
 
 
