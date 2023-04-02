@@ -11,8 +11,8 @@ class HomeController extends Controller{
             $dadosGraf = $cdr->GeraDadosGraficoHora();
             $dataGraf = $cdr->GeraDadosGraficoData();
 
-            $whereRealizadas = " DATE(calldate) = '2023-03-30' and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001) and duration > 0 order by calldate desc";
-            $realizadas = $cdr->getAll($whereRealizadas);
+            $whereRealizadas = " DATE(calldate) = '2023-03-31' and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $realizadas = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
             $reports = [];
             $byDate = [];

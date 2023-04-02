@@ -17,8 +17,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
-        $this->tabela = "cdr";
-        $this->data = date("Y-m-d");
+        $this->tabela = "cdrCerto";
+        $this->data = date("Y-03-31");
 
         parent::__construct($this->mysqli);
     }
@@ -35,10 +35,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GraficoHora(string $hora){
         try{
-            $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, disposition
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
-                        GROUP BY hora_truncada, disposition
+            $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, status
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
         }catch(\Exception $e){
@@ -48,11 +48,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GraficoData(string $data){
         try{
-            $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, disposition
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '{$data} 00:00:00' and '{$data} 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
-                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
-                        GROUP BY data_truncada, disposition
+            $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, status
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE Date(cdrCerto.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
         }catch(\Exception $e){
@@ -63,9 +62,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function AgrupaData(){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '".date("Y-m-d", strtotime("-7 days"))." 00:00:00' and '".date("Y-m-d")." 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
-                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))." ' and '".date("Y-m-d")."' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
                     ";
             return $this->executeQuery($query);
@@ -78,8 +76,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function AgrupaHora(){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H') AS hora_truncada
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -92,8 +90,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function AgrupaHoraFormatado(){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%dT%H:00:00.000Z') AS hora_truncada
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -106,10 +104,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function AgrupaDataFormatado(){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%d/%m') AS data_truncada
-                        FROM asteriskcdrdb.cdr
-                        WHERE cdr.calldate BETWEEN '".date("Y-m-d", strtotime("-7 days"))." 00:00:00' and '".date("Y-m-d")." 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
-                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
+                        FROM asteriskcdrdb.cdrCerto
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))."' and '".date("Y-m-d")."' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
+                        order by calldate
                     ";
             return $this->executeQuery($query);
             
@@ -127,32 +125,32 @@ class CdrService extends \Core\Defaults\DefaultModel{
             foreach($horas as $key => $hr){
                 $novoDado = $this->GraficoHora($hr);
 
-                if(in_array("BUSY",array_column($novoDado, "disposition"))){
-                    $index = array_search("BUSY",array_column($novoDado, "disposition"));
+                if(in_array("BUSY",array_column($novoDado, "status"))){
+                    $index = array_search("BUSY",array_column($novoDado, "status"));
                     $dadosGraf["BUSY"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["BUSY"]["data"][] = 0;
                 }
 
-                if(in_array("CONGESTION",array_column($novoDado, "disposition"))){
-                    $index = array_search("CONGESTION",array_column($novoDado, "disposition"));
+                if(in_array("CONGESTION",array_column($novoDado, "status"))){
+                    $index = array_search("CONGESTION",array_column($novoDado, "status"));
                     $dadosGraf["CONGESTION"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["CONGESTION"]["data"][] = 0;
                 }
 
-                if(in_array("ANSWERED",array_column($novoDado, "disposition"))){
-                    $index = array_search("ANSWERED",array_column($novoDado, "disposition"));
+                if(in_array("ANSWERED",array_column($novoDado, "status"))){
+                    $index = array_search("ANSWERED",array_column($novoDado, "status"));
                     $dadosGraf["ANSWERED"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["ANSWERED"]["data"][] = 0;
                 }
 
-                if(in_array("NO ANSWER",array_column($novoDado, "disposition"))){
-                    $index = array_search("NO ANSWER",array_column($novoDado, "disposition"));
+                if(in_array("NO ANSWER",array_column($novoDado, "status"))){
+                    $index = array_search("NO ANSWER",array_column($novoDado, "status"));
                     $dadosGraf["NO ANSWER"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
@@ -174,32 +172,32 @@ class CdrService extends \Core\Defaults\DefaultModel{
             foreach($datas as $key => $dt){
                 $novoDado = $this->GraficoData($dt);
 
-                if(in_array("BUSY",array_column($novoDado, "disposition"))){
-                    $index = array_search("BUSY",array_column($novoDado, "disposition"));
+                if(in_array("BUSY",array_column($novoDado, "status"))){
+                    $index = array_search("BUSY",array_column($novoDado, "status"));
                     $dadosGraf["BUSY"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["BUSY"]["data"][] = 0;
                 }
 
-                if(in_array("CONGESTION",array_column($novoDado, "disposition"))){
-                    $index = array_search("CONGESTION",array_column($novoDado, "disposition"));
+                if(in_array("CONGESTION",array_column($novoDado, "status"))){
+                    $index = array_search("CONGESTION",array_column($novoDado, "status"));
                     $dadosGraf["CONGESTION"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["CONGESTION"]["data"][] = 0;
                 }
 
-                if(in_array("ANSWERED",array_column($novoDado, "disposition"))){
-                    $index = array_search("ANSWERED",array_column($novoDado, "disposition"));
+                if(in_array("ANSWERED",array_column($novoDado, "status"))){
+                    $index = array_search("ANSWERED",array_column($novoDado, "status"));
                     $dadosGraf["ANSWERED"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
                     $dadosGraf["ANSWERED"]["data"][] = 0;
                 }
 
-                if(in_array("NO ANSWER",array_column($novoDado, "disposition"))){
-                    $index = array_search("NO ANSWER",array_column($novoDado, "disposition"));
+                if(in_array("NO ANSWER",array_column($novoDado, "status"))){
+                    $index = array_search("NO ANSWER",array_column($novoDado, "status"));
                     $dadosGraf["NO ANSWER"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
@@ -214,25 +212,25 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GetDataDashboard(){
         try{
-            $query = "  SELECT 
-                        COUNT(cdr.disposition) AS quantidade,
-                            subquery.disposition
-                        FROM 
-                            (SELECT 'BUSY' as disposition UNION ALL
-                            SELECT 'ANSWERED' as disposition UNION ALL
-                            SELECT 'CONGESTION' as disposition UNION ALL
-                            SELECT 'NO ANSWER' as disposition) as subquery
-                        LEFT JOIN 
-                            cdr ON subquery.disposition = cdr.disposition 
-                        AND DATE(cdr.calldate) = '2023-03-29' 
-                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
-                        GROUP BY 
-                            subquery.disposition";
+            $query = "  SELECT count(cdr_formatado.status) as qtd, subquery.status from 
+                        (SELECT 'BUSY' AS status UNION ALL SELECT 'ANSWERED' AS status UNION ALL SELECT 'NO ANSWER' AS status) AS subquery
+                        left join 
+                        (
+                        SELECT 
+                            *
+                        FROM
+                            cdrCerto 
+                        WHERE
+                            1=1
+                            AND date(calldate) = '{$this->data}'
+                        order by cdrCerto.calldate desc) as cdr_formatado
+                        on cdr_formatado.status = subquery.status
+                        group by subquery.status";
             $status = $this->executeQuery($query);
             $dados = [];
 
             foreach($status as $v){
-                $dados[str_replace(" ","_",strtolower($v['disposition']))] = $v['quantidade'];
+                $dados[str_replace(" ","_",strtolower($v['status']))] = $v['qtd'];
             }
 
             return $dados;
