@@ -9,7 +9,7 @@ CREATE TABLE `users` (
   `user_pass` varchar(80) NOT NULL,
   `user_passres` int(1) NOT NULL,
   `user_sts` int(1) NOT NULL,
-  `user_lastlogin` datetime DEFAULT current_timestamp(),
+  `user_lastlogin` timestamp DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `email_idx` (`user_email`),
   KEY `login_idx` (`user_nome`,`user_email`,`user_pass`)

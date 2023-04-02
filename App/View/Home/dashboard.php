@@ -22,7 +22,7 @@
                           <i class="fa-regular fa-phone-xmark "></i>
                         </div>
                         <div class="ps-3">
-                          <h6>145</h6>
+                          <h6>{{$busy}}</h6>
                           <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
     
                         </div>
@@ -198,7 +198,8 @@
             },
             xaxis: {
                 type: 'datetime',
-                categories: horas
+                categories: horas,
+                format: "HH:mm"
             },
             tooltip: {
                 x: {
@@ -244,7 +245,7 @@
                 categories: datas,
             },
             legend:{
-                show: true
+                show: false
             },
             yaxis: {
                 title: {

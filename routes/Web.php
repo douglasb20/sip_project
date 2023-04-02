@@ -11,7 +11,7 @@ Router::get("/esqueci_minha_senha", "AuthController@Index")->name("esqueci-senha
 
 Router::get("/teste", function(){
     $cdr = new CdrService;
-    printar($cdr->GetDataDashboard());
+    printar(array_column($cdr->AgrupaHoraFormatado(), "hora_truncada"));
 });
 
 

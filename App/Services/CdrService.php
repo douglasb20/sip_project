@@ -8,8 +8,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
     private $mysqli;
     private $data;
 
-    function __construct()
-    {
+    function __construct(){
         $host     = $_ENV['CDRDBHOST'];
         $username = $_ENV['CDRDBUSER'];
         $passwd   = $_ENV['CDRDBPWD'];
@@ -24,8 +23,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         parent::__construct($this->mysqli);
     }
 
-    function __destruct()
-    {
+    function __destruct(){
         try{
             if($this->mysqli != null){
                 mysqli_close($this->mysqli);
@@ -53,6 +51,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, disposition
                         FROM asteriskcdrdb.cdr
                         WHERE cdr.calldate BETWEEN '{$data} 00:00:00' and '{$data} 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
+                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
                         GROUP BY data_truncada, disposition
                     ";
             return $this->executeQuery($query);
@@ -66,6 +65,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada
                         FROM asteriskcdrdb.cdr
                         WHERE cdr.calldate BETWEEN '".date("Y-m-d", strtotime("-7 days"))." 00:00:00' and '".date("Y-m-d")." 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
+                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
                         GROUP BY data_truncada
                     ";
             return $this->executeQuery($query);
@@ -108,6 +108,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%d/%m') AS data_truncada
                         FROM asteriskcdrdb.cdr
                         WHERE cdr.calldate BETWEEN '".date("Y-m-d", strtotime("-7 days"))." 00:00:00' and '".date("Y-m-d")." 23:59:59' AND disposition IN ('BUSY','ANSWERED', 'NO ANSWER', 'CONGESTION')
+                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
                         GROUP BY data_truncada
                     ";
             return $this->executeQuery($query);
@@ -222,7 +223,9 @@ class CdrService extends \Core\Defaults\DefaultModel{
                             SELECT 'CONGESTION' as disposition UNION ALL
                             SELECT 'NO ANSWER' as disposition) as subquery
                         LEFT JOIN 
-                            cdr ON subquery.disposition = cdr.disposition AND DATE(cdr.calldate) = '2023-03-29'
+                            cdr ON subquery.disposition = cdr.disposition 
+                        AND DATE(cdr.calldate) = '2023-03-29' 
+                        AND lastapp in ('Dial' , 'Busy') AND dstchannel != ''
                         GROUP BY 
                             subquery.disposition";
             $status = $this->executeQuery($query);

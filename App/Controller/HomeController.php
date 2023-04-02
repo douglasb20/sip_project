@@ -43,18 +43,14 @@ class HomeController extends Controller{
                         "name" => "Perdidas",
                         "data" => $dataGraf['NO ANSWER']['data']
                     ],
-                    [
-                        "name" => "Recebidas",
-                        "data" => $dataGraf['CONGESTION']['data']
-                    ],
+                    // [
+                    //     "name" => "Recebidas",
+                    //     "data" => $dataGraf['CONGESTION']['data']
+                    // ],
                     [
                         "name" => "Atentidas",
                         "data" => $dataGraf['ANSWERED']['data']
-                    ],
-                    // [
-                    //     "name" => "Ocupadas",
-                    //     "data" => $dataGraf['BUSY']['data']
-                    // ],
+                    ]
                 ];
             }
 
