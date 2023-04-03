@@ -64,7 +64,7 @@
     
                       <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                          <i class="fa-regular fa-phone-volume"></i>
+                          <i class="fa-regular fa-phone-volume" style="transform:rotate(-45deg) !important"></i>
                         </div>
                         <div class="ps-3">
                           <h6>{{$answered}}</h6>
@@ -180,7 +180,7 @@
             markers: {
                 size: 4
             },
-            colors: ['#4154f1', '#2eca6a', '#ff771d'],
+            colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
             fill: {
                 type: "gradient",
                 gradient: {

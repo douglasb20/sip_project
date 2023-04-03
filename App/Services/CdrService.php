@@ -18,7 +18,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
         $this->tabela = "cdrCerto";
-        $this->data = date("Y-03-31");
+        $this->data = date("Y-m-d");
 
         parent::__construct($this->mysqli);
     }
