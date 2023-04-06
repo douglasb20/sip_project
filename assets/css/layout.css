@@ -39,6 +39,12 @@ footer{
 .invalid ~ .fa-regular{
     color: #f00
 }
+.pagetitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 
 
 .text-xs { font-size: .75rem !important}

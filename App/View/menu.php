@@ -99,7 +99,7 @@
 			<span class="badge bg-success badge-number">3</span>
 		</a><!-- End Messages Icon -->
 
-		<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+		<!-- <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
 			<li class="dropdown-header">
 			You have 3 new messages
 			<a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
@@ -154,14 +154,14 @@
 			<a href="#">Show all messages</a>
 			</li>
 
-		</ul><!-- End Messages Dropdown Items -->
+		</ul>End Messages Dropdown Items -->
 
 		</li><!-- End Messages Nav -->
 
 		<li class="nav-item dropdown pe-3">
 
 			<a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-				<img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle" hidden>
+				<!-- <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle" hidden> -->
 				<span class="d-none d-md-block dropdown-toggle ps-2">{{ucwords(strtolower(getSessao('nome_usuario')))}}</span>
 			</a><!-- End Profile Iamge Icon -->
 

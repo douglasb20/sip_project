@@ -11,7 +11,8 @@ class HomeController extends Controller{
             $dadosGraf       = $cdr->GeraDadosGraficoHora();
             $dataGraf        = $cdr->GeraDadosGraficoData();
 
-            $whereRealizadas = " DATE(calldate) = CURDATE() and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $where           = " DATE(calldate) = CURDATE() ";
+            $whereRealizadas = " {$where} and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
             $realizadas      = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
             $reports         = [];
@@ -55,7 +56,7 @@ class HomeController extends Controller{
                 ];
             }
 
-            $dados               = $cdr->GetDataDashboard();
+            $dados               = $cdr->GetDataDashboard($where);
 
             $horas               = array_column($cdr->AgrupaHoraFormatado(), "hora_truncada");
             $datas               = array_column($cdr->AgrupaDataFormatado(), "data_truncada");
@@ -67,7 +68,7 @@ class HomeController extends Controller{
             $dados["datas"]      = json_encode($datas);
             
             $dados["realizadas"] = $realizadasCount;
-            $dados['pie']        = json_encode($cdr->GeraDadosGraficosGrupo());
+            $dados['pie']        = json_encode($cdr->GeraDadosGraficosGrupo($where));
 
             $this
             ->setClassDivContainer("container-fluid")
@@ -75,6 +76,48 @@ class HomeController extends Controller{
             ->setBreadcrumb(["Home", "Dashboard"])
             ->setShowMenu(true)
             ->render("Home.dashboard", $dados);
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function GeraDadosGraficos(){
+        try{
+            $this->CheckSession();
+
+            $type = $this->getQuery('tipo');
+            // $type = "month";
+
+
+            switch($type){
+                case 'lastday':
+                    $where = " DATE(calldate) = DATE_SUB(CURDATE(), interval 1 day) ";
+                break;
+                case 'week':
+                    $where = " DATE(calldate) >= DATE_SUB(CURDATE(), interval 1 week) ";
+                break;
+                case 'month':
+                    $where = " DATE(calldate) >= DATE_SUB(CURDATE(), interval 1 month) ";
+                break;
+                default:
+                    $where = " DATE(calldate) = CURDATE() ";
+                break;
+            }
+            
+            $cdr                 = new \App\Services\CdrService;
+
+            $whereRealizadas     = " {$where} and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $realizadas          = $cdr->getAll($whereRealizadas, "calldate desc");
+            $realizadasCount     = count($realizadas);
+
+            $dados               = $cdr->GetDataDashboard($where);
+
+            $dados["realizadas"] = $realizadasCount;
+            $dados['pie']        = $cdr->GeraDadosGraficosGrupo($where);
+
+
+            $this->data = $dados;
+            $this->retorna();
         }catch(\Exception $e){
             throw $e;
         }

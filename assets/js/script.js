@@ -20,6 +20,8 @@ $(() => {
 
 })
 
+const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin"});
+
 $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -37,8 +39,7 @@ $.fn.serializeObject = function() {
 };
 
 $(document).ajaxStart(function() {
-    $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin"});
-    
+    StartLoading();
 });
 $(document).ajaxComplete(function(event, xhr, settings) {
 
@@ -47,6 +48,7 @@ $(document).ajaxComplete(function(event, xhr, settings) {
 });
 
 $.ajaxSetup({
+    dataType: 'json',
     error: function (data) {
         $('body').LoadingOverlay("hide");
         if (data.responseJSON) {

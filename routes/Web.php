@@ -15,7 +15,7 @@ Router::get("/teste", function(){
     $str = 'Local/1101@from-queue/n,0,Local/1201@from-queue/n,0,Local/1202@from-queue/n,0,Local/1203@from-queue/n,0,Local/1206@from-queue/n,0,Local/1301@from-queue/n,0,Local/1305@from-queue/n,0,Local/1306@from-queue/n,0,Local/1307@from-queue/n,0';
 
     preg_match_all($re, $str, $matches);
-    printar($cdr->GeraDadosGraficosGrupo() );
+    printar(route()->link('dados-dashboard') );
 });
 
 

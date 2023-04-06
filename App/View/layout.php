@@ -17,13 +17,17 @@
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css">
     <?php echo $this->render['css']; ?>
 
+    
     <!-- Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.8/lottie.min.js"></script>
+    <script src="https://assets1.lottiefiles.com/packages/lf20_a2chheio.json"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery/jquery-3.6.3.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.js"></script>
 </head>
 
@@ -35,23 +39,9 @@
     
     ?>
     <main id="main" class="main">
-        <div class="pagetitle">
-            <?php
-                $bread = $this->getBreadcrumb();
-            ?>
-            <h1><?=end($bread)?></h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <?php foreach($bread as $key => $b){
-                        $active = count($bread) - 1 === $key ? "active" : "";
-                    ?>
-
-                    <li class="breadcrumb-item <?=$active?>"><?=$b?></li>
-                    
-                    <?php }?>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
+        <?php
+            include_once ROOT_PATH . '/App/View/breadcrumb.php'; 
+        ?>
         <div class="<?= $this->getClassDivContainer() ?>">
             <?php echo $this->render['body']; ?>
         </div>

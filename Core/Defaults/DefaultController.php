@@ -17,6 +17,7 @@ class DefaultController{
     public array $render              = array('css' =>'','body' => '', 'js' =>'', 'menu' => '');
     public string $titulo_pagina      = "";
     private string $classDivContainer = 'container';
+    public string $buttons            = '';
     private bool $showFooter          = true;
     private array $breadcrumb         = [];
     private bool $mostraMenu          = true;

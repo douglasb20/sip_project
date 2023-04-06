@@ -425,19 +425,19 @@ class Router{
             if(str_contains($route, "/")){
                 $indexFound = array_search(trim($route, "/"), array_column($links, "uri"));
 
-                if(gettype($indexFound) === "integer"){
-                    return ("/" . trim($links[$indexFound]["uri"], "/") );
-                }else{
-                    throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
-                }
+                // if(gettype($indexFound) === "integer"){
+                //     return ("/" . trim($links[$indexFound]["uri"], "/") );
+                // }else{
+                //     throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
+                // }
             }else{
                 $indexFound = array_search($route, array_column($links, "alias"));
+            }
 
-                if(gettype($indexFound) === "integer"){
-                    return ("/" . trim($links[$indexFound]["uri"], "/") );
-                }else{
-                    throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
-                }
+            if(gettype($indexFound) === "integer"){
+                return ("/" . preg_replace("/{.*}/m","", trim($links[$indexFound]["uri"], "/") ) );
+            }else{
+                throw new Exception("Rota não encontrada para a rota '{$route}' ", -1);
             }
             
         }catch(Exception $e){

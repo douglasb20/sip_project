@@ -64,7 +64,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))." ' and '".date("Y-m-d")."' 
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-8 days"))." ' and '".date("Y-m-d")."' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
                     ";
@@ -109,7 +109,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%d/%m') AS data_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))."' and '".date("Y-m-d")."' 
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-8 days"))."' and '".date("Y-m-d")."' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
                         order by calldate
@@ -215,7 +215,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
 
-    public function GetDataDashboard(){
+    public function GetDataDashboard($where){
         try{
             $query = "  SELECT count(cdr_formatado.status) as qtd, subquery.status from 
                         (SELECT 'BUSY' AS status UNION ALL SELECT 'ANSWERED' AS status UNION ALL SELECT 'NO ANSWER' AS status) AS subquery
@@ -227,7 +227,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                             cdrCerto 
                         WHERE
                             1=1
-                            AND date(calldate) = '{$this->data}'
+                            AND {$where}
                         order by cdrCerto.calldate desc) as cdr_formatado
                         on cdr_formatado.status = subquery.status
                         group by subquery.status";
@@ -235,7 +235,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $dados = [];
 
             foreach($status as $v){
-                $dados[str_replace(" ","_",strtolower($v['status']))] = $v['qtd'];
+                $dados[str_replace(" ","_",strtolower($v['status']))] = (int)$v['qtd'];
             }
 
             return $dados;
@@ -269,28 +269,24 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
 
-    public function GeraDadosGraficosGrupo(){
+    public function GeraDadosGraficosGrupo($where){
         try{
             $queues = $this->GetLinkedQueue();
             $data = [];
 
             foreach($queues as $key => $queue){
                 $result = ["name" => $queue['nome']];
-                $query = "SELECT count(*) as qtd FROM cdrCerto c
-                WHERE DATE(c.calldate) = curdate()
-                    AND c.dst in (".implode(",", $queue['ramais']).")";
+                $query = "SELECT count(*) as qtd FROM cdrCerto
+                WHERE {$where}
+                    AND dst in (".implode(",", $queue['ramais']).")";
                 
                 $registo = $this->executeQuery($query)[0]['qtd'];
-                $result["data"] = (int)$registo;
+                $result["value"] = (int)$registo;
                 $data[] = $result;
             }
             
-            $return = [
-                "series" => array_column($data, "data"),
-                "label" => array_column($data, "name"),
-            ];
 
-            return $return;
+            return $data;
         }catch(\Exception $e){
             throw $e;
         }
