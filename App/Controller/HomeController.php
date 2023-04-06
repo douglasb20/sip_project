@@ -20,10 +20,7 @@ class HomeController extends Controller{
 
             if(!empty($dadosGraf)){
                 $reports = [
-                    [
-                        "name" => "Perdidas",
-                        "data" => $dadosGraf['NO ANSWER']['data']
-                    ],
+                    
                     // [
                     //     "name" => "Recebidas",
                     //     "data" => $dadosGraf['CONGESTION']['data']
@@ -35,6 +32,10 @@ class HomeController extends Controller{
                     [
                         "name" => "Ocupadas",
                         "data" => $dadosGraf['BUSY']['data']
+                    ],
+                    [
+                        "name" => "Perdidas",
+                        "data" => $dadosGraf['NO ANSWER']['data']
                     ],
                 ];
             }

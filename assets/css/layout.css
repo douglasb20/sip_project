@@ -12,11 +12,16 @@
     box-sizing: border-box;
 }
 
-body{
+body, html{
     height     : 100vh !important;
     min-height : 100vh;
-    min-width  : 100vw;
+    min-width  : 100%;
     display    : inline-block;
+}
+
+.iconLoading{
+    --fa-primary-color: #3471da; 
+    --fa-secondary-color: #3471da
 }
 
 footer{

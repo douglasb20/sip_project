@@ -225,7 +225,7 @@ $("#btnEntrar").click(function(){
             method: "POST",
             data: formInput            
         }).done(function(data){
-            
+            StartLoading();
             window.location.href = "{{route()->link('home')}}"
         })
     }else{

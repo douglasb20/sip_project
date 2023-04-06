@@ -24,15 +24,15 @@
 
     <section class="dashboard">
         
-        <div class="col-12">
+        <div class="col-12 user-select-none">
             <div class="row">
                 <div class="col-7">
-                    <div class="row">
+                    <div class="row ">
                         <div class="col-12">
                         
-                            <div class="card">
+                            <div class="card h-100" >
             
-                                <div class="card-body">
+                                <div class="card-body ">
                                     <h5 class="card-title">Status de ligação por hora </h5>
             
                                     <!-- Line Chart -->
@@ -48,7 +48,7 @@
                 
             
                 <div class="col-5">
-                    <div class="row h-100">
+                    <div class="row ">
                         <!-- Realizadas Card -->
                         <div class="col-xxl-6 col-md-6 ">
                             <div class="card info-card sales-card">
@@ -68,7 +68,7 @@
         
                         <!-- Ocupadas Card -->
                         <div class="col-xxl-6 col-md-6 ">
-                            <div class="card info-card customers-card">
+                            <div class="card info-card revenue-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Ocupadas</h5>
                                     <div class="d-flex align-items-center">
@@ -84,8 +84,8 @@
                         </div><!-- End Ocupadas Card -->
         
                         <!-- Atendidas Card -->
-                        <div class="col-xxl-6 col-md-6 align-self-end">
-                            <div class="card info-card revenue-card">
+                        <div class="col-xxl-6 col-md-6 ">
+                            <div class="card info-card sales-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Atendidas </h5>
                                     <div class="d-flex align-items-center">
@@ -101,10 +101,27 @@
                         </div><!-- End Atendidas Card -->
             
                         <!-- Perdidas Card -->
-                        <div class="col-xxl-6 col-md-6 align-self-end">
+                        <div class="col-xxl-6 col-md-6 ">
                             <div class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Perdidas </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-phone-missed"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 id="nmroPerdidas">{{$no_answer}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End Perdidas Card -->
+
+                        <!-- Perdidas Card -->
+                        <div class="col-xxl-12 col-md-12 ">
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Em espera de retorno </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="fa-regular fa-phone-missed"></i>
@@ -183,7 +200,7 @@
         new ApexCharts(document.querySelector("#reportsChart"), {
             series: chart,
             chart: {
-                height: 350,
+                height: 400,
                 type: 'area',
                 toolbar: {
                     show: true,
@@ -207,25 +224,43 @@
                 gradient: {
                     shadeIntensity: 1,
                     opacityFrom: 0.3,
-                    opacityTo: 0.4,
+                    opacityTo: 0.5,
                     stops: [0, 90, 100]
                 }
             },
             dataLabels: {
-                enabled: true
+                enabled: true,
             },
             stroke: {
                 curve: 'smooth',
                 width: 2
             },
             xaxis: {
-                type: 'datetime',
-                categories: horas
+                type: 'category',
+                categories: horas,
+                labels: {
+                    show: true,
+                    format: 'dd/MM',
+                    formatter: function (value, timestamp) {
+                        return new Date(value).toLocaleTimeString("pt-BR", {hour:'2-digit', minute:'2-digit'}) // The formatter function overrides format property
+                    }, 
+                }
             },
             tooltip: {
+                enabled: true,
                 x: {
-                    format: 'dd/MM/yyyy HH:mm'
+                    format: 'dd MMM',
+                    formatter: (value, {w, series, seriesIndex, dataPointIndex}) => {
+
+                        return w.globals.categoryLabels[dataPointIndex];
+                    }
                 },
+                y: {
+                    formatter: value => value,
+                    title: {
+                        formatter: (seriesName) => seriesName,
+                    },
+                }
             }
         }).render();
 
@@ -312,15 +347,28 @@
             },
             color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
             legend: {
-                orient: 'horizontal',
-                bottom: 'bottom'
+                orient: 'vertical',
+                right: '10px',
+                bottom: '50%'
             },
             series: [
                 {
                     name: 'Ligações',
                     type: 'pie',
+                    stillShowZeroSum: true,
+                    showEmptyCircle: false,
                     radius: '80%',
                     data: pieChart,
+                    left:'-140px',
+                    label: {
+                        show: true,
+                        formatter: ({percent, name}) => percent > 0  ? `${percent}%` : "",
+                        position: 'inside',
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        textBorderWidth: 1,
+                        textBorderColor: "#fff"
+                    },
                     emphasis: {
                         itemStyle: {
                             shadowBlur: 10,
@@ -349,32 +397,9 @@
             $("#nmroPerdidas").text(no_answer);
 
             echarts.init(document.querySelector("#groupsChart")).setOption({
-                // title: {
-                //     text: 'Referer of a Website',
-                //     subtext: 'Fake Data',
-                //     left: 'center'
-                // },
-                tooltip: {
-                    trigger: 'item'
-                },
-                color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
-                legend: {
-                    orient: 'horizontal',
-                    bottom: 'bottom'
-                },
                 series: [
                     {
-                        name: 'Ligações',
-                        type: 'pie',
-                        radius: '80%',
                         data: pie,
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
                     }
                 ]
             });

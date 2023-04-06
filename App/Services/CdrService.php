@@ -235,7 +235,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $dados = [];
 
             foreach($status as $v){
-                $dados[str_replace(" ","_",strtolower($v['status']))] = (int)$v['qtd'];
+                $dados[str_replace(" ","_",strtolower($v['status']))] = $v['qtd'];
             }
 
             return $dados;
@@ -278,6 +278,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                 $result = ["name" => $queue['nome']];
                 $query = "SELECT count(*) as qtd FROM cdrCerto
                 WHERE {$where}
+                    AND src not in (SELECT id FROM asterisk.devices)
                     AND dst in (".implode(",", $queue['ramais']).")";
                 
                 $registo = $this->executeQuery($query)[0]['qtd'];

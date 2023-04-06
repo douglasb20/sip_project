@@ -20,7 +20,7 @@ $(() => {
 
 })
 
-const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin"});
+const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin iconLoading"});
 
 $.fn.serializeObject = function() {
     var o = {};
