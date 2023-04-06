@@ -39,6 +39,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE cdrCerto.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -52,6 +53,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, status
                         FROM asteriskcdrdb.cdrCerto
                         WHERE Date(cdrCerto.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -66,6 +68,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-8 days"))." ' and '".date("Y-m-d")."' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY data_truncada
                     ";
             return $this->executeQuery($query);
@@ -81,6 +84,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -96,6 +100,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -111,6 +116,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-8 days"))."' and '".date("Y-m-d")."' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY data_truncada
                         order by calldate
                     ";

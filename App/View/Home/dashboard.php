@@ -196,6 +196,8 @@
     let datas    = JSON.parse('{{$datas}}');
     let pieChart = JSON.parse('{{$pie}}');
 
+    let total = pieChart.reduce((acc, cur) => acc + cur.value, 0)
+
     document.addEventListener("DOMContentLoaded", () => {
         new ApexCharts(document.querySelector("#reportsChart"), {
             series: chart,
@@ -337,11 +339,6 @@
         //     labels: pie.label
         // })
         echarts.init(document.querySelector("#groupsChart")).setOption({
-            // title: {
-            //     text: 'Referer of a Website',
-            //     subtext: 'Fake Data',
-            //     left: 'center'
-            // },
             tooltip: {
                 trigger: 'item'
             },
@@ -351,20 +348,30 @@
                 right: '10px',
                 bottom: '50%'
             },
+            graphic: {
+                type: 'text',
+                left: 'center',
+                top: 'center',
+                style: {
+                    text: `Total\r\n${total}`,
+                    textAlign: "center",
+                    font: 'bold 24px Arial'
+                }
+            },
             series: [
                 {
                     name: 'Ligações',
                     type: 'pie',
                     stillShowZeroSum: true,
                     showEmptyCircle: false,
-                    radius: '80%',
+                    radius: ['80%', "50%"],
                     data: pieChart,
-                    left:'-140px',
+                    // left:'-140px',
                     label: {
                         show: true,
                         formatter: ({percent, name}) => percent > 0  ? `${percent}%` : "",
                         position: 'inside',
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: 'bold',
                         textBorderWidth: 1,
                         textBorderColor: "#fff"
@@ -396,7 +403,19 @@
             $("#nmroAtendidas").text(answered);
             $("#nmroPerdidas").text(no_answer);
 
+            total = pie.reduce((acc, cur) => acc + cur.value, 0)
+
             echarts.init(document.querySelector("#groupsChart")).setOption({
+                graphic: {
+                    // type: 'text',
+                    // left: 'center',
+                    // top: 'center',
+                    style: {
+                        text: `Total\r\n${total}`,
+                        textAlign: "center",
+                        font: 'bold 24px Arial'
+                    }
+                },
                 series: [
                     {
                         data: pie,
