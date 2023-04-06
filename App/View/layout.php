@@ -13,14 +13,12 @@
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/fontawesome/css/all.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.css">
-    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/admin.css">
-    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/admin.css?<?=time()?>">
+    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css?<?=time()?>">
     <?php echo $this->render['css']; ?>
 
     
     <!-- Javascript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.8/lottie.min.js"></script>
-    <script src="https://assets1.lottiefiles.com/packages/lf20_a2chheio.json"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery/jquery-3.6.3.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
@@ -66,8 +64,8 @@
         }
     ?>
     <!-- Fim - Footer -->
-    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/admin.js"></script>
-    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/script.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/admin.js?<?=time()?>"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/script.js?<?=time()?>"></script>
 </body>
 
 <?php echo $this->render['js']; ?>
