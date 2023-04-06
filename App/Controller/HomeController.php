@@ -7,25 +7,26 @@ class HomeController extends Controller{
     public function Index(){
         try {
             $this->CheckSession();
-            $cdr = (new \App\Services\CdrService);
-            $dadosGraf = $cdr->GeraDadosGraficoHora();
-            $dataGraf = $cdr->GeraDadosGraficoData();
+            $cdr             = (new \App\Services\CdrService);
+            $dadosGraf       = $cdr->GeraDadosGraficoHora();
+            $dataGraf        = $cdr->GeraDadosGraficoData();
 
-            $whereRealizadas = " DATE(calldate) = '2023-03-31' and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
-            $realizadas = $cdr->getAll($whereRealizadas, "calldate desc");
+            $whereRealizadas = " DATE(calldate) = CURDATE() and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $realizadas      = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
-            $reports = [];
-            $byDate = [];
+            $reports         = [];
+            $byDate          = [];
+
             if(!empty($dadosGraf)){
                 $reports = [
                     [
                         "name" => "Perdidas",
                         "data" => $dadosGraf['NO ANSWER']['data']
                     ],
-                    [
-                        "name" => "Recebidas",
-                        "data" => $dadosGraf['CONGESTION']['data']
-                    ],
+                    // [
+                    //     "name" => "Recebidas",
+                    //     "data" => $dadosGraf['CONGESTION']['data']
+                    // ],
                     [
                         "name" => "Atentidas",
                         "data" => $dadosGraf['ANSWERED']['data']
@@ -54,18 +55,19 @@ class HomeController extends Controller{
                 ];
             }
 
-            $dados = $cdr->GetDataDashboard();
+            $dados               = $cdr->GetDataDashboard();
 
-            $horas = array_column($cdr->AgrupaHoraFormatado(), "hora_truncada");
-            $datas = array_column($cdr->AgrupaDataFormatado(), "data_truncada");
+            $horas               = array_column($cdr->AgrupaHoraFormatado(), "hora_truncada");
+            $datas               = array_column($cdr->AgrupaDataFormatado(), "data_truncada");
 
-            $dados["chart"] = json_encode($reports);
-            $dados["horas"] = json_encode($horas);
+            $dados["chart"]      = json_encode($reports);
+            $dados["horas"]      = json_encode($horas);
 
-            $dados["porDatas"] = json_encode($byDate);
-            $dados["datas"] = json_encode($datas);
+            $dados["porDatas"]   = json_encode($byDate);
+            $dados["datas"]      = json_encode($datas);
             
             $dados["realizadas"] = $realizadasCount;
+            $dados['pie']        = json_encode($cdr->GeraDadosGraficosGrupo());
 
             $this
             ->setClassDivContainer("container-fluid")

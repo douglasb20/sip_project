@@ -9,103 +9,7 @@
         
         <div class="col-12">
             <div class="row">
-                <!-- Revenue Card -->
-                <div class="col-xxl-3 col-md-6">
-                  <div class="card info-card sales-card">
-
-                    <div class="card-body">
-                      <h5 class="card-title">Realizadas</h5>
-    
-                      <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="fa-regular fa-phone-arrow-up-right"></i>
-                        </div>
-                        <div class="ps-3">
-                          <h6>{{$realizadas}}</h6>
-                          <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-    
-                        </div>
-                      </div>
-                    </div>
-    
-                  </div>
-                </div><!-- End Revenue Card -->
-
-                                <!-- Sales Card -->
-                                <div class="col-xxl-3 col-md-6">
-                  <div class="card info-card customers-card">
-
-    
-                    <div class="card-body">
-                      <h5 class="card-title">Ocupadas</h5>
-    
-                      <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                          <i class="fa-regular fa-phone-xmark "></i>
-                        </div>
-                        <div class="ps-3">
-                          <h6>{{$busy}}</h6>
-                          <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-    
-                        </div>
-                      </div>
-                    </div>
-    
-                  </div>
-                </div><!-- End Sales Card -->
-
-                <!-- Revenue Card -->
-                <div class="col-xxl-3 col-md-6">
-                  <div class="card info-card revenue-card">
-
-    
-                    <div class="card-body">
-                      <h5 class="card-title">Atendidas </h5>
-    
-                      <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                          <i class="fa-regular fa-phone-volume" style="transform:rotate(-45deg) !important"></i>
-                        </div>
-                        <div class="ps-3">
-                          <h6>{{$answered}}</h6>
-                          <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-    
-                        </div>
-                      </div>
-                    </div>
-    
-                  </div>
-                </div><!-- End Revenue Card -->
-    
-                <!-- Customers Card -->
-                <div class="col-xxl-3 col-xl-12">
-    
-                  <div class="card info-card customers-card">
-
-    
-                    <div class="card-body">
-                      <h5 class="card-title">Perdidas </h5>
-    
-                      <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                          <i class="fa-regular fa-phone-missed"></i>
-                        </div>
-                        <div class="ps-3">
-                          <h6>{{$no_answer}}</h6>
-                          <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-    
-                        </div>
-                      </div>
-    
-                    </div>
-                  </div>
-    
-                </div><!-- End Customers Card -->
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="row">
-                <div class="col-6">
+                <div class="col-7">
                     <div class="row">
                         <div class="col-12">
                         
@@ -124,7 +28,93 @@
                         </div><!-- End Reports -->
                     </div>
                 </div>
-                <div class="col-6">
+                
+            
+                <div class="col-5 d-flex justify-content-center align-items-center">
+                    <div class="row ">
+                        <!-- Realizadas Card -->
+                        <div class="col-xxl-6 col-md-6 h-100">
+                            <div class="card info-card sales-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Realizadas</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-phone-arrow-up-right"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{$realizadas}}</h6>
+                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End Realizadas Card -->
+        
+                        <!-- Ocupadas Card -->
+                        <div class="col-xxl-6 col-md-6 h-100">
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Ocupadas</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-phone-xmark "></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{$busy}}</h6>
+                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End Ocupadas Card -->
+        
+                        <!-- Atendias Card -->
+                        <div class="col-xxl-6 col-md-6 h-100">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Atendidas </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-phone-volume" style="transform:rotate(-45deg) !important"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{$answered}}</h6>
+                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End Atendias Card -->
+            
+                        <!-- Perdidas Card -->
+                        <div class="col-xxl-6 col-md-6 h-100">
+                            <div class="card info-card customers-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Perdidas </h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="fa-regular fa-phone-missed"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{$no_answer}}</h6>
+                                            <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- End Perdidas Card -->
+        
+                    </div>
+                </div>
+            </div>  
+        </div>
+        
+        <div class="col-12">
+            <div class="row">
+                <div class="col-7">
                     <div class="row">
                         <div class="col-12">
                         
@@ -143,6 +133,26 @@
                         </div><!-- End Reports -->
                     </div>
                 </div>
+                <div class="col-5">
+                    <div class="row">
+                        <div class="col-12">
+                            
+                            <div class="card">
+            
+                                <div class="card-body">
+                                    <h5 class="card-title">Ligações nos últimos 7 dias </h5>
+            
+                                    <!-- Line Chart -->
+                                    <div id="groupsChart"></div>
+                                    <!-- End Line Chart -->
+            
+                                </div>
+            
+                            </div>
+                        </div><!-- End Reports -->
+                    </div>
+                </div>
+                
             </div>
         </div>
     </section>
@@ -152,11 +162,12 @@
 <?php $this->captureStart('js'); ?>
 
 <script>
-    let chart = JSON.parse('{{$chart}}');
-    let horas = JSON.parse('{{$horas}}');
+    let chart    = JSON.parse('{{$chart}}');
+    let horas    = JSON.parse('{{$horas}}');
 
     let porDatas = JSON.parse('{{$porDatas}}');
-    let datas = JSON.parse('{{$datas}}');
+    let datas    = JSON.parse('{{$datas}}');
+    let pie      = JSON.parse('{{$pie}}');
 
     document.addEventListener("DOMContentLoaded", () => {
         new ApexCharts(document.querySelector("#reportsChart"), {
@@ -223,7 +234,7 @@
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: '90%',
+                    columnWidth: '70%',
                     endingShape: 'rounded',
                     dataLabels:{
                         position: "top"
@@ -262,6 +273,22 @@
                     }
                 }
             }
+        }).render();
+        new ApexCharts(document.querySelector("#groupsChart"), {
+            series: pie.series,
+            chart: {
+                height: 350,
+                type: 'pie',
+                toolbar: {
+                    show: true
+                }
+            },
+            dataLabels:{
+                style:{
+                    fontSize: "15.5px"
+                },
+            },
+            labels: pie.label
         }).render();
     });
 

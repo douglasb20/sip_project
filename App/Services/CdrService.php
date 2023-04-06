@@ -37,7 +37,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, status
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' 
+                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -63,7 +64,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))." ' and '".date("Y-m-d")."' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))." ' and '".date("Y-m-d")."' 
+                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
                     ";
             return $this->executeQuery($query);
@@ -77,7 +79,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H') AS hora_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
+                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -91,7 +94,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%dT%H:00:00.000Z') AS hora_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
+                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY hora_truncada
                     ";
             return $this->executeQuery($query);
@@ -105,7 +109,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%d/%m') AS data_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))."' and '".date("Y-m-d")."' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-7 days"))."' and '".date("Y-m-d")."' 
+                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         GROUP BY data_truncada
                         order by calldate
                     ";
@@ -238,6 +243,59 @@ class CdrService extends \Core\Defaults\DefaultModel{
             throw $e;
         }
     }
+
+    public function GetLinkedQueue(){
+        try{
+            $query      = "SELECT extension, descr FROM asterisk.queues_config where extension != 99";
+            $exts       = $this->executeQuery($query);
+            $extensions = [];
+            $re         = '/(\d+)@/m';
+
+            foreach(array_column($exts, "extension") as $key => $ext){
+                $qry                        = "SELECT group_concat(data) as linked FROM asterisk.queues_details WHERE keyword = 'member' AND id = {$ext}";
+                $resp                       = $this->executeQuery($qry)[0]['linked'];
+                $extensions[$ext]['nome']   = $exts[$key]["descr"];
+                $extensions[$ext]['ramais'] = $resp;
+            }
+
+            foreach($extensions as $key => $exts){
+                preg_match_all($re, $exts['ramais'], $matches);
+                $extensions[$key]['ramais'] = $matches[1];
+            }
+
+            return $extensions;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function GeraDadosGraficosGrupo(){
+        try{
+            $queues = $this->GetLinkedQueue();
+            $data = [];
+
+            foreach($queues as $key => $queue){
+                $result = ["name" => $queue['nome']];
+                $query = "SELECT count(*) as qtd FROM cdrCerto c
+                WHERE DATE(c.calldate) = curdate()
+                    AND c.dst in (".implode(",", $queue['ramais']).")";
+                
+                $registo = $this->executeQuery($query)[0]['qtd'];
+                $result["data"] = (int)$registo;
+                $data[] = $result;
+            }
+            
+            $return = [
+                "series" => array_column($data, "data"),
+                "label" => array_column($data, "name"),
+            ];
+
+            return $return;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
 }
 
 ?>
