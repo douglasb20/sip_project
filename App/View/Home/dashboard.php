@@ -124,7 +124,7 @@
                                     <h5 class="card-title">Em espera de retorno </h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="fa-regular fa-phone-missed"></i>
+                                            <i class="fa-regular fa-rotate-exclamation"></i>
                                         </div>
                                         <div class="ps-3">
                                             <h6 id="nmroPerdidas">{{$no_answer}}</h6>
@@ -246,6 +246,9 @@
                     formatter: function (value, timestamp) {
                         return new Date(value).toLocaleTimeString("pt-BR", {hour:'2-digit', minute:'2-digit'}) // The formatter function overrides format property
                     }, 
+                },
+                tooltip:{
+                    enabled: false
                 }
             },
             tooltip: {
@@ -291,8 +294,10 @@
             },
             dataLabels: {
                 enabled: true,
+                offsetY: -20,
                 style:{
-                    colors: ["#000"]
+                    colors: ["#060816"],
+                    fontWeight: 'bold'
                 },
             },
             stroke: {
@@ -364,7 +369,7 @@
                     type: 'pie',
                     stillShowZeroSum: true,
                     showEmptyCircle: false,
-                    radius: ['80%', "50%"],
+                    radius: ['80%', "45%"],
                     data: pieChart,
                     // left:'-140px',
                     label: {
