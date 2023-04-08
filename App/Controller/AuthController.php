@@ -58,8 +58,23 @@ class AuthController extends Controller{
     public function AuthLogin(){
         try{
             $data = $this->getPost();
-            (new UsersClass)->AuthenticateLoginUser($data['username'], $data['password']);
+            $ret  = (new UsersClass)->AuthenticateLoginUser($data['username'], $data['password']);
             
+            $this->data = $ret;
+            $this->retorna();
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function ValidateLogin(){
+        try{
+            $data = $this->getPost();
+            
+            SetSessao("autenticado", true);
+            SetSessao("ramal", $data['ramal']);
+            
+            $this->data = $ret;
             $this->retorna();
         }catch(\Exception $e){
             throw $e;

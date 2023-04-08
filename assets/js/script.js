@@ -2,7 +2,7 @@
 
 
 const modalOption = {
-    backdrop: "static",
+    backdrop: true,
     keyboard: true
 }
 
@@ -286,5 +286,5 @@ function floatToMoney(money) {
 }
 
 renderizaTooltip = () => {
-    return $(`[title]`).not('.select2-selection__choice').attr('data-toggle',"tooltip");
+    return $(`[title]`).not('.select2-selection__choice, .select2-selection__rendered').attr('data-toggle',"tooltip");
 }

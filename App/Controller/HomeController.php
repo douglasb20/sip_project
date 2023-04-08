@@ -90,8 +90,6 @@ class HomeController extends Controller{
             $this->CheckSession();
 
             $type = $this->getQuery('tipo');
-            // $type = "month";
-
 
             switch($type){
                 case 'lastday':

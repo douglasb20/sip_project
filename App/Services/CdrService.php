@@ -6,7 +6,6 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 class CdrService extends \Core\Defaults\DefaultModel{
     private $mysqli;
-    private $data;
 
     function __construct(){
         $host     = $_ENV['CDRDBHOST'];
@@ -18,7 +17,6 @@ class CdrService extends \Core\Defaults\DefaultModel{
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
         $this->tabela = "cdrCerto";
-        $this->data = date("Y-m-d");
 
         parent::__construct($this->mysqli);
     }
@@ -309,6 +307,18 @@ class CdrService extends \Core\Defaults\DefaultModel{
             
 
             return $data;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function GetDevices(){
+        try{
+            $query = "SELECT id, concat(id, ' - ', description) as text  FROM asterisk.devices";
+            $devices = $this->executeQuery($query);
+
+            return $devices;
+            
         }catch(\Exception $e){
             throw $e;
         }

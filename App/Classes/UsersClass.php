@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Classes;
+
 use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
@@ -71,11 +72,12 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             if(!password_verify( $password, $user['user_pass'] )){
                 throw new \Exception("Senha não confere.",401);
             }
-            
-            SetSessao("autenticado", true);
+
+            // SetSessao("autenticado", true);
             SetSessao("id_usuario", $user['id']);
             SetSessao("nome_usuario", $user['user_fullname']);
 
+            return (new \App\Services\CdrService)->GetDevices();
         }catch(\Exception $e){
             throw $e;
         }

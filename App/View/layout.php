@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/fontawesome/css/all.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.css">
+    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/select2/4.1.0/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/admin.css?<?=time()?>">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css?<?=time()?>">
     <?php echo $this->render['css']; ?>
@@ -28,6 +29,7 @@
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/select2/4.1.0/js/select2.min.js"></script>
 </head>
 
 <body class="dark">
