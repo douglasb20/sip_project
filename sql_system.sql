@@ -17,3 +17,30 @@ CREATE TABLE `users` (
 
 
 INSERT INTO `sip_lanteca`.`users` (`user_fullname`, `user_login`, `user_nome`, `user_email`, `user_pass`, `user_passres`, `user_sts`) VALUES ('ADMIN', 'ADMIN', 'ADMIN', 'douglaassgenesis@gmail.com', '$2y$10$Vl7JDZ..o3mLI/zAinbxVuOYQadJCfV5qhgeDee6OuTmAfCbHQfr.', '0', '1');
+
+
+CREATE TABLE `sip_lanteca`.`callback` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `cpf_callback` VARCHAR(14) NOT NULL,
+  `numero_callback` VARCHAR(14) NOT NULL,
+  `data_callback` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_retornada` TIMESTAMP NULL DEFAULT NULL,
+  `operador_retornou` VARCHAR(6) NULL DEFAULT NULL,
+  `id_status_callback` INT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `sip_lanteca`.`status_callback` (
+  `id_status` INT NOT NULL AUTO_INCREMENT,
+  `nome_status` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`id_status`));
+
+
+  ALTER TABLE `sip_lanteca`.`callback` 
+ADD INDEX `callbacl_status_fk_idx` (`status_callback` ASC);
+;
+ALTER TABLE `sip_lanteca`.`callback` 
+ADD CONSTRAINT `callbacl_status_fk`
+  FOREIGN KEY (`id_status_callback`)
+  REFERENCES `sip_lanteca`.`status_callback` (`id_status`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;

@@ -37,7 +37,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, status
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} {$hora}:00:00' and '{$this->data} {$hora}:59:59' 
+                        WHERE cdrCerto.calldate BETWEEN '{$hora}:00:00' and '{$hora}:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada, status
@@ -78,11 +78,11 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
     
-    public function AgrupaHora(){
+    public function AgrupaHora($where){
         try{
-            $query = "  SELECT DATE_FORMAT( calldate, '%H') AS hora_truncada
+            $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d %H') AS hora_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
+                        WHERE {$where}
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada
@@ -94,16 +94,21 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
     
-    public function AgrupaHoraFormatado(){
+    public function AgrupaHoraFormatado($where = " DATE(calldate) = CURDATE() "){
         try{
-            $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%dT%H:00:00.000Z') AS hora_truncada
+            $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d %H:00:00') AS hora_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE cdrCerto.calldate BETWEEN '{$this->data} 00:00:00' and '{$this->data} 23:59:59' 
+                        WHERE {$where} 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY hora_truncada
                     ";
-            return $this->executeQuery($query);
+            $resp = $this->executeQuery($query);
+            if(count($resp) == 1){
+                array_unshift($resp, ["hora_truncada" => date("Y-m-d 06:00:00.000")]);
+            }
+
+            return $resp;
             
         }catch(\Exception $e){
             throw $e;
@@ -127,12 +132,22 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
 
-    public function GeraDadosGraficoHora(){
+    public function GeraDadosGraficoHora($where = " DATE(calldate) = CURDATE() "){
         try{
             
-            $dados = $this->AgrupaHora();
+            $dados = $this->AgrupaHora($where);
             $horas = array_column($dados, "hora_truncada");
             $dadosGraf = [];
+
+            if(count($horas) === 1){
+                $dadosGraf = [
+                    "BUSY"       => ["data" => [0]],
+                    "CONGESTION" => ["data" => [0]],
+                    "ANSWERED"   => ["data" => [0]],
+                    "NO_ANSWER"  => ["data" => [0]],
+                ];
+            }
+
             foreach($horas as $key => $hr){
                 $novoDado = $this->GraficoHora($hr);
 
@@ -162,10 +177,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
                 if(in_array("NO ANSWER",array_column($novoDado, "status"))){
                     $index = array_search("NO ANSWER",array_column($novoDado, "status"));
-                    $dadosGraf["NO ANSWER"]["data"][] = $novoDado[$index]["registros"];
+                    $dadosGraf["NO_ANSWER"]["data"][] = $novoDado[$index]["registros"];
                 }else{
                     
-                    $dadosGraf["NO ANSWER"]["data"][] = 0;
+                    $dadosGraf["NO_ANSWER"]["data"][] = 0;
                 }
             }
             return $dadosGraf;

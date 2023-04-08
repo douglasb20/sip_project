@@ -1,4 +1,41 @@
-$.extend( true, $.fn.dataTable.defaults, {
+// Custom Button export excel correto
+$.fn.dataTable.ext.buttons.excelNumber = {
+    text: 'Excel',
+    extend: 'excel',
+    exportOptions: {
+        format: {
+            body: function(data, row, column, node) {
+
+                var tmpData = data;
+                if (typeof data == 'string') {
+
+                    var regex = /value=\"((-|)\d+[\.|\,]*\d*)\"/;
+                    var valor = data.match(regex);
+                    if (valor) {
+                        if (valor[1]) {
+                            tmpData = valor[1];
+                        }
+                    }
+
+                    var tmpData2 = tmpData.replace(/[,.]/g, '');
+
+                    // Caso for um número , formata corretamente
+                    if (!isNaN(tmpData2)) {
+
+                        tmpData = tmpData.replace(/[,]/g, '.');
+                        tmpData = tmpData.replace(/[.](?=.*[.])/g, "");
+
+                    }
+                }
+
+                return tmpData;
+
+            }
+        }
+    }
+};
+
+$.extend(true, $.fn.dataTable.defaults, {
     columnDefs: [
         { defaultContent: " ", targets: '_all', orderDataType: 'orderAll' },
         { responsivePriority: 1, targets: -1 },
@@ -39,45 +76,8 @@ $.extend( true, $.fn.dataTable.defaults, {
     dom: 'Bfrtip',
     lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
     buttons: ['pageLength',exportMenu('csv', 'pdf', 'excelNumber')],
-    drawCallback: function(){ renderizaTooltip()}
+    // drawCallback: function(){ renderizaTooltip()}
 });
-
-// Custom Button export excel correto
-$.fn.dataTable.ext.buttons.excelNumber = {
-    text: 'Excel',
-    extend: 'excel',
-    exportOptions: {
-        format: {
-            body: function(data, row, column, node) {
-
-                var tmpData = data;
-                if (typeof data == 'string') {
-
-                    var regex = /value=\"((-|)\d+[\.|\,]*\d*)\"/;
-                    var valor = data.match(regex);
-                    if (valor) {
-                        if (valor[1]) {
-                            tmpData = valor[1];
-                        }
-                    }
-
-                    var tmpData2 = tmpData.replace(/[,.]/g, '');
-
-                    // Caso for um número , formata corretamente
-                    if (!isNaN(tmpData2)) {
-
-                        tmpData = tmpData.replace(/[,]/g, '.');
-                        tmpData = tmpData.replace(/[.](?=.*[.])/g, "");
-
-                    }
-                }
-
-                return tmpData;
-
-            }
-        }
-    }
-};
 
 // Função para adicionar item no dataTable sempre na primeira na linha
 

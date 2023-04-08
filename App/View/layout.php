@@ -23,13 +23,14 @@
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/dataTables.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-mask-ui/jquery.mask.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.js"></script>
 </head>
 
-<body class="">
+<body class="dark">
 
     <?php echo $this->render['menu']; ?>
     <!-- Inicio - Body -->
@@ -64,8 +65,11 @@
         }
     ?>
     <!-- Fim - Footer -->
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="fa-regular fa-arrow-up fa-sm"></i></a>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/admin.js?<?=time()?>"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/mascaras.js?<?=time()?>"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/script.js?<?=time()?>"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/datatables.js?<?=time()?>"></script>
 </body>
 
 <?php echo $this->render['js']; ?>

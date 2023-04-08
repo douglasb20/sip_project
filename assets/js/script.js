@@ -1,4 +1,13 @@
 
+
+
+const modalOption = {
+    backdrop: "static",
+    keyboard: true
+}
+
+
+// ====================================================================
 $(() => {
     $('body').tooltip({
         selector: '[data-toggle="tooltip"]',
@@ -245,6 +254,35 @@ function required_elements(elements) {
     });
 
     return result;
+}
+
+function stringToDate(data) {
+    var data = data.split('/');
+
+    return new Date(data[2], (data[1] - 1), data[0])
+}
+
+function dateToScreen(data) {
+    var data = data.split('-');
+    return data[2] + '/' + data[1] + '/' + data[0];
+}
+
+function dateToScreenComHora(data) {
+    if (data == null || data == '') return '';
+    var tmp = data.split(' ');
+    var data = tmp[0].split('-');
+    return data[2] + '/' + data[1] + '/' + data[0] + ' ' + tmp[1];
+}
+
+function moneyToFloat(money) {
+    money = money.replace(/\./g, '');
+    money = money.replace(',', '.');
+    money = parseFloat(money);
+    return money
+}
+
+function floatToMoney(money) {
+    return money.toLocaleString('en-US', {style:'currency', currency:'USD'});
 }
 
 renderizaTooltip = () => {

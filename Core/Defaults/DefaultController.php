@@ -4,6 +4,7 @@ namespace Core\Defaults;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use ReflectionClass;
 
 class DefaultController{
 
@@ -66,13 +67,11 @@ class DefaultController{
             // Inicia Models / Daos
             $all_model = array_slice(scandir(ROOT_PATH.'/'. MODEL_PATH),2);
             foreach($all_model as $model) {
-                
                 $model = ucfirst($model); 
                 $model = str_replace('.php','',$model);
                 $modelWithNamespace  = MODEL_NAMESPACE . $model;
-                
+
                 $this->$model = new $modelWithNamespace($this->masterMysqli);
-                
             }
             spl_autoload_register( array($this,"pathsToAutoload") );
         }catch(Exception $e){

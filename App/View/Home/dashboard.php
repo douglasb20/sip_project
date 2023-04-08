@@ -14,12 +14,13 @@
         <button type="button" onClick="AtualizaDadosPeriodo('today', this)" class="btn btn-outline-primary btnPeriodo active">Hoje</button>
         <button type="button" onClick="AtualizaDadosPeriodo('lastday', this)" class="btn btn-outline-primary btnPeriodo">Ontem</button>
         <button type="button" onClick="AtualizaDadosPeriodo('week', this)" class="btn btn-outline-primary btnPeriodo">Esta semana</button>
-        <button type="button" onClick="AtualizaDadosPeriodo('month', this)" class="btn btn-outline-primary btnPeriodo">Este mês</button>
+        <button type="button" onClick="AtualizaDadosPeriodo('month', this)" class="btn btn-outline-primary btnPeriodo">30 dias</button>
     </div>
     
     <?php
         $this->buttons = ob_get_contents();
         ob_end_clean();
+        include_once"modalCallback.php";
     ?>
 
     <section class="dashboard">
@@ -118,8 +119,8 @@
                         </div><!-- End Perdidas Card -->
 
                         <!-- Perdidas Card -->
-                        <div class="col-xxl-12 col-md-12 ">
-                            <div class="card info-card customers-card">
+                        <div class="col-xxl-12 col-md-12 cursor-pointer">
+                            <div id="cardRetorno" class="card info-card customers-card">
                                 <div class="card-body">
                                     <h5 class="card-title">Em espera de retorno </h5>
                                     <div class="d-flex align-items-center">
@@ -127,7 +128,7 @@
                                             <i class="fa-regular fa-rotate-exclamation"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroPerdidas">{{$no_answer}}</h6>
+                                            <h6 id="nmroRetorno">{{$callback}}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +149,7 @@
                             <div class="card h-100">
             
                                 <div class="card-body">
-                                    <h5 class="card-title">Ligações nos últimos 7 dias </h5>
+                                    <h5 class="card-title primary-text-color">Ligações nos últimos 7 dias </h5>
             
                                     <!-- Line Chart -->
                                     <div id="columnChart"></div>
@@ -197,201 +198,227 @@
     let pieChart = JSON.parse('{{$pie}}');
 
     let total = pieChart.reduce((acc, cur) => acc + cur.value, 0)
+    let grafHoras;
+    let pieGraf = echarts.init(document.querySelector("#groupsChart"));
 
-    document.addEventListener("DOMContentLoaded", () => {
-        new ApexCharts(document.querySelector("#reportsChart"), {
-            series: chart,
-            chart: {
-                height: 400,
-                type: 'area',
-                toolbar: {
-                    show: true,
-                    tools: {
-                        download: false,
-                        selection: true,
-                        zoom: true,
-                        zoomin: false,
-                        zoomout: false,
-                        pan: true,
-                        reset: true 
-                    }
-                },
-            },
-            markers: {
-                size: 4
-            },
-            colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
-            fill: {
-                type: "gradient",
-                gradient: {
-                    shadeIntensity: 1,
-                    opacityFrom: 0.3,
-                    opacityTo: 0.5,
-                    stops: [0, 90, 100]
-                }
-            },
-            dataLabels: {
-                enabled: true,
-            },
-            stroke: {
-                curve: 'smooth',
-                width: 2
-            },
-            xaxis: {
-                type: 'category',
-                categories: horas,
-                labels: {
-                    show: true,
-                    format: 'dd/MM',
-                    formatter: function (value, timestamp) {
-                        return new Date(value).toLocaleTimeString("pt-BR", {hour:'2-digit', minute:'2-digit'}) // The formatter function overrides format property
-                    }, 
-                },
-                tooltip:{
-                    enabled: false
-                }
-            },
-            tooltip: {
-                enabled: true,
-                x: {
-                    format: 'dd MMM',
-                    formatter: (value, {w, series, seriesIndex, dataPointIndex}) => {
-
-                        return w.globals.categoryLabels[dataPointIndex];
-                    }
-                },
-                y: {
-                    formatter: value => value,
-                    title: {
-                        formatter: (seriesName) => seriesName,
-                    },
-                }
-            }
-        }).render();
-
-        new ApexCharts(document.querySelector("#columnChart"), {
-            series: porDatas,
-            chart: {
-                type: 'bar',
-                height: 350,
-                toolbar: {
-                    show: true,
-                    tools: {
-                        download: false,
-                    }
-                },
-            },
-            colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: '70%',
-                    endingShape: 'rounded',
-                    dataLabels:{
-                        position: "top"
-                    }
-                },
-            },
-            dataLabels: {
-                enabled: true,
-                offsetY: -20,
-                style:{
-                    colors: ["#060816"],
-                    fontWeight: 'bold'
-                },
-            },
-            stroke: {
+    grafHoras = new ApexCharts(document.querySelector("#reportsChart"), {
+        series: chart,
+        chart: {
+            height: 400,
+            type: "area",
+            toolbar: {
                 show: true,
-                width: 2,
-                colors: ['transparent']
-            },
-            xaxis: {
-                categories: datas,
-            },
-            legend:{
-                show: true
-            },
-            yaxis: {
-                title: {
-                    text: 'Ligações'
+                tools: {
+                    download  : false,
+                    selection : true,
+                    zoom      : true,
+                    zoomin    : false,
+                    zoomout   : false,
+                    pan       : true,
+                    reset     : true
                 }
             },
-            fill: {
-                opacity: 1
+        },
+        markers: {
+            size: 4
+        },
+        colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        fill: {
+            type: "gradient",
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.3,
+                opacityTo: 0.5,
+                stops: [0, 90, 100]
+            }
+        },
+        dataLabels: {
+            enabled: true,
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        xaxis: {
+            type: 'category',
+            categories: horas,
+            labels: {
+                show: true,
+                format: 'dd/MM',
+                formatter: function (value, timestamp) {
+                    return new Date(value).toLocaleTimeString("pt-BR", {hour:'2-digit', minute:'2-digit'}) // The formatter function overrides format property
+                }, 
             },
-            tooltip: {
-                y: {
-                    formatter: function(val) {
-                        return val + " ligações"
+            tooltip:{
+                enabled: false
+            }
+        },
+        tooltip: {
+            enabled: true,
+            x: {
+                format: 'dd MMM',
+                formatter: (value, {w, series, seriesIndex, dataPointIndex}) => {
+
+                    return w.globals.categoryLabels[dataPointIndex];
+                }
+            },
+            y: {
+                formatter: value => value,
+                title: {
+                    formatter: (seriesName) => seriesName,
+                },
+            }
+        }
+    })
+    grafHoras.render();
+
+    new ApexCharts(document.querySelector("#columnChart"), {
+        series: porDatas,
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: {
+                show: true,
+                tools: {
+                    download: false,
+                }
+            },
+        },
+        colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '70%',
+                endingShape: 'rounded',
+                dataLabels:{
+                    position: "top"
+                }
+            },
+        },
+        dataLabels: {
+            enabled: true,
+            offsetY: -20,
+            style:{
+                colors: ["#373d3f"],
+                fontWeight: '200'
+            },
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: datas,
+        },
+        legend:{
+            show: true
+        },
+        yaxis: {
+            title: {
+                text: 'Ligações'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return val + " ligações"
+                }
+            }
+        }
+    }).render();
+
+    pieGraf.setOption({
+        tooltip: {
+            trigger: 'item'
+        },
+        color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        legend: {
+            orient: 'vertical',
+            right: '10px',
+            bottom: '50%'
+        },
+        graphic: {
+            type: 'text',
+            left: 'center',
+            top: 'center',
+            style: {
+                text: `Total\r\n${total}`,
+                textAlign: "center",
+                font: 'bold 24px Arial',
+                fill: "#4154f1"
+            }
+        },
+        series: [
+            {
+                name: 'Ligações',
+                type: 'pie',
+                stillShowZeroSum: true,
+                showEmptyCircle: false,
+                radius: ['80%', "45%"],
+                data: pieChart,
+                // left:'-140px',
+                label: {
+                    show: true,
+                    formatter: ({percent, name}) => percent > 0  ? `${percent}%` : "",
+                    position: 'inside',
+                    color: "#373d3f",
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    textBorderWidth: 1,
+                    textBorderColor: "#fff"
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                 }
             }
-        }).render();
-        // new ApexCharts(document.querySelector("#groupsChart"), {
-        //     series: pie.series,
-        //     chart: {
-        //         height: 350,
-        //         type: 'pie',
-        //         toolbar: {
-        //             show: true
-        //         }
-        //     },
-        //     dataLabels:{
-        //         style:{
-        //             fontSize: "15.5px"
-        //         },
-        //     },
-        //     labels: pie.label
-        // })
-        echarts.init(document.querySelector("#groupsChart")).setOption({
-            tooltip: {
-                trigger: 'item'
-            },
-            color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
-            legend: {
-                orient: 'vertical',
-                right: '10px',
-                bottom: '50%'
-            },
-            graphic: {
-                type: 'text',
-                left: 'center',
-                top: 'center',
-                style: {
-                    text: `Total\r\n${total}`,
-                    textAlign: "center",
-                    font: 'bold 24px Arial'
-                }
-            },
-            series: [
-                {
-                    name: 'Ligações',
-                    type: 'pie',
-                    stillShowZeroSum: true,
-                    showEmptyCircle: false,
-                    radius: ['80%', "45%"],
-                    data: pieChart,
-                    // left:'-140px',
-                    label: {
-                        show: true,
-                        formatter: ({percent, name}) => percent > 0  ? `${percent}%` : "",
-                        position: 'inside',
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        textBorderWidth: 1,
-                        textBorderColor: "#fff"
-                    },
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
-        });
+        ]
     });
+
+
+
+    // ================================ EVENTS AND ACTIONS ================================
+
+    pieGraf.on("click", function(params){
+        console.log(params)
+    })
+
+    $("#cardRetorno").click(function(){
+        $.ajax({url: '{{route()->link("lista-callback")}}' }).done( resp => {
+
+            tableCallback = $('#tableCallback').DataTable({
+                columns: [
+                    { data: 'id',               title: "#",                 className: "text-center" },
+                    { data: 'cpf_callback',     title: "CPF Cliente",       className: "text-center" },
+                    { data: 'numero_callback',  title: "Telefone",          className: "text-center" },
+                    { data: 'data_callback',    title: "Data Cadastro",     className: "text-center", render: renderFormataDataHora },
+                    { data: 'nome_status',      title: "Status",            className: "text-center" },
+                    { data: null,               title: "Ações",             className: "text-center", render: renderAcoes },
+                ],
+                data: resp,
+                order: [],
+                pageLength: 20,
+                destroy: true,
+                dom: 'Bfrtip',
+                lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
+                buttons: ['pageLength', exportMenu('csv', 'pdf', 'excelNumber')],
+            });
+
+            let reportCallback = new bootstrap.Modal("#callbackReport",modalOption);
+            reportCallback.show()
+        })
+    })
+
+    const renderAcoes = (data, type, row) => {
+        return "";
+    }
 
     const AtualizaDadosPeriodo = (periodo, btn) => {
         
@@ -402,7 +429,7 @@
         
         $.ajax({url: '{{route()->link("dados-dashboard")}}' + periodo})
         .done(resp => {
-            let {no_answer, answered, busy, realizadas, pie} = resp;
+            let {no_answer, answered, busy, realizadas, pie, horas} = resp;
             $("#nmroRealizadas").text(realizadas);
             $("#nmroOcupadas").text(busy);
             $("#nmroAtendidas").text(answered);
@@ -410,15 +437,26 @@
 
             total = pie.reduce((acc, cur) => acc + cur.value, 0)
 
-            echarts.init(document.querySelector("#groupsChart")).setOption({
+            if( ["lastday", "today"].includes(periodo)){
+                grafHoras.updateOptions({
+                    xaxis: {
+                        categories: horas.categories,
+                        labels: {
+                            formatter: function (value, timestamp) {
+                                return new Date(value).toLocaleTimeString("pt-BR", {hour:'2-digit', minute:'2-digit'}) 
+                            }
+                        }
+                    },
+                })
+                grafHoras.updateSeries(horas.series)
+            }
+
+            pieGraf.setOption({
                 graphic: {
-                    // type: 'text',
-                    // left: 'center',
-                    // top: 'center',
                     style: {
-                        text: `Total\r\n${total}`,
-                        textAlign: "center",
-                        font: 'bold 24px Arial'
+                        text      : `Total\r\n${total}`,
+                        textAlign : "center",
+                        font      : 'bold 24px Arial'
                     }
                 },
                 series: [

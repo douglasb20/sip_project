@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 class HomeController extends Controller{
-    
+
+
+
     public function Index(){
         try {
             $this->CheckSession();
@@ -35,7 +37,7 @@ class HomeController extends Controller{
                     ],
                     [
                         "name" => "Perdidas",
-                        "data" => $dadosGraf['NO ANSWER']['data']
+                        "data" => $dadosGraf['NO_ANSWER']['data']
                     ],
                 ];
             }
@@ -70,6 +72,7 @@ class HomeController extends Controller{
             
             $dados["realizadas"] = $realizadasCount;
             $dados['pie']        = json_encode($cdr->GeraDadosGraficosGrupo($where));
+            $dados['callback']   = count($this->CallbackDAO->getAll(" id_status_callback = 1"));
 
             $this
             ->setClassDivContainer("container-fluid")
@@ -104,8 +107,36 @@ class HomeController extends Controller{
                     $where = " DATE(calldate) = CURDATE() ";
                 break;
             }
+
             
             $cdr                 = new \App\Services\CdrService;
+
+            $reports             = [];
+            $horas               = [];
+
+            if( in_array($type, ["lastday", "today"]) ){
+                $dadosGraf           = $cdr->GeraDadosGraficoHora($where);
+
+                if(!empty($dadosGraf)){
+                    $reports = [
+                        [
+                            "name" => "Atentidas",
+                            "data" => $dadosGraf['ANSWERED']['data']
+                        ],
+                        [
+                            "name" => "Ocupadas",
+                            "data" => $dadosGraf['BUSY']['data']
+                        ],
+                        [
+                            "name" => "Perdidas",
+                            "data" => $dadosGraf['NO_ANSWER']['data']
+                        ],
+                    ];
+                }
+
+                $horas = array_column($cdr->AgrupaHoraFormatado($where), "hora_truncada");
+            }
+            
 
             $whereRealizadas     = " {$where} and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
             $realizadas          = $cdr->getAll($whereRealizadas, "calldate desc");
@@ -115,9 +146,24 @@ class HomeController extends Controller{
 
             $dados["realizadas"] = $realizadasCount;
             $dados['pie']        = $cdr->GeraDadosGraficosGrupo($where);
+            $dados['horas']      =  [
+                                        "series"     => $reports,
+                                        "categories" => $horas
+                                    ];
 
 
             $this->data = $dados;
+            $this->retorna();
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function ListaCallback(){
+        try{
+            $callback = $this->CallbackDAO->ListaCallback();
+
+            $this->data = $callback;
             $this->retorna();
         }catch(\Exception $e){
             throw $e;
