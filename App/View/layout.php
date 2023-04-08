@@ -24,7 +24,7 @@
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/dataTables.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-mask-ui/jquery.mask.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/echarts/echarts.min.js"></script>
