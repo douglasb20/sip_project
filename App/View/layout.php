@@ -68,6 +68,7 @@
     ?>
     <!-- Fim - Footer -->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="fa-regular fa-arrow-up fa-sm"></i></a>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/menu.js?<?=time()?>"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/admin.js?<?=time()?>"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/mascaras.js?<?=time()?>"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/js/script.js?<?=time()?>"></script>

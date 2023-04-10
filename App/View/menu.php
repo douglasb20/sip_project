@@ -203,26 +203,34 @@
 <!-- ======= Sidebar ======= -->
 <aside id="sidebar" class="sidebar">
 
-<ul class="sidebar-nav" id="sidebar-nav">
+	<ul class="sidebar-nav" id="sidebar-nav">
 
-	<!-- Start Dashboard Nav -->
-	<li class="nav-item">
-		<a class="nav-link " href="{{route()->link('home')}}">
-		<i class="fa-regular fa-grid-2"></i>
-		<span>Dashboard</span>
-		</a>
-	</li><!-- End Dashboard Nav -->
+		<!-- Start Dashboard Nav -->
+		<li class="nav-item">
+			<a class="nav-link collapsed" href="{{route()->link('home')}}">
+			<i class="fa-regular fa-grid-2"></i>
+			<span>Dashboard</span>
+			</a>
+		</li><!-- End Dashboard Nav -->
 
-	<!-- Start Settings Nav -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href="/settings">
-		<i class="fa-regular fa-cog"></i>
-		<span>Configurações</span>
-		</a>
-	</li><!-- End Settings Nav -->
+		<!-- Start Reports Nav -->
+		<li class="nav-item" >
+			<a class="nav-link collapsed" href="{{route()->link('call-reports')}}">
+			<i class="fa-regular fa-clipboard-list"></i>
+			<span>Relatório de Ligações</span>
+			</a>
+		</li><!-- End Reports Nav -->
+
+		<!-- Start Settings Nav -->
+		<li class="nav-item" hidden>
+			<a class="nav-link collapsed" href="/settings">
+			<i class="fa-regular fa-cog"></i>
+			<span>Configurações</span>
+			</a>
+		</li><!-- End Settings Nav -->
 
 
 
-</ul>
+	</ul>
 
 </aside><!-- End Sidebar-->

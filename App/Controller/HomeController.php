@@ -4,7 +4,8 @@ namespace App\Controller;
 
 class HomeController extends Controller{
 
-
+    public \App\Model\CallbackDAO $CallbackDAO;
+    public \App\Model\StatusCallbackDAO $StatusCallbackDAO;
 
     public function Index(){
         try {
@@ -22,11 +23,6 @@ class HomeController extends Controller{
 
             if(!empty($dadosGraf)){
                 $reports = [
-                    
-                    // [
-                    //     "name" => "Recebidas",
-                    //     "data" => $dadosGraf['CONGESTION']['data']
-                    // ],
                     [
                         "name" => "Atentidas",
                         "data" => $dadosGraf['ANSWERED']['data']
@@ -48,10 +44,6 @@ class HomeController extends Controller{
                         "name" => "Perdidas",
                         "data" => $dataGraf['NO ANSWER']['data']
                     ],
-                    // [
-                    //     "name" => "Recebidas",
-                    //     "data" => $dataGraf['CONGESTION']['data']
-                    // ],
                     [
                         "name" => "Atentidas",
                         "data" => $dataGraf['ANSWERED']['data']
@@ -74,11 +66,11 @@ class HomeController extends Controller{
             $dados['pie']        = json_encode($cdr->GeraDadosGraficosGrupo($where));
             $dados['callback']   = count($this->CallbackDAO->getAll(" id_status_callback = 1"));
 
+            $dados['selectCallback'] = json_encode($this->StatusCallbackSelect());
+
             $this
             ->setClassDivContainer("container-fluid")
-            // ->setTituloPagina("Dashboard")
             ->setBreadcrumb(["Home", "Dashboard"])
-            ->setShowMenu(true)
             ->render("Home.dashboard", $dados);
         }catch(\Exception $e){
             throw $e;
@@ -149,7 +141,6 @@ class HomeController extends Controller{
                                         "categories" => $horas
                                     ];
 
-
             $this->data = $dados;
             $this->retorna();
         }catch(\Exception $e){
@@ -167,6 +158,25 @@ class HomeController extends Controller{
             throw $e;
         }
     }
+    
+
+    public function AtualizaCallback(){
+        try{
+            $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+
+            $dados = $this->getPut();
+            $rows = (new \App\Classes\CallbackClass)->AtualizaCallback($dados);
+            
+            $this->masterMysqli->commit();
+
+            $this->data = ["rows" => $rows];
+            $this->retorna();
+        }catch(\Exception $e){
+            $this->masterMysqli->rollback();
+            throw $e;
+        }
+    }
+
 }
 
 ?>

@@ -5,7 +5,7 @@
         ?>
         <h1><?=end($bread)?></h1>
         <nav>
-            <ol class="breadcrumb">
+            <ol class="breadcrumb user-select-none">
                 <?php foreach($bread as $key => $b){
                     $active = count($bread) - 1 === $key ? "active" : "";
                 ?>

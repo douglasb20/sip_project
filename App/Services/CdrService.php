@@ -324,6 +324,25 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
 
+    public function CallReports(){
+        try{
+            $query = "SELECT 
+                        c.*,
+                        sec_to_time(c.tempo) as time_duration,
+                        (SELECT d.description FROM asterisk.devices as d WHERE d.id = c.dst) as dst_name,
+                        (SELECT d.description FROM asterisk.devices as d WHERE d.id = c.src) as src_name
+                    FROM
+                        asteriskcdrdb.cdrCerto as c
+                    WHERE
+                        DATE(c.calldate) = curdate()";
+
+            return $this->executeQuery($query);
+            
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
 }
 
 ?>

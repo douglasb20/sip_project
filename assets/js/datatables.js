@@ -76,7 +76,7 @@ $.extend(true, $.fn.dataTable.defaults, {
     dom: 'Bfrtip',
     lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
     buttons: ['pageLength',exportMenu('csv', 'pdf', 'excelNumber')],
-    // drawCallback: function(){ renderizaTooltip()}
+    drawCallback: function(){ renderizaTooltip()}
 });
 
 // Função para adicionar item no dataTable sempre na primeira na linha
@@ -200,12 +200,7 @@ $.fn.dataTable.ext.order['orderAll'] = function(settings, col) {
 
 function parserDataTable(json) {
 
-    if (json.erro) {
-        alerta(json.mensagem);
-        return [];
-    } else {
-        return json['dados'];
-    }
+    return json;
 }
 
 function parserDataTableServerside(json) {

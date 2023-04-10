@@ -18,6 +18,7 @@ class CallbackDAO extends \Core\Defaults\DefaultModel{
                             sc.nome_status
                         FROM callback as c
                         INNER JOIN status_callback as sc ON sc.id_status = c.id_status_callback
+                        WHERE c.id_status_callback = 1
                         ";
             return $this->executeQuery($query);
         }catch(\Exception $e){

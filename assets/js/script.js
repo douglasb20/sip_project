@@ -2,12 +2,31 @@
 
 
 const modalOption = {
-    backdrop: true,
+    backdrop: 'static',
     keyboard: true
 }
 
 
+
 // ====================================================================
+
+//  CORREÇÃO MODAL NESTED BACKDROP
+$(document).on("click",".modal",function(){
+
+    // if more than 1 modal openned.
+    if($(".modal-backdrop").length>1){
+        // move backdrop up (in z)
+        var ZindexBackdrop = parseInt($(".modal-backdrop").eq(0).css("z-index"))+20;
+        $(".modal-backdrop").eq(1).css({"z-index":ZindexBackdrop});
+    
+        // move modal up (in z)
+        var ZindexModal = parseInt($(".modal").eq(0).css("z-index"))+20;
+        $(".modal").eq(1).css({"z-index":ZindexModal});
+    }
+});
+
+
+
 $(() => {
     $('body').tooltip({
         selector: '[data-toggle="tooltip"]',
@@ -85,7 +104,10 @@ function confirmaAcao(texto, callback, dados, titulo = 'Confirmação', btn_conf
     caixaAlerta.fire(
         {
             title:titulo,
-            html:texto,
+            html: texto,
+            customClass: {
+                footer: "arrumaFooterAlert"
+            },
             icon: 'question',
             footer: `<button type="button" class="btn btn-secondary rounded-pill px-4 pl-1" onclick="Swal.close()"  >`+btn_cancela+`</button>
                     <button id='confirmaAcaoSim' type="button" class="btn btn-primary btn-orange with-icon icon-fa-check rounded-pill px-4 pl-1">`+btn_confirma+`</button>`

@@ -1,6 +1,7 @@
 <?php $this->captureStart('css'); ?>
 <style>
 
+
 </style>
 <?php $this->captureEnd('css'); ?>
 
@@ -190,16 +191,18 @@
 <?php $this->captureStart('js'); ?>
 
 <script>
-    let chart    = JSON.parse('{{$chart}}');
-    let horas    = JSON.parse('{{$horas}}');
+    let chart          = JSON.parse('{{$chart}}');
+    let horas          = JSON.parse('{{$horas}}');
 
-    let porDatas = JSON.parse('{{$porDatas}}');
-    let datas    = JSON.parse('{{$datas}}');
-    let pieChart = JSON.parse('{{$pie}}');
+    let porDatas       = JSON.parse('{{$porDatas}}');
+    let datas          = JSON.parse('{{$datas}}');
+    let pieChart       = JSON.parse('{{$pie}}');
 
-    let total = pieChart.reduce((acc, cur) => acc + cur.value, 0)
+    let total          = pieChart.reduce((acc, cur) => acc + cur.value, 0)
+    let pieGraf        = echarts.init(document.querySelector("#groupsChart"));
+    let modalRetornado = new bootstrap.Modal("#modalRetornado",modalOption);
     let grafHoras;
-    let pieGraf = echarts.init(document.querySelector("#groupsChart"));
+    let tableCallback;
 
     grafHoras = new ApexCharts(document.querySelector("#reportsChart"), {
         series: chart,
@@ -391,33 +394,76 @@
     })
 
     $("#cardRetorno").click(function(){
-        $.ajax({url: '{{route()->link("lista-callback")}}' }).done( resp => {
+        tableCallback = $('#tableCallback').DataTable({
+            ajax: {
+                url: '{{route()->link("lista-callback")}}',
+                type: "GET",
+                dataSrc: parserDataTable,
+                async: true
+            },
+            columns: [
+                { data: 'id',               title: "#",                 className: "text-center", orderable: false },
+                { data: 'cpf_callback',     title: "CPF Cliente",       className: "text-center" },
+                { data: 'numero_callback',  title: "Telefone",          className: "text-center" },
+                { data: 'data_callback',    title: "Data Cadastro",     className: "text-center", render: renderFormataDataHora },
+                { data: 'nome_status',      title: "Status",            className: "text-center" },
+                { data: null,               title: "Ações",             className: "text-center", render: renderAcoes },
+            ],
+            order: [["3", 'asc']],
+            pageLength: 20,
+            destroy: true,
+            dom: 'Bfrtip',
+            lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
+            buttons: ['pageLength', exportMenu('pdf', 'excelNumber')],
+        });
 
-            tableCallback = $('#tableCallback').DataTable({
-                columns: [
-                    { data: 'id',               title: "#",                 className: "text-center" },
-                    { data: 'cpf_callback',     title: "CPF Cliente",       className: "text-center" },
-                    { data: 'numero_callback',  title: "Telefone",          className: "text-center" },
-                    { data: 'data_callback',    title: "Data Cadastro",     className: "text-center", render: renderFormataDataHora },
-                    { data: 'nome_status',      title: "Status",            className: "text-center" },
-                    { data: null,               title: "Ações",             className: "text-center", render: renderAcoes },
-                ],
-                data: resp,
-                order: [],
-                pageLength: 20,
-                destroy: true,
-                dom: 'Bfrtip',
-                lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
-                buttons: ['pageLength', exportMenu('csv', 'pdf', 'excelNumber')],
-            });
-
-            let reportCallback = new bootstrap.Modal("#callbackReport",modalOption);
-            reportCallback.show()
-        })
+        let reportCallback = new bootstrap.Modal("#callbackReport",modalOption);
+        reportCallback.show()
     })
 
     const renderAcoes = (data, type, row) => {
-        return "";
+        let buttons = ""
+        if(row.id_status_callback === "1"){
+            buttons += `<button class='btn btn-primary btn-sm' onClick='AbrirModalRetornado("${row.id}")' type='button' title="Definir ligação retornada para o cliente">Retornado</button>`
+        }
+        return buttons;
+    }
+
+    const AbrirModalRetornado = (id_callback) => {
+        
+        modalRetornado.show();
+        $("#idCallback").val(id_callback);
+        $("#selectStatusCallback").select2({
+            dropdownParent: $('#modalRetornado'),
+            width: "50%",
+            closeOnSelect: true,
+            data: JSON.parse('{{$selectCallback}}'),
+            language: 'pt-BR',
+            minimumResultsForSearch: -1
+        });
+    }
+
+    const confirmaSalvarStatus = () => {
+        let id_callback = $("#idCallback").val()
+        confirmaAcao("Confirma alterar status do retorno?", SalvaStatusRetorno, id_callback)
+    }
+
+    const SalvaStatusRetorno = async (id_callback) => {
+        $.ajax({
+            url: '{{route()->link("atualiza-callback")}}' ,
+            method: "PUT",
+            data: {
+                id_callback,
+                id_status_callback: $("#selectStatusCallback").val()
+            }
+        
+        }).done(resp => {
+            
+            modalRetornado.hide()
+            tableCallback.ajax.reload()
+            alerta("Retorno atualizado com sucesso!", "", "success");
+            $("#nmroRetorno").text(resp.rows)
+        })
     }
 
     const AtualizaDadosPeriodo = (periodo, btn) => {
