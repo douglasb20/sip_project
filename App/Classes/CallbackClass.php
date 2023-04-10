@@ -28,8 +28,12 @@ class CallbackClass extends \Core\Defaults\DefaultClassController{
     public function AddCallback($dados){
         try{
             $headers = getallheaders();
-            if(!isset($headers['Authorization']) && $headers['Authorization'] != "Bearer kLs9rltwPF8cUXA7P33sAMFd0LbMgW"){
+            if(!isset($headers['Authorization']) ){
                 return;
+            }else{
+                if($headers['Authorization'] != "Bearer kLs9rltwPF8cUXA7P33sAMFd0LbMgW"){
+                    return;
+                }
             }
 
             extract($dados);
