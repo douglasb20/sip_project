@@ -176,13 +176,13 @@ include_once "modalSelectRamal.php";
                 </div>
             </form>
         </div>
-        <div class="caixaAcoes">
-            <a id="forgotPassword" class="text-primary link" href="#">Esqueci minha senha</a>
+        <div class="caixaAcoes justify-content-center">
+            <a id="forgotPassword" class="text-primary link" href="#" hidden>Esqueci minha senha</a>
             <button type="button" id="btnEntrar" class="btn btn-primary">Entrar</button>
         </div>
     </div>
     <div class="forgotForm ">
-        <div class="headerBox">
+        <div class="headerBox" >
             <img src="{{URL_IMAGES}}/logo-ltc.jpg">
             <h2 class="mt-3 title">Esqueci minha senha</h2>
             <h5 class="subtitle">Insira um email válido</h5>
