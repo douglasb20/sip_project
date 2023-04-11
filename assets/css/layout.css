@@ -117,9 +117,28 @@ footer{
     /* left: 12px; */
 }
 
+.form-label{
+    font-weight: 600;
+}
+
 .arrumaFooterAlert{
     display: flex;
     justify-content: space-between;
+}
+
+.header-table,
+.footer-table{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    align-items: center;
+}
+.header-table{
+    margin-bottom:15px;
+}
+.footer-table{
+    margin-top:15px;
 }
 
 

@@ -247,6 +247,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         WHERE
                             1=1
                             AND {$where}
+                            AND src NOT IN (SELECT id FROM asterisk.devices)
                         order by cdrCerto.calldate desc) as cdr_formatado
                         on cdr_formatado.status = subquery.status
                         group by subquery.status";
@@ -324,7 +325,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         }
     }
 
-    public function CallReports(){
+    public function CallReports($where){
         try{
             $query = "SELECT 
                         c.*,
@@ -334,7 +335,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                     FROM
                         asteriskcdrdb.cdrCerto as c
                     WHERE
-                        DATE(c.calldate) = curdate()";
+                        {$where}";
 
             return $this->executeQuery($query);
             

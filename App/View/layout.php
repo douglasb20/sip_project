@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/fontawesome/css/all.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/sweetalert2/sweetalert2.css">
+    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/vendor/select2/4.1.0/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/admin.css?<?=time()?>">
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css?<?=time()?>">
@@ -24,6 +26,10 @@
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/moment/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/DataTable/datatables.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery-mask-ui/jquery.mask.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/apexcharts/apexcharts.min.js"></script>

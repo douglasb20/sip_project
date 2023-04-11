@@ -8,7 +8,7 @@ Router::group("/api", function(){
     Router::get("/get_lista_callback", "HomeController@ListaCallback")->name("lista-callback");
     Router::get("/add_callback/{cpf}/{numero}", "Controller@AddCallback")->name("add-callback");
 
-    Router::get("/calls_report", "CallReportsController@CallReports")->name("lista-ligacoes");
+    Router::post("/calls_report", "CallReportsController@CallReports")->name("lista-ligacoes");
     
     Router::put("/atualiza_status_callback", "HomeController@AtualizaCallback")->name("atualiza-callback");
 

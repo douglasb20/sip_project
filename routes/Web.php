@@ -12,8 +12,8 @@ Router::get("/call_reports", "CallReportsController@Index")->name("call-reports"
 
 Router::get("/teste", function(){
     $cdr = new CdrService;
-
-    printar($cdr->AgrupaHora(" DATE(calldate) = DATE_SUB(CURDATE(), interval 1 day) "));
+    $data =  DateTime::createFromFormat('d/m/Y', "18/04/2023")->format('Y-m-d');
+    echo $data;
 });
 
 

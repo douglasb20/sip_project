@@ -174,14 +174,14 @@
 					<hr class="dropdown-divider">
 				</li>
 
-				<li>
+				<li hidden>
 					<a class="dropdown-item d-flex align-items-center" href="users-profile.html">
 						<i class="bi bi-gear"></i>
 						<span>Alterar Senha</span>
 					</a>
 				</li>
 
-				<li>
+				<li hidden>
 					<hr class="dropdown-divider">
 				</li>
 
@@ -208,24 +208,24 @@
 		<!-- Start Dashboard Nav -->
 		<li class="nav-item">
 			<a class="nav-link collapsed" href="{{route()->link('home')}}">
-			<i class="fa-regular fa-grid-2"></i>
-			<span>Dashboard</span>
+				<i class="fa-regular fa-grid-2"></i>
+				<span>Dashboard</span>
 			</a>
 		</li><!-- End Dashboard Nav -->
 
 		<!-- Start Reports Nav -->
 		<li class="nav-item" >
 			<a class="nav-link collapsed" href="{{route()->link('call-reports')}}">
-			<i class="fa-regular fa-clipboard-list"></i>
-			<span>Relatório de Ligações</span>
+				<i class="fa-regular fa-clipboard-list"></i>
+				<span>Relatório de Ligações</span>
 			</a>
 		</li><!-- End Reports Nav -->
 
 		<!-- Start Settings Nav -->
 		<li class="nav-item" hidden>
 			<a class="nav-link collapsed" href="/settings">
-			<i class="fa-regular fa-cog"></i>
-			<span>Configurações</span>
+				<i class="fa-regular fa-cog"></i>
+				<span>Configurações</span>
 			</a>
 		</li><!-- End Settings Nav -->
 

@@ -74,7 +74,7 @@ class AuthController extends Controller{
             SetSessao("autenticado", true);
             SetSessao("ramal", $data['ramal']);
             
-            $this->data = $ret;
+            // $this->data = $ret;
             $this->retorna();
         }catch(\Exception $e){
             throw $e;

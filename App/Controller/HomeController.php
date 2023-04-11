@@ -15,7 +15,7 @@ class HomeController extends Controller{
             $dataGraf        = $cdr->GeraDadosGraficoData();
 
             $where           = " DATE(calldate) = CURDATE() ";
-            $whereRealizadas = " {$where} and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $whereRealizadas = " {$where} and src IN (SELECT id FROM asterisk.devices)";
             $realizadas      = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
             $reports         = [];
@@ -128,7 +128,7 @@ class HomeController extends Controller{
             }
             
 
-            $whereRealizadas     = " {$where} and src in (1101,1201,1202,1203,1206,1301,1305,1306,1307,1309,1402,1501,1701,1702,9999,90001)";
+            $whereRealizadas     = " {$where} and src in (SELECT id FROM asterisk.devices)";
             $realizadas          = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount     = count($realizadas);
 

@@ -5,3 +5,9 @@ if ($("#sidebar").length > 0) {
     $(`#sidebar [href="${route}"]`).removeClass("collapsed");
 
 }
+
+$("#sidebar .nav-item a").click(() => StartLoading())
+
+window.onload = () => EndLoading();
+
+window.addEventListener('beforeunload', () => StartLoading());

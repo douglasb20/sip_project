@@ -417,6 +417,7 @@ function handler( $errNo, $errMsg, $errFile, $errLine ){
     $retorno['mensagem']        = $message;
     // $retorno['dados_erro']      = $dados;
     $retorno['codeResponse']    = 500;
+    http_response_code(500);
 
     echo json_encode($retorno);
     die();

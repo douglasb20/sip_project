@@ -291,6 +291,7 @@
         plotOptions: {
             bar: {
                 horizontal: false,
+                hideNullBars: true,
                 columnWidth: '70%',
                 endingShape: 'rounded',
                 dataLabels:{
@@ -412,7 +413,6 @@
             order: [["3", 'asc']],
             pageLength: 20,
             destroy: true,
-            dom: 'Bfrtip',
             lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
             buttons: ['pageLength', exportMenu('pdf', 'excelNumber')],
         });

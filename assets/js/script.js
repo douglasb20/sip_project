@@ -25,7 +25,10 @@ $(document).on("click",".modal",function(){
     }
 });
 
+$.extend( $.fn.datepicker.defaults, {format: 'dd-mm-yyyy', language: 'pt-BR', autoclose: true} );
 
+// let datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
+// $.fn.bootstrapDP = datepicker;  
 
 $(() => {
     $('body').tooltip({
@@ -45,11 +48,37 @@ $(() => {
         },150)
     })
 
+    $(".selectWithAll").change(function(){
+        if($(this).val() ==""){
+            $(this).val("-1").trigger("change")
+        }
+    
+        if($(this).val().length > 1){
+            if($(this).val().includes("-1")){
+                var select = $(this);
+    
+                // Remove o item com valor "2" da seleção
+                var selectedValues = select.val(); // Obtém os valores selecionados
+                var indexToRemove = selectedValues.indexOf("-1"); // Encontra o índice do valor a ser removido
+                if (indexToRemove !== -1) { // Se o valor existe na seleção
+                    selectedValues.splice(indexToRemove, 1); // Remove o valor do array
+                }
+                select.val(selectedValues).trigger("change"); // Atualiza a seleção do Select2
+            }
+        }
+        
+    })
+
+    $(".dateNoEmpty").change(function () {
+        if ($(this).val() === "") {
+            $(this).val(moment().format("DD/MM/YYYY"))
+        }
+    })
 
 })
 
 const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin iconLoading"});
-
+const EndLoading = () => $('body').LoadingOverlay("hide");
 $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -71,7 +100,7 @@ $(document).ajaxStart(function() {
 });
 $(document).ajaxComplete(function(event, xhr, settings) {
 
-    $('body').LoadingOverlay("hide");
+    EndLoading();
 
 });
 
@@ -308,5 +337,5 @@ function floatToMoney(money) {
 }
 
 renderizaTooltip = () => {
-    return $(`[title]`).not('.select2-selection__choice, .select2-selection__rendered').attr('data-toggle',"tooltip");
+    return $(`[title]`).not('.select2-selection__choice, .select2-selection__rendered, .select2-selection__choice__remove').attr('data-toggle',"tooltip");
 }

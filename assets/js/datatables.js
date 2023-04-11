@@ -65,7 +65,7 @@ $.extend(true, $.fn.dataTable.defaults, {
         }
     },
     order: [[1, "asc"]],
-    info: false,
+    info: true,
     responsive: {
         details: {
             type: 'column',
@@ -73,7 +73,7 @@ $.extend(true, $.fn.dataTable.defaults, {
         }
     },
 	pageLength: 20,
-    dom: 'Bfrtip',
+    dom: '<"header-table"Bfr>t<"footer-table"ip>',
     lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
     buttons: ['pageLength',exportMenu('csv', 'pdf', 'excelNumber')],
     drawCallback: function(){ renderizaTooltip()}
