@@ -39,7 +39,11 @@ include_once "modalFiltros.php";
 let filtros = new bootstrap.Modal("#modalFiltros", modalOption);
 
 $(function(){
-    $('#data_de, #data_ate').datepicker();
+    $('#data_de,#data_ate').datepicker({
+        endDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
     $("#status,#origem, #destino").select2({
         width: '100%',
         dropdownParent: $('#modalFiltros'),
