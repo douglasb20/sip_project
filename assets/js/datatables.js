@@ -113,8 +113,6 @@ $.fn.dataTable.Api.register('btnsAdicionais', function(data, index){
         $('.dt-buttons.btn-group .btn-group:eq(0)')
     );
 
-    // console.log(this)
-
 })
 
 // Função de ordenação genérica para todas as colunas
