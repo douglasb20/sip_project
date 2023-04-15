@@ -291,11 +291,13 @@
         plotOptions: {
             bar: {
                 horizontal: false,
-                hideNullBars: true,
-                columnWidth: '70%',
+                hideOverflowingLabels: true,
+                columnWidth: '50%',
                 endingShape: 'rounded',
+                zerovalue: "null",
                 dataLabels:{
-                    position: "top"
+                    position: "top",
+                    hideOverflowingLabels: true,
                 }
             },
         },
@@ -305,6 +307,9 @@
             style:{
                 colors: ["#373d3f"],
                 fontWeight: '200'
+            },
+            formatter: function (val, opts) {
+                return val !== 0 ? val : ''
             },
         },
         stroke: {
@@ -316,15 +321,7 @@
             categories: datas,
         },
         legend:{
-            show: true
-        },
-        yaxis: {
-            title: {
-                text: 'Ligações'
-            }
-        },
-        fill: {
-            opacity: 1
+            show: true,
         },
         tooltip: {
             y: {
