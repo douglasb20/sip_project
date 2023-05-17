@@ -725,12 +725,12 @@ h6 {
   color: #4154f1;
 }
 
-.sidebar-nav .nav-link .bi-chevron-down {
+.sidebar-nav .nav-link .fa-chevron-down {
   margin-right: 0;
   transition: transform 0.2s ease-in-out;
 }
 
-.sidebar-nav .nav-link:not(.collapsed) .bi-chevron-down {
+.sidebar-nav .nav-link:not(.collapsed) .fa-chevron-down {
   transform: rotate(180deg);
 }
 

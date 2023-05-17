@@ -73,6 +73,7 @@ class AuthController extends Controller{
             
             SetSessao("autenticado", true);
             SetSessao("ramal", $data['ramal']);
+            SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')) );
             
             // $this->data = $ret;
             $this->retorna();

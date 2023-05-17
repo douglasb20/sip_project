@@ -7,9 +7,11 @@ use Firebase\JWT\Key;
 use ReflectionClass;
 
 class DefaultController{
+    
+    public DefaultModel $ControleDAO;
+    public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
 
     public $masterMysqli;
-    public DefaultModel $ControleDAO;
     public string $id_usuario         = "";
     public array $retorno             = [];
     public bool $preventXss           = false;
@@ -39,6 +41,7 @@ class DefaultController{
             if($_SERVER['REQUEST_METHOD'] && strtoupper( $_SERVER['REQUEST_METHOD'] )){
                 $this->_parsePut();
             }
+            $this->validatePermission();
             $this->processaRequest();
 
         }catch(Exception $e){ 
@@ -238,6 +241,36 @@ class DefaultController{
         }
     }
 
+    /**
+    * Função para validar permissões
+    * @return return
+    */
+    private function validatePermission(){
+        try{
+
+            $result     = true;
+            $uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+            $pathExcept = ["/login","/api/validate_login","/api/login_auth_request"];
+            if(getSessao("autenticado") === true){
+                if(!in_array( $uri, $pathExcept )){
+                    $permission = $this->UsersPermissionsXUsersDAO->validatePermission(getSessao('id_usuario'), $uri);
+                    if(empty($permission)){
+                        if($GLOBALS['ROUTE_TYPE'] != 'web'){
+                            throw new Exception("Você não tem permissão para acessar este recurso!",-1);
+                        }else{  
+                            echo "<script>alert('Você não tem permissão para acessar este recurso!');window.location='/';</script>";
+                        }
+                    }
+                }
+            }
+
+            return $result;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
     private function extractToken(){
         try{
             $headers = getallheaders();
@@ -287,7 +320,20 @@ class DefaultController{
                     (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
                 break;
                 case "session":
-                    $autenticado = getSessao("autenticado") ? true : false;
+                    $autenticado     = false;
+
+                    if(getSessao("lifetime")){
+
+                        $sessionTime     = getSessao("lifetime");
+                        $tempoAtual      = date('Y-m-d H:i:s');
+    
+                        $sessionLifeTime = strtotime($sessionTime);
+                        $timestampAtual  = strtotime($tempoAtual);
+    
+                        if ($sessionLifeTime > $timestampAtual) {
+                            $autenticado = true;
+                        }
+                    }
                     return $autenticado;
                 break;
             }

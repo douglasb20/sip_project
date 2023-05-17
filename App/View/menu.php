@@ -222,11 +222,18 @@
 		</li><!-- End Reports Nav -->
 
 		<!-- Start Settings Nav -->
-		<li class="nav-item" hidden>
-			<a class="nav-link collapsed" href="/settings">
-				<i class="fa-regular fa-cog"></i>
-				<span>Configurações</span>
+		<li class="nav-item" >
+			<a class="nav-link collapsed" data-bs-target="#system-nav" data-bs-toggle="collapse" href="#">
+				<i class="fa-regular fa-cog"></i><span>Sistema</span><i class="fa-regular fa-chevron-down ms-auto"></i>
+				
 			</a>
+			<ul id="system-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+				<li>
+					<a href="{{route()->link('users')}}" >
+						<i class="fa-regular fa-circle "></i><span>Usuários</span>
+					</a>
+				</li>
+			</ul>
 		</li><!-- End Settings Nav -->
 
 

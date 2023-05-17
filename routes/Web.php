@@ -10,10 +10,15 @@ Router::get("/logout", "AuthController@AuthLogout")->name("logout");
 Router::get("/esqueci_minha_senha", "AuthController@Index")->name("esqueci-senha");
 Router::get("/call_reports", "CallReportsController@Index")->name("call-reports");
 
+Router::group("/system", function(){
+
+    Router::get("/users", "UsersController@Index")->name("users");
+
+});
+
 Router::get("/teste", function(){
-    $cdr = new CdrService;
-    $data =  DateTime::createFromFormat('d/m/Y', "18/04/2023")->format('Y-m-d');
-    echo $data;
+    echo date('Y-m-d H:i:s') . '<br />';
+    echo 'Tempo a mais '.date('Y-m-d H:i:s', strtotime('+1 hour'));
 });
 
 

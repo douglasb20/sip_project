@@ -132,7 +132,7 @@ abstract class DefaultModel{
 
         try{
 
-            $query = "SELECT * FROM vw".$this->tabela;
+            $query = "SELECT * FROM vw_".$this->tabela;
 
             if(!empty($force_index)){
                 $query .= " FORCE INDEX($force_index)";

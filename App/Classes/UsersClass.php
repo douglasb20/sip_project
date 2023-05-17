@@ -6,6 +6,8 @@ use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
 
+    public \App\Model\UsersDAO $UsersDAO;
+
     public function ValidateUser($id){
         try{
             $user = $this->UsersDAO->ValidateUser($id);

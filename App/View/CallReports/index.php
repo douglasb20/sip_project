@@ -77,9 +77,7 @@ const GeraTabela = () => {
             ],
             data: resp,
             order: [["0", 'asc']],
-            pageLength: 20,
             destroy: true,
-            lengthMenu: [[20, 50, 100, 200], [20, 50, 100, 200]],
             buttons: ['pageLength', exportMenu('pdf', 'excelNumber')],
         });
     })
@@ -103,14 +101,14 @@ const renderStatus = (data, type, row) => {
     let status = "";
     switch(data){
         case "NO ANSWER":
-            status = `<button type="button" class="btn btn-danger btn-sm">Não atendida</button>`;
+            status = `<span class="badge bg-danger">Não atendida</span>`;
         break;
         case "BUSY":
-            status = `<button type="button" class="btn btn-warning btn-sm">Ocupada</button>`;
+            status = `<span class="badge bg-warning">Ocupada</span>`;
         break;
 
         case "ANSWERED":
-            status = `<button type="button" class="btn btn-success btn-sm">Atendida</button>`;
+            status = `<span class="badge bg-success">Atendida</span>`;
         break;
     }
 

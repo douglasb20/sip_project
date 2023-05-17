@@ -256,6 +256,12 @@
                 enabled: false
             }
         },
+        yaxis:{
+            max: max => max + Math.round(max / 2),
+            labels:{
+                formatter: val => val
+            }
+        },
         tooltip: {
             enabled: true,
             x: {
@@ -294,7 +300,6 @@
                 hideOverflowingLabels: true,
                 columnWidth: '50%',
                 endingShape: 'rounded',
-                zerovalue: "null",
                 dataLabels:{
                     position: "top",
                     hideOverflowingLabels: true,
@@ -319,6 +324,12 @@
         },
         xaxis: {
             categories: datas,
+        },
+        yaxis:{
+            max: max => max + 3,
+            labels:{
+                formatter: val => val.toFixed(0)
+            }
         },
         legend:{
             show: true,

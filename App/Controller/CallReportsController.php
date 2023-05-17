@@ -6,7 +6,8 @@ class CallReportsController extends Controller{
 
     public function Index(){
         try{
-            
+            $this->CheckSession();
+
             $dados['status'] = $this->StatusCallbackDAO->getAll();
             $dados['devices'] = (new \App\Services\CdrService)->GetDevices();
 
@@ -20,8 +21,11 @@ class CallReportsController extends Controller{
 
     public function CallReports(){
         try{
-            $cdr = (new \App\Classes\CdrClass)->CallReports($this->getPost());
+            $this->CheckSession();
+
+            $cdr        = (new \App\Classes\CdrClass)->CallReports($this->getPost());
             $this->data = $cdr;
+            
             $this->retorna();
         }catch(\Exception $e){
             throw $e;

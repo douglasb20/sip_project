@@ -12,6 +12,12 @@ Router::group("/api", function(){
     
     Router::put("/atualiza_status_callback", "HomeController@AtualizaCallback")->name("atualiza-callback");
 
+
+    Router::group("/system",function(){
+        Router::post("/users/get_users", "UsersController@GetListUsers")->name("users-list");
+    });
+
+
 });
 
 

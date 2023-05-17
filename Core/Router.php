@@ -198,11 +198,11 @@ class Router{
 
             if(!empty(self::$executeBefore)){
                 
-                foreach(self::$executeBefore as $key => $actiionBefore){
-                    if(is_callable($actiionBefore)){
-                        call_user_func($actiionBefore);
+                foreach(self::$executeBefore as $key => $actionBefore){
+                    if(is_callable($actionBefore)){
+                        call_user_func($actionBefore);
                     }else{
-                        [$controller, $action]   = explode("@",$actiionBefore);
+                        [$controller, $action]   = explode("@",$actionBefore);
                         $controllerWithNamespace = CONTROLLER_NAMESPACE . $controller;
 
                         if(!class_exists($controllerWithNamespace)){
@@ -212,7 +212,7 @@ class Router{
                         if(!method_exists($controllerWithNamespace, $action)){
                             throw new Exception("O método {$action} não existe no controller {$controller}.",-1);
                         }
-
+                        $GLOBALS['ROUTE_TYPE'] = $data['uri']['type'];
                         (new $controllerWithNamespace )->$action();
                     }
                 }
@@ -233,6 +233,7 @@ class Router{
                     throw new Exception("O método {$action} não existe no controller {$controller}.",-1);
                 }
                 
+                $GLOBALS['ROUTE_TYPE'] = $data['uri']['type'];
                 (new $controllerWithNamespace)->$action();
             }
             
