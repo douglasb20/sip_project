@@ -75,6 +75,7 @@ CREATE TABLE `users_permissions` (
   `id_parent_permission` INT NULL DEFAULT NULL,
   `permission_label` VARCHAR(60) NOT NULL,
   `path_permission` VARCHAR(95) NULL DEFAULT NULL,
+  `category` VARCHAR(80) NOT NULL,
   `type` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`));
 
@@ -91,3 +92,29 @@ CREATE TABLE `users_permissions_x_users` (
 ALTER TABLE `users_permissions_x_users` 
 ADD INDEX `user_permission_idx` (`id_permission` ASC, `id_user` ASC);
 ;
+
+ALTER TABLE `users_permissions_x_users` 
+ADD CONSTRAINT `id_permission_fk`
+  FOREIGN KEY (`id_permission`)
+  REFERENCES `users_permissions` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `users_permissions_x_users` 
+ADD INDEX `id_user_fk_idx` (`id_user` ASC);
+;
+ALTER TABLE `users_permissions_x_users` 
+ADD CONSTRAINT `id_user_fk`
+  FOREIGN KEY (`id_user`)
+  REFERENCES `users` (`id`)
+  ON DELETE RESTRICT
+  ON UPDATE RESTRICT;
+
+
+
+CREATE TABLE `sip` (
+  `id_sip` INT NOT NULL AUTO_INCREMENT,
+  `sip_dial` VARCHAR(45) NOT NULL,
+  `callerId` VARCHAR(100) NOT NULL,
+  `sip_status` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id_sip`));

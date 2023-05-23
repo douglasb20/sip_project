@@ -176,8 +176,8 @@ include_once "modalSelectRamal.php";
                 </div>
             </form>
         </div>
-        <div class="caixaAcoes justify-content-center">
-            <a id="forgotPassword" class="text-primary link" href="#" hidden>Esqueci minha senha</a>
+        <div class="caixaAcoes justify-content-between">
+            <a id="forgotPassword" class="text-primary link" href="#">Esqueci minha senha</a>
             <button type="button" id="btnEntrar" class="btn btn-primary">Entrar</button>
         </div>
     </div>

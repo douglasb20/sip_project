@@ -8,10 +8,11 @@ $baseDir = dirname($vendorDir);
 return array(
     '320cde22f66dd4f5d3fd621d3e88b98f' => $vendorDir . '/symfony/polyfill-ctype/bootstrap.php',
     '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => $vendorDir . '/symfony/polyfill-mbstring/bootstrap.php',
+    '6e3fae29631ef280660b3cdad06f25a8' => $vendorDir . '/symfony/deprecation-contracts/function.php',
     'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
-    'b00836ec6ff80057be5710c3237d4b1c' => $baseDir . '/Config/dbConfig.php',
-    '4bea9bf32242612d1df274aa841c1446' => $baseDir . '/Config/funcoes.php',
-    'f98f9ce7427d64906b1412cb517d05fa' => $baseDir . '/Config/mysqliExpression.php',
-    '511e2a806bc4afc065f200acd536e310' => $baseDir . '/Config/bootstrap.php',
-    '134ef39f9ec4e1aaebe9c80e66390d62' => $baseDir . '/Config/Constants.php',
+    'bfa4c95ecfdf54ada7b135ba3feb454b' => $baseDir . '/Config/dbConfig.php',
+    '7880bac28217162b3c9f6c6a0bb5ddcf' => $baseDir . '/Config/funcoes.php',
+    '75ee48f0c2533509f0704a402d06ded4' => $baseDir . '/Config/mysqliExpression.php',
+    'e233752ae0442307e9152ca75a378f9c' => $baseDir . '/Config/bootstrap.php',
+    '551d95397d71cbccf7716f1773b445fc' => $baseDir . '/Config/Constants.php',
 );

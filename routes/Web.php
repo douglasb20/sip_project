@@ -13,12 +13,12 @@ Router::get("/call_reports", "CallReportsController@Index")->name("call-reports"
 Router::group("/system", function(){
 
     Router::get("/users", "UsersController@Index")->name("users");
+    Router::get("/operators", "SipController@Index")->name("sip");
 
 });
 
 Router::get("/teste", function(){
-    echo date('Y-m-d H:i:s') . '<br />';
-    echo 'Tempo a mais '.date('Y-m-d H:i:s', strtotime('+1 hour'));
+    
 });
 
 

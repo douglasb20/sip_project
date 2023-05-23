@@ -1,7 +1,8 @@
 <?php
 use Core\Router;
 Router::group("/api", function(){
-    Router::post('/auth',"AuthController@Authentication", false);
+
+    Router::post('/auth',"AuthController@Authentication");
     Router::post("/login_auth_request", "AuthController@AuthLogin")->name("login-auth");
     Router::post("/validate_login", "AuthController@ValidateLogin")->name("validate-auth");
     Router::get("/get_dados_grafico_dashboard/{tipo:[a-z]}", "HomeController@GeraDadosGraficos")->name("dados-dashboard");
@@ -14,7 +15,20 @@ Router::group("/api", function(){
 
 
     Router::group("/system",function(){
-        Router::post("/users/get_users", "UsersController@GetListUsers")->name("users-list");
+
+        Router::group("/users", function(){
+            Router::post("/get_users", "UsersController@GetListUsers")->name("users-list");
+            Router::get("/get_user/{id}", "UsersController@GetUser")->name("get-user");
+            Router::post("/update_user/{id}", "UsersController@UpdateUser")->name("update-user");
+            Router::post("/new_user", "UsersController@NewUser")->name("new-user");
+            Router::get("/get_user_permissions/{id}", "UsersController@GetUserPermissions")->name("user-permissions");
+            Router::post("/save_user_permissions/{id}", "UsersController@SaveUserPermissions")->name("save-permissions");
+            Router::get("/change_user_status/{id}/{status}", "UsersController@ToggleUserStatus")->name("change-user-status");
+        });
+
+        Router::group("/sip", function(){
+            
+        });
     });
 
 

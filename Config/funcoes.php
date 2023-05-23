@@ -520,7 +520,7 @@ function AllSessao(){
 function SetSessao(string $key, string $value){
     $_SESSION[$key] = $value;
 }
-function getSessao(string $key){
+function GetSessao(string $key){
     return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 }
 

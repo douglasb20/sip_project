@@ -5,7 +5,7 @@
     <title><?=(empty($this->titulo_pagina) ? 'LTCFibra' : "LTCFibra | " . $this->titulo_pagina)?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="shortcut icon" href="/_arquitetura/public/img/favicon.png"> -->
+    <link rel="shortcut icon" href="/assets/images/logo-ltc.jpg">
     <!-- CSS -->
     <!-- <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" /> -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -20,7 +20,6 @@
     <link rel="stylesheet" type="text/css" href="/<?=$_ENV['BASE_URL']?>assets/css/layout.css?<?=time()?>">
     <?php echo $this->render['css']; ?>
 
-    
     <!-- Javascript -->
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery/jquery-3.6.3.min.js"></script>
     <script type="text/javascript" src="/<?=$_ENV['BASE_URL']?>assets/vendor/jquery.validate/jquery.validate.min.js"></script>

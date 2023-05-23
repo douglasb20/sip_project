@@ -162,12 +162,12 @@
 
 			<a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
 				<!-- <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle" hidden> -->
-				<span class="d-none d-md-block dropdown-toggle ps-2">{{ucwords(strtolower(getSessao('nome_usuario')))}} ({{getSessao('ramal')}})</span>
+				<span class="d-none d-md-block dropdown-toggle ps-2">{{ucwords(strtolower(GetSessao('nome_usuario')))}} ({{GetSessao('ramal')}})</span>
 			</a><!-- End Profile Iamge Icon -->
 
 			<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
 				<li class="dropdown-header">
-					<h6>{{ucwords(strtolower(getSessao('nome_usuario')))}}</h6>
+					<h6>{{ucwords(strtolower(GetSessao('nome_usuario')))}}</h6>
 					<!-- <span>Web Designer</span> -->
 				</li>
 				<li>
@@ -231,6 +231,11 @@
 				<li>
 					<a href="{{route()->link('users')}}" >
 						<i class="fa-regular fa-circle "></i><span>Usuários</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{route()->link('sip')}}" >
+						<i class="fa-regular fa-circle "></i><span>Operadores</span>
 					</a>
 				</li>
 			</ul>

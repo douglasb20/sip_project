@@ -141,7 +141,11 @@ footer{
     margin-top:15px;
 }
 
-
+.required-label:after{
+    content: "*";
+    color: #f00;
+    font-weight: bold;
+}
 
 .text-xs { font-size: .75rem !important}
 .text-sm { font-size: .875rem !important}

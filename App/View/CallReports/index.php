@@ -19,7 +19,7 @@ include_once "modalFiltros.php";
         <div class="card ">
             <div class="card-header d-flex flex-row justify-content-between align-items-center">
                 <span class="text-title">Relatório de ligações</span>
-                <button id="btnFiltros" class="btn btn-secondary " >Filtros</button>
+                <button id="btnFiltros" class="btn btn-outline-info " >Filtros</button>
             </div>
             <div class="card-body mt-4">
                 <div class="row table-responsive">
