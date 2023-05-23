@@ -138,8 +138,8 @@ function confirmaAcao(texto, callback, dados, titulo = 'Confirmação', btn_conf
                 footer: "arrumaFooterAlert"
             },
             icon: 'question',
-            footer: `<button type="button" class="btn btn-secondary rounded-pill px-4 pl-1" onclick="Swal.close()"  >`+btn_cancela+`</button>
-                    <button id='confirmaAcaoSim' type="button" class="btn btn-primary btn-orange with-icon icon-fa-check rounded-pill px-4 pl-1">`+btn_confirma+`</button>`
+            footer: `<button type="button" class="btn btn-outline-danger px-4 " onclick="Swal.close()"  >`+btn_cancela+`</button>
+                    <button id='confirmaAcaoSim' type="button" class="btn btn-primary btn-orange with-icon icon-fa-check px-4 ">`+btn_confirma+`</button>`
         }
     )
     $('[id=confirmaAcaoSim]:last').unbind();
@@ -254,6 +254,33 @@ function clear_form_elements(ele) {
                 break;
         }
     });
+
+}
+
+function remove_required(ele) {
+
+    $(ele).each(function() {
+        switch (this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'hidden':
+            case 'textarea':
+            case 'checkbox':
+            case 'radio':
+            case 'email':
+                $(this).removeClass("invalid");
+
+                if ($(this).hasClass('select2-hidden-accessible')) {
+
+                    $(this).next().children().children().removeClass('invalid');
+                }
+                break;
+        }
+    });
+
+    $(".tmp_alert_valida").remove();
 
 }
 

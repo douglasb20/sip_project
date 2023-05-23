@@ -349,9 +349,9 @@
         },
         color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
         legend: {
-            orient: 'vertical',
-            right: '10px',
-            bottom: '50%'
+            orient: 'horizontal',
+            // right: '10px',
+            bottom: 'bottom'
         },
         graphic: {
             type: 'text',
@@ -372,7 +372,6 @@
                 showEmptyCircle: false,
                 radius: ['80%', "45%"],
                 data: pieChart,
-                // left:'-140px',
                 label: {
                     show: true,
                     formatter: ({percent, name}) => percent > 0  ? `${percent}%` : "",

@@ -12,7 +12,7 @@ class CallbackClass extends \Core\Defaults\DefaultClassController{
 
             $bindCallback = [
                 "id_status_callback" => $id_status_callback,
-                "operador_retornou" => getSessao("ramal"),
+                "operador_retornou" => GetSessao("ramal"),
                 "data_retornada" => date("Y-m-d H:i:s")
             ];
 

@@ -9,12 +9,13 @@ class ComposerStaticInite33ae91ab06d9f3646e9569bfd343bf0
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
-        'b00836ec6ff80057be5710c3237d4b1c' => __DIR__ . '/../..' . '/Config/dbConfig.php',
-        '4bea9bf32242612d1df274aa841c1446' => __DIR__ . '/../..' . '/Config/funcoes.php',
-        'f98f9ce7427d64906b1412cb517d05fa' => __DIR__ . '/../..' . '/Config/mysqliExpression.php',
-        '511e2a806bc4afc065f200acd536e310' => __DIR__ . '/../..' . '/Config/bootstrap.php',
-        '134ef39f9ec4e1aaebe9c80e66390d62' => __DIR__ . '/../..' . '/Config/Constants.php',
+        'bfa4c95ecfdf54ada7b135ba3feb454b' => __DIR__ . '/../..' . '/Config/dbConfig.php',
+        '7880bac28217162b3c9f6c6a0bb5ddcf' => __DIR__ . '/../..' . '/Config/funcoes.php',
+        '75ee48f0c2533509f0704a402d06ded4' => __DIR__ . '/../..' . '/Config/mysqliExpression.php',
+        'e233752ae0442307e9152ca75a378f9c' => __DIR__ . '/../..' . '/Config/bootstrap.php',
+        '551d95397d71cbccf7716f1773b445fc' => __DIR__ . '/../..' . '/Config/Constants.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -23,6 +24,8 @@ class ComposerStaticInite33ae91ab06d9f3646e9569bfd343bf0
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\Config\\' => 25,
         ),
         'P' => 
         array (
@@ -62,6 +65,14 @@ class ComposerStaticInite33ae91ab06d9f3646e9569bfd343bf0
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
+        'Symfony\\Component\\Config\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/config',
         ),
         'PhpOption\\' => 
         array (

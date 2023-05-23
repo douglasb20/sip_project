@@ -41,7 +41,9 @@ class DefaultController{
             if($_SERVER['REQUEST_METHOD'] && strtoupper( $_SERVER['REQUEST_METHOD'] )){
                 $this->_parsePut();
             }
+
             $this->validatePermission();
+            
             $this->processaRequest();
 
         }catch(Exception $e){ 
@@ -252,9 +254,14 @@ class DefaultController{
             $uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             $pathExcept = ["/login","/api/validate_login","/api/login_auth_request"];
-            if(getSessao("autenticado") === true){
+            
+            if(GetSessao("autenticado") == true){
+                if(GetSessao('id_usuario') === "1"){
+                    return true;
+                }
+
                 if(!in_array( $uri, $pathExcept )){
-                    $permission = $this->UsersPermissionsXUsersDAO->validatePermission(getSessao('id_usuario'), $uri);
+                    $permission = $this->UsersPermissionsXUsersDAO->ValidatePermission(GetSessao('id_usuario'), $uri);
                     if(empty($permission)){
                         if($GLOBALS['ROUTE_TYPE'] != 'web'){
                             throw new Exception("Você não tem permissão para acessar este recurso!",-1);
@@ -322,15 +329,18 @@ class DefaultController{
                 case "session":
                     $autenticado     = false;
 
-                    if(getSessao("lifetime")){
+                    if(GetSessao("lifetime")){
 
-                        $sessionTime     = getSessao("lifetime");
+                        $sessionTime     = GetSessao("lifetime");
                         $tempoAtual      = date('Y-m-d H:i:s');
     
                         $sessionLifeTime = strtotime($sessionTime);
                         $timestampAtual  = strtotime($tempoAtual);
     
-                        if ($sessionLifeTime > $timestampAtual) {
+                        if ($sessionLifeTime < $timestampAtual) {
+                            $autenticado = false;
+                            clearSessao();
+                        }else{
                             $autenticado = true;
                         }
                     }
@@ -338,6 +348,35 @@ class DefaultController{
                 break;
             }
         }catch(Exception $e){
+            throw $e;
+        }
+    }
+
+    /**
+    * Verificar permissão do usuário
+    * @param int $id_permissao
+    * @return bool
+    */
+    public function CheckPermission(int $id_permissao){
+        try{
+            $permission = false;
+            $permission = $this->UsersPermissionsXUsersDAO->CheckPermission(GetSessao('id_usuario'), $id_permissao);
+            
+            if(GetSessao("autenticado") != true){
+                return false;
+            }
+
+            if(GetSessao('id_usuario') === "1"){
+                return true;
+            }else{
+                if(!empty($permission)){
+                    $permission = true;
+                }
+            }
+
+            
+            return $permission;
+        }catch(\Exception $e){
             throw $e;
         }
     }
@@ -480,7 +519,7 @@ class DefaultController{
                 }
             }
 
-            if($this->mostraMenu && getSessao("autenticado")){
+            if($this->mostraMenu && GetSessao("autenticado")){
                 $this->captureStart("menu");
                 include_once(ROOT_PATH . "/App/View/menu.php");
                 $this->captureEnd("menu");
