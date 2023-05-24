@@ -32,6 +32,17 @@
                         <label for="user_email" class="form-label required-label">Email</label>
                         <input id="user_email" class="form-control required" name="user_email" type="email" >
                     </div>
+                    <div class="col-12 col-md-12">
+                        <label for="user_email" class="form-label required-label">Email</label>
+                        <select name="id_sip" id="id_sip" class="form-select">
+                            <option value="">Nenhum ramal</option>
+                            <?php
+                                foreach($sip as $key => $v){
+                                    echo "<option value='{$v['id_sip']}'>{$v['id_sip']} - {$v['callerId']}</option>";
+                                }
+                            ?>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer d-flex justify-content-between">

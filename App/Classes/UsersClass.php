@@ -125,6 +125,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "user_login"    => $user_login,
                 "user_nome"     => $user_nome,
                 "user_email"    => $user_email,
+                "id_sip"        => $id_sip,
                 "user_passres"  => 0,
                 "user_sts"      => 1,
             ];
@@ -162,7 +163,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "user_login"    => $user_login,
                 "user_nome"     => $user_nome,
                 "user_email"    => $user_email,
-                "user_pass"    => password_hash($user_pass, PASSWORD_BCRYPT),
+                "id_sip"        => $id_sip,
+                "user_pass"     => password_hash($user_pass, PASSWORD_BCRYPT),
                 "user_passres"  => 0,
                 "user_sts"      => 1,
             ];

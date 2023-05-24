@@ -118,3 +118,6 @@ CREATE TABLE `sip` (
   `callerId` VARCHAR(100) NOT NULL,
   `sip_status` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id_sip`));
+
+ALTER TABLE `sip_lanteca`.`users` 
+ADD COLUMN `id_sip` INT NULL DEFAULT NULL AFTER `user_email`;
