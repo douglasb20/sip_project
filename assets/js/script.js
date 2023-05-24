@@ -76,6 +76,7 @@ $(() => {
     })
 
 })
+const ModalDraggable = () => $(".modal-dialog").draggable({ handle: ".modal-header" });
 
 const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin iconLoading"});
 const EndLoading = () => $('body').LoadingOverlay("hide");
@@ -122,7 +123,6 @@ const caixaAlerta = Swal.mixin(
         showCloseButton: true,
         showConfirmButton: false,
         allowOutsideClick: false,
-        // iconColor: '#f3ae10',
     }
 )
 
@@ -142,6 +142,7 @@ function confirmaAcao(texto, callback, dados, titulo = 'Confirmação', btn_conf
                     <button id='confirmaAcaoSim' type="button" class="btn btn-primary btn-orange with-icon icon-fa-check px-4 ">`+btn_confirma+`</button>`
         }
     )
+    
     $('[id=confirmaAcaoSim]:last').unbind();
     $('[id=confirmaAcaoSim]:last').click(function() {
         callback(dados);

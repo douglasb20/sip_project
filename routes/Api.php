@@ -27,7 +27,10 @@ Router::group("/api", function(){
         });
 
         Router::group("/sip", function(){
-            
+            Router::post("/get_sips", "SipController@GetSipList")->name("sip-list");
+            Router::get("/update_sip_config", "SipController@UpdateSipsFromConfig")->name("get-sip-config");
+            Router::post("/save_sip", "SipController@SaveSip")->name("save-sip");
+            Router::get("/change_sip_status/{id_sip}/{sip_status}", "SipController@ToggleSipStatus")->name("change-sip-status");
         });
     });
 

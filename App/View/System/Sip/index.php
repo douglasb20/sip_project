@@ -14,40 +14,51 @@
     list-style: none;
 }
 
-
 .dataTable td {
     vertical-align: middle !important;
 }
 
 </style>
-<?php $this->captureEnd("css")?>
+<?php 
 
-<?php $this->captureStart("body") ?>
+$this->captureEnd("css");
+$this->captureStart("body");
 
-<?php
-    include_once "modalFormUser.php";
+include_once "modalFormSip.php";
+
 ?>
 
 <!-- <section class="section"> -->
     <div class="col-12 ">
         <div class="card ">
             <div class="card-header d-flex flex-row justify-content-between align-items-center">
-                <span class="text-title">Lista de usuários</span>
+                <span class="text-title">Lista de operadores</span>
                 <div>
                     <button id="btnFiltros" class="btn btn-outline-info btn-sm" >Filtros</button>
+
                     <?php 
-                        if($this->CheckPermission(11)){
+                        if($this->CheckPermission(24)){
                     ?>
-                        <button type="button" onClick="NewUser()" class="btn btn-primary btn-sm">Novo usuário</button>
+                        <button type="button" onClick="NewSip()" class="btn btn-primary btn-sm">Novo operador</button>
                     <?php
                         }
                     ?>
-                    <button type="button" class="btn btn-success btn-sm" onclick="UpdateSipList()" title="Atualizar lista de operadores pelo config"><i class="fa-regular fa-arrows-rotate"></i></button>
+
+                    <?php 
+                        if($this->CheckPermission(25)){
+                    ?>
+                        <button type="button" id="btnAtualizaSip" class="btn btn-success btn-sm" title="Atualizar lista de operadores pelo config">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
+                    <?php
+                        }
+                    ?>
+                    
                 </div>
             </div>
             <div class="card-body mt-4">
                 <div class="row table-responsive">
-                    <table id="tableUsers" class="table table-sm table-striped table-bordered w-100 align-text-top"></table>
+                    <table id="tableSips" class="table table-sm table-striped table-bordered w-100 "></table>
                 </div>
             </div>
         </div>
@@ -55,53 +66,50 @@
 
 <!-- </section> -->
 
-<?php $this->captureEnd("body")?>
+<?php 
 
-<?php $this->captureStart("js")?>
+$this->captureEnd("body");
+$this->captureStart("js")
+
+?>
 
 <script>
 
 $(function(){
     GeraTabela();
+    ModalDraggable();
 
-    $("#btnSalvar").click(function(){
-        const password        = $("#user_pass");
-        const confirmPassword = $("#confirm_pass");
-        if(password.val() !== "" || confirmPassword.val() !== ""){
-            if(password.val() !== confirmPassword.val()){
-                alerta("Senhas não coincidem.", "Erro validação", "error");
-                return;
-            }
-        }
+    $("#btnSalvarSip").click(function(){
         
-        const frm = required_elements($("#formUser .required"))
+        const frm = required_elements($("#formSip .required"))
         if(!frm.valid){
             alerta("Campos obrigatórios não preenchidos", "Erro validação", "error")
         }else{
-            confirmaAcao(`Confirma salvar usuário "${$("#user_login").val().toUpperCase()}"?`, SaveFormUser, [])
+            confirmaAcao(`Confirma salvar operador "${$("#id_sip").val().toUpperCase()}"?`, SaveFormSip, [])
         }
     })
     
+    $("#btnAtualizaSip").click(function(){
+        confirmaAcao("Deseja atualizar a lista de operadores?", UpdateSipList, [])
+    })
 })
 
 // let filtros   = new bootstrap.Modal("#modalFiltros", modalOption);
-let formUsers       = new bootstrap.Modal("#modalFormUser", modalOption);
+let formSip       = new bootstrap.Modal("#modalFormSip", modalOption);
 
 const GeraTabela = () => {
     // let form = $("#formFiltro").serializeObject();
     let form = [];
 
-    $.ajax({url: '{{route()->link("users-list")}}',method:"POST", data: form})
+    $.ajax({url: '{{route()->link("sip-list")}}',method:"POST", data: form})
     .done(resp => {
 
-        $('#tableUsers').DataTable({
+        $('#tableSips').DataTable({
             columns: [
-                { data: 'id',               title: "#",             className: "text-center "},
-                { data: 'user_fullname',    title: "Nome Completo", className: "text-center "},
-                { data: 'user_email',       title: "Email",         className: "text-center "},
-                { data: 'user_lastlogin',   title: "Ult. Login",    className: "text-center ", render: renderFormataDataHora , orderable: false },
-                { data: 'user_sts',         title: "Status",        className: "text-center ", render: renderStatus },
-                { data: '',                 title: "Ações",         className: "d-flex justify-content-center gap-1", render: renderAcoes },
+                { data: 'sip_dial',     title: "Ramal",     className: "text-center "},
+                { data: 'callerId',     title: "Nome",      className: "text-center "},
+                { data: 'sip_status',   title: "Status",    className: "text-center ", render: renderStatus, orderable: false  },
+                { data: '',             title: "Ações",     className: "d-flex justify-content-center gap-1", render: renderAcoes, orderable: false },
             ],
             data: resp,
             order: [["0", 'asc']],
@@ -135,7 +143,7 @@ const renderAcoes = (data, type, row) => {
     <?php 
         if($this->CheckPermission(10)){
     ?>
-            botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+            botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
     <?php
         }
     ?>
@@ -143,13 +151,13 @@ const renderAcoes = (data, type, row) => {
     <?php 
         if($this->CheckPermission(14) ){
     ?>
-        if(row.id !== "1"){
-            if(row.user_sts === "1"){
-                botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></button>`;
-            }else{
-                botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar usuário'><i class="fa-regular fa-check"></button>`;
-            }
+        
+        if(row.sip_status === "1"){
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar operador'><i class="fa-regular fa-xmark"></button>`;
+        }else{
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar operador'><i class="fa-regular fa-check"></button>`;
         }
+        
     <?php
         }
     ?>
@@ -158,72 +166,63 @@ const renderAcoes = (data, type, row) => {
     return botoes;
 }
 
-const EditUser = idUser => {
-    document.forms["formUser"].reset();
+const EdiSip = botao => {
+    let data = $('#tableSips').DataTable().row( $(botao).parents('tr')).data()
+    formSip.show();
 
-    $.ajax({url: '{{route()->link("get-user")}}' + `${idUser}`,})
+    $("#modalFormSip .modal-title").text("Alterar operador");
+    remove_required($("#formSip .required"))
+    popula_dados("#formSip", data);
+}
+
+const NewSip = () => {
+    document.forms["formSip"].reset()
+    formSip.show();
+
+    remove_required($("#formSip .required"))
+    $("#modalFormSip .modal-title").text("Novo operador");
+}
+
+const SaveFormSip = () => {
+
+    let form = new FormData( $("#formSip")[0] );
+
+    $.ajax({url: `{{route()->link("save-sip")}}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
     .done(resp => {
-        formUsers.show();
-        let lastName = resp.user_fullname.replace(resp.user_nome, "").trim();
-        $("#modalFormUser .modal-title").text("Alterar usuário");
-        remove_required($("#formUser .required"))
-        popula_dados("#formUser", resp);
-
-        $("#user_lastname").val(lastName);
-        $("#user_pass, #confirm_pass").removeClass("required");
-        $("label[for='user_pass'], label[for='confirm_pass']").removeClass("required-label");
+        SaveSipDone()
     })
 }
 
-const NewUser = () => {
-    document.forms["formUser"].reset()
-    formUsers.show();
-
-    $("#user_pass, #confirm_pass").addClass("required");
-    $("label[for='user_pass'], label[for='confirm_pass']").addClass("required-label");
-
-    remove_required($("#formUser .required"))
-    $("#modalFormUser .modal-title").text("Novo usuário");
-}
-
-const SaveFormUser = () => {
-    let id = $("#id").val();
-    let form = new FormData( $("#formUser")[0] );
-
-    if( id === "" ){
-        $.ajax({url: `{{route()->link("new-user")}}${id}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
-        .done(resp => {
-            SaveUserDone()
-        })
-    }else{
-        $.ajax({url: `{{route()->link("update-user")}}${id}`,type:"POST",dataType:"json", data: form,processData: false, contentType: false})
-        .done(resp => {
-            SaveUserDone()
-        })
-    }
-}
-
-const SaveUserDone = () => {
+const SaveSipDone = () => {
     GeraTabela();
     CloseModal();
-    alerta("Usuário salvo com sucesso.","Sucesso", "success");
+    alerta("Operador salvo com sucesso.","Sucesso", "success");
 }
 
 const CloseModal = () => {
-    formUsers.hide();
+    formSip.hide();
 }
 
-const ConfirmToggleStatus = (id_user,id_status) => {
-    let dados = {id_user, id_status};
-    confirmaAcao("Confirma alterar status do usuário?", ToggleStatusUser, dados)
+const ConfirmToggleStatus = (id_sip,sip_status) => {
+    let dados = {id_sip, sip_status};
+    confirmaAcao("Confirma alterar status do operador?", ToggleStatusUser, dados)
 }
 
 const ToggleStatusUser = dados => {
-    let {id_user, id_status} = dados;
+    let {id_sip, sip_status} = dados;
 
-    $.ajax({url: `{{route()->link("change-user-status")}}${id_user}/${id_status}`})
+    $.ajax({url: `{{route()->link("change-sip-status")}}${id_sip}/${sip_status}`})
     .done(resp => {
         alerta("Status atualizado com sucesso.", "Sucesso", "success");
+        GeraTabela();
+    });
+}
+
+const UpdateSipList = () => {
+
+    $.ajax({url: `{{route()->link("get-sip-config")}}`})
+    .done(resp => {
+        alerta("Operadores atualizado com sucesso.", "Sucesso", "success");
         GeraTabela();
     });
 }

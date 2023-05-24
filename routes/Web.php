@@ -18,7 +18,7 @@ Router::group("/system", function(){
 });
 
 Router::get("/teste", function(){
-    
+    printar((new \App\Classes\SipClass)->UpdateSipsFromConfig() );
 });
 
 

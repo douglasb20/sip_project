@@ -6,6 +6,7 @@ class UsersController extends Controller{
 
     public \App\Model\UsersDAO $UsersDAO;
     public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
+    public \App\Model\SipDAO $SipDAO;
     
     /**
     * Função Index
@@ -17,10 +18,11 @@ class UsersController extends Controller{
             $this->CheckSession();
 
             $permissions = (new \App\Classes\UsersClass)->GetPermissions();
+            $sip         = $this->SipDAO->getAll();
 
             $this
             ->setBreadcrumb(["Sistema", "Usuários"])
-            ->render("System.Users", ["permissions" => $permissions]);
+            ->render("System.Users", ["permissions" => $permissions, "sip" => $sip]);
         }catch(\Exception $e){
             throw $e;
         }
