@@ -103,6 +103,7 @@ const GeraTabela = () => {
                 { data: 'id',               title: "#",             className: "text-center "},
                 { data: 'user_fullname',    title: "Nome Completo", className: "text-center "},
                 { data: 'user_email',       title: "Email",         className: "text-center "},
+                { data: 'id_sip',           title: "Ramal",         className: "text-center "},
                 { data: 'user_lastlogin',   title: "Ult. Login",    className: "text-center ", render: renderFormataDataHora , orderable: false },
                 { data: 'user_sts',         title: "Status",        className: "text-center ", render: renderStatus },
                 { data: '',                 title: "Ações",         className: "d-flex justify-content-center gap-1", render: renderAcoes,orderable: false },

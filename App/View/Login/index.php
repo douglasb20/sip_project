@@ -149,11 +149,7 @@
 
 <?php $this->captureEnd("css")?>
 
-<?php $this->captureStart("body");
-
-include_once "modalSelectRamal.php";
-
-?>
+<?php $this->captureStart("body") ?>
 
 <div class="card formsBox shadow d-flex ">
     <div class="loginForm ">
@@ -212,8 +208,6 @@ include_once "modalSelectRamal.php";
 <?php $this->captureStart("js")?>
 <script>
 
-let modalSelectRamal = new bootstrap.Modal("#modalSelectRamal", modalOption);
-
 $("#username, #password").keypress(function(e){
     if(e.keyCode === 13){
         $("#btnEntrar").click();
@@ -230,16 +224,8 @@ $("#btnEntrar").click(function(){
             method: "POST",
             data: formInput            
         }).done(function(data){
-            // StartLoading();
-            $("#ramais").select2({
-                data,
-                dropdownParent: $('#modalSelectRamal'),
-                width: "50%",
-                closeOnSelect: true,
-                language: 'pt-BR'
-            });
-            modalSelectRamal.show();
-            // window.location.href = "{{route()->link('home')}}"
+            StartLoading();
+            window.location.href = "{{route()->link('home')}}"
         })
     }else{
         alerta("Campos login e senha não podem ficar em branco.");
@@ -265,18 +251,6 @@ $("#backLogin").click(function(){
     }
     
 })
-
-const ValidateAuth = () => {
-    $.ajax({
-        url : "{{URL_ROOT}}{{trim(route()->link('validate-auth'),'/')}}",
-        method: "POST",
-        data: {ramal: $("#ramais").val()}            
-    }).done(function(data){
-        modalSelectRamal.hide()
-        StartLoading();
-        window.location.href = "{{route()->link('home')}}"
-    })
-}
 
 
 </script>

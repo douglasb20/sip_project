@@ -67,21 +67,6 @@ class AuthController extends Controller{
         }
     }
 
-    public function ValidateLogin(){
-        try{
-            $data = $this->getPost();
-            
-            SetSessao("autenticado", true);
-            SetSessao("ramal", $data['ramal']);
-            SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')) );
-            
-            // $this->data = $ret;
-            $this->retorna();
-        }catch(\Exception $e){
-            throw $e;
-        }
-    }
-
     public function AuthLogout(){
         try{
             $this->setShowMenu(false);
