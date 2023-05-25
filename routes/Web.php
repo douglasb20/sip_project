@@ -10,6 +10,10 @@ Router::get("/logout", "AuthController@AuthLogout")->name("logout");
 Router::get("/esqueci_minha_senha", "AuthController@Index")->name("esqueci-senha");
 Router::get("/call_reports", "CallReportsController@Index")->name("call-reports");
 
+Router::group("/call_panel", function(){
+    Router::get("/", "CallsPanelController@Index")->name("calls-panel");
+});
+
 Router::group("/system", function(){
 
     Router::get("/users", "UsersController@Index")->name("users");

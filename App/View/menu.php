@@ -217,7 +217,15 @@
 			</a>
 		</li><!-- End Dashboard Nav -->
 
-		<!-- Start Reports Nav -->
+		<!-- Calls Panel Nav -->
+		<li class="nav-item" >
+			<a class="nav-link collapsed" href="{{route()->link('calls-panel')}}">
+				<i class="fa-regular fa-phone-office"></i>
+				<span>Painel de Ligações</span>
+			</a>
+		</li><!-- End Reports Nav -->
+
+		<!-- Calls Panel Nav -->
 		<li class="nav-item" >
 			<a class="nav-link collapsed" href="{{route()->link('call-reports')}}">
 				<i class="fa-regular fa-clipboard-list"></i>

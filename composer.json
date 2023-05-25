@@ -27,6 +27,7 @@
         "php": "^8.0",
         "vlucas/phpdotenv": "^5.4",
         "firebase/php-jwt": "^6.3",
-        "symfony/config": "^6.2"
+        "symfony/config": "^6.2",
+        "phpmailer/phpmailer": "^6.8"
     }
 }

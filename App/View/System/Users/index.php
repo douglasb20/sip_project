@@ -24,6 +24,7 @@
 <?php $this->captureStart("body") ?>
 
 <?php
+    include_once "modalFiltrosUsuarios.php";
     include_once "modalFormUser.php";
     include_once "modaPermissionsUser.php";
 ?>
@@ -59,10 +60,34 @@
 <?php $this->captureStart("js")?>
 
 <script>
+let filtrosUsers    = new bootstrap.Modal("#modalFiltrosUsuarios", modalOption);
+let formUsers       = new bootstrap.Modal("#modalFormUser", modalOption);
+let permissionsUser = new bootstrap.Modal("#modalPermissionsUser", modalOption);
 
 $(function(){
     GeraTabela();
     ModalDraggable();
+    $('#data_de').datepicker({
+        endDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
+    $('#data_de').datepicker().on("changeDate", function({date}){
+        $('#data_ate').datepicker("setStartDate", date)
+    })
+
+    $('#data_ate').datepicker({
+        endDate: new Date(),
+        startDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
+    
+    $("#user_sts").select2({
+        width: '100%',
+        dropdownParent: $('#modalFiltrosUsuarios'),
+        closeOnSelect: false,
+    });
     
     $("#btnSalvar").click(function(){
         const password        = $("#user_pass");
@@ -81,19 +106,20 @@ $(function(){
             confirmaAcao(`Confirma salvar usuário "${$("#user_login").val().toUpperCase()}"?`, SaveFormUser, [])
         }
     })
+    $("#btnFiltros").click(() => filtrosUsers.show() );
+
+    $("#btnFiltrar").click(function(){
+        GeraTabela();
+        filtrosUsers.hide()
+    })
     
     $("#btnSalvarPermission").click(function(){
         confirmaAcao("Confirma atualizar as permissões do usuário?", ConfirmSavePermissions, [])
     })
 })
 
-// let filtros   = new bootstrap.Modal("#modalFiltros", modalOption);
-let formUsers       = new bootstrap.Modal("#modalFormUser", modalOption);
-let permissionsUser = new bootstrap.Modal("#modalPermissionsUser", modalOption);
-
 const GeraTabela = () => {
-    // let form = $("#formFiltro").serializeObject();
-    let form = [];
+    let form = $("#formFiltro").serializeObject();
 
     $.ajax({url: '{{route()->link("users-list")}}',method:"POST", data: form})
     .done(resp => {

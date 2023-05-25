@@ -10,12 +10,11 @@
                 <form id="formFiltro" class="row g-3">
                     <div class="col-12 col-md-12">
                         <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select id="status" name="status" class="form-select selectWithAll" multiple>
-                                <option value="-1" selected>Todas</option>
-                                <option value="ANSWERED">Atentidas</option>
-                                <option value="NO ANSWER">Perdidas</option>
-                                <option value="BUSY">Ocupadas</option>
+                            <label for="user_sts" class="form-label">Status</label>
+                            <select id="user_sts" name="user_sts" class="form-select selectWithAll" multiple>
+                                <option value="-1" >Todas</option>
+                                <option value="1" selected>Ativo</option>
+                                <option value="2">Inativo</option>
                             </select>
                         </div>
                     </div>
@@ -23,57 +22,21 @@
 
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
-                                <label for="data_de" class="form-label">Data de</label>
+                                <label for="data_de" class="form-label">Ult login de</label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-calendar"></i></span>
-                                    <input id="data_de" class="form-control dateNoEmpty" name="data_de" type="text" value="<?=date('d/m/Y')?>" >
+                                    <input id="data_de" class="form-control dateNoEmpty" name="data_de" type="text" value="" >
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6">
                             <div class="mb-3">
-                                <label for="data_ate" class="form-label">Data até</label>
+                                <label for="data_ate" class="form-label">Ult login até</label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="addon-wrapping"><i class="fa-regular fa-calendar"></i></span>
-                                    <input id="data_ate" class="form-control dateNoEmpty" name="data_ate" type="text" value="<?=date('d/m/Y')?>" >
+                                    <input id="data_ate" class="form-control dateNoEmpty" name="data_ate" type="text" value="" >
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-
-                        <div class="col-12 col-md-6">
-                            <div class="mb-3">
-                                <label for="origem" class="form-label">Origem</label>
-                                <select id="origem" name="origem" class="form-select selectWithAll" multiple>
-                                    <option value="-1" selected>Todos</option>
-                                    <?php
-                                        foreach($devices as $key => $d){
-                                            
-                                    ?>
-                                        <option value="<?=$d['id']?>"><?=$d['text']?></option>
-                                    <?php
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="mb-3">
-                                <label for="destino" class="form-label">Destino</label>
-                                <select id="destino" name="destino" class="form-select selectWithAll" multiple>
-                                    <option value="-1" selected>Todos</option>
-                                    <?php
-                                        foreach($devices as $key => $d){
-                                        
-                                    ?>
-                                        <option value="<?=$d['id']?>"><?=$d['text']?></option>
-                                    <?php
-                                        }
-                                    ?>
-                                </select>
                             </div>
                         </div>
                     </div>

@@ -45,8 +45,28 @@ class UsersController extends Controller{
     public function GetListUsers(){
         try{
             $this->CheckSession();
+            $input = $this->getPost();
 
-            $users = $this->UsersDAO->getView();
+            extract($input);
+            $where = "1=1";
+
+            if( is_array( $user_sts ) ){
+                $user_sts = implode("','",$user_sts);
+                $where .= " AND user_sts in ('{$user_sts}')";
+            }else{
+                if($user_sts !== "-1"){
+                    $where .= " AND user_sts = '{$user_sts}'";
+                }
+            }
+
+            if(!empty($data_de)){
+                $data_de  = \DateTime::createFromFormat('d/m/Y', $data_de)->format('Y-m-d');
+                $data_ate = \DateTime::createFromFormat('d/m/Y', $data_ate)->format('Y-m-d');
+                $where .= " AND DATE(user_lastlogin) BETWEEN '$data_de' AND '$data_ate' ";
+            }
+
+
+            $users = $this->UsersDAO->getView($where);
             $this->data = $users;
             $this->retorna();
         }catch(\Exception $e){
