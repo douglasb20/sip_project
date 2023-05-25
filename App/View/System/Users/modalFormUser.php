@@ -33,7 +33,7 @@
                         <input id="user_email" class="form-control required" name="user_email" type="email" >
                     </div>
                     <div class="col-12 col-md-12">
-                        <label for="user_email" class="form-label required-label">Email</label>
+                        <label for="user_email" class="form-label required-label">Ramal</label>
                         <select name="id_sip" id="id_sip" class="form-select">
                             <option value="">Nenhum ramal</option>
                             <?php

@@ -517,7 +517,7 @@ function AllSessao(){
     return $_SESSION;
 }
 
-function SetSessao(string $key, string $value){
+function SetSessao(string $key, string|null $value){
     $_SESSION[$key] = $value;
 }
 function GetSessao(string $key){

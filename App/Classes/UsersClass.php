@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Exception;
 use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
@@ -84,6 +85,9 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             // SetSessao("autenticado", true);
             SetSessao("id_usuario", $user['id']);
             SetSessao("nome_usuario", $user['user_fullname']);
+            SetSessao("autenticado", true);
+            SetSessao("ramal", $user['id_sip']);
+            SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')) );
 
             return (new \App\Services\CdrService)->GetDevices();
         }catch(\Exception $e){
@@ -113,10 +117,21 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         try{
             extract($dados);
 
+            
+
             $user_login    = strtoupper($user_login);
             $user_nome     = strtoupper($user_nome);
             $user_lastname = strtoupper($user_lastname);
             $user_email    = strtolower($user_email);
+
+            $user = $this->UsersDAO->getAll(" user_login = '{$user_login}'");
+
+            if(!empty($user)){
+                $user = $user[0];
+                if($user['id'] !== $id){
+                    throw new Exception("Já existe um usuário com este login.",-1);
+                }
+            }
 
             $user_fullname = "{$user_nome} {$user_lastname}";
 
@@ -125,7 +140,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "user_login"    => $user_login,
                 "user_nome"     => $user_nome,
                 "user_email"    => $user_email,
-                "id_sip"        => $id_sip,
+                "id_sip"        => empty($id_sip) ? null : $id_sip,
                 "user_passres"  => 0,
                 "user_sts"      => 1,
             ];
@@ -135,6 +150,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             }
 
             $this->UsersDAO->update($bindUser, "id = {$id}");
+
+            SetSessao("ramal", $id_sip);
 
         }catch(\Exception $e){
             throw $e;

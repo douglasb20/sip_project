@@ -360,11 +360,12 @@ class DefaultController{
     public function CheckPermission(int $id_permissao){
         try{
             $permission = false;
-            $permission = $this->UsersPermissionsXUsersDAO->CheckPermission(GetSessao('id_usuario'), $id_permissao);
             
             if(GetSessao("autenticado") != true){
                 return false;
             }
+
+            $permission = $this->UsersPermissionsXUsersDAO->CheckPermission(GetSessao('id_usuario'), $id_permissao);
 
             if(GetSessao('id_usuario') === "1"){
                 return true;
@@ -374,7 +375,6 @@ class DefaultController{
                 }
             }
 
-            
             return $permission;
         }catch(\Exception $e){
             throw $e;
