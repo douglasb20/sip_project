@@ -2,7 +2,6 @@
 
 namespace App\Classes;
 
-use Exception;
 use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
@@ -95,11 +94,30 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         }
     }
 
-    public function ValidaEmailUser($email){
+    public function ValidaEmailUser($email, $id){
         try{
             $user = $this->UsersDAO->getAll(" user_email = '{$email}'");
-            if(count($user) > 0){
-                throw new \Exception("Email já existe, tente outro email." ,-1);
+            if(!empty($user) ){
+                $user = $user[0];
+                if($user['id'] !== $id){
+                    throw new \Exception("Já existe usuário com este email." ,-1);
+                }
+            }
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
+    public function ValidaLoginlUser($login, $id){
+        try{
+
+            $user = $this->UsersDAO->getAll(" user_login = '{$login}'");
+
+            if(!empty($user)){
+                $user = $user[0];
+                if($user['id'] !== $id){
+                    throw new \Exception("Já existe um usuário com este login.",-1);
+                }
             }
         }catch(\Exception $e){
             throw $e;
@@ -117,23 +135,15 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         try{
             extract($dados);
 
-            
-
-            $user_login    = strtoupper($user_login);
-            $user_nome     = strtoupper($user_nome);
-            $user_lastname = strtoupper($user_lastname);
-            $user_email    = strtolower($user_email);
-
-            $user = $this->UsersDAO->getAll(" user_login = '{$user_login}'");
-
-            if(!empty($user)){
-                $user = $user[0];
-                if($user['id'] !== $id){
-                    throw new Exception("Já existe um usuário com este login.",-1);
-                }
-            }
-
+            $user_login    = trim(strtoupper($user_login));
+            $user_nome     = trim(strtoupper($user_nome));
+            $user_lastname = trim(strtoupper($user_lastname));
+            $user_email    = trim(strtolower($user_email));
             $user_fullname = "{$user_nome} {$user_lastname}";
+
+            $this->ValidaLoginlUser($user_login, $id);
+            $this->ValidaEmailUser($user_email, $id);
+
 
             $bindUser = [
                 "user_fullname" => $user_fullname,
@@ -146,12 +156,14 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             ];
 
             if( !empty($user_pass) ){
-                $bindUser['user_pass'] = password_hash($user_pass, PASSWORD_BCRYPT);
+                $bindUser['user_pass'] = password_hash(trim($user_pass), PASSWORD_BCRYPT);
             }
 
             $this->UsersDAO->update($bindUser, "id = {$id}");
 
-            SetSessao("ramal", $id_sip);
+            if($id === GetSessao("id_usuario")){
+                SetSessao("ramal", $id_sip);
+            }
 
         }catch(\Exception $e){
             throw $e;

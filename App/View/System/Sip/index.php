@@ -7,7 +7,7 @@
     font-family : "Poppins", sans-serif;
 }
 
-#formUser input[type='text']{
+#formSip input[type='text']{
     text-transform: uppercase;
 }
 .permissions-list{
@@ -24,6 +24,7 @@
 $this->captureEnd("css");
 $this->captureStart("body");
 
+include_once "modalFiltrosSip.php";
 include_once "modalFormSip.php";
 
 ?>
@@ -79,6 +80,12 @@ $(function(){
     GeraTabela();
     ModalDraggable();
 
+    $("#sip_status").select2({
+        width: '100%',
+        dropdownParent: $('#modalFiltrosSip'),
+        closeOnSelect: false,
+    });
+
     $("#btnSalvarSip").click(function(){
         
         const frm = required_elements($("#formSip .required"))
@@ -88,6 +95,13 @@ $(function(){
             confirmaAcao(`Confirma salvar operador "${$("#id_sip").val().toUpperCase()}"?`, SaveFormSip, [])
         }
     })
+
+    $("#btnFiltros").click(() => filtrosSip.show() );
+
+    $("#btnFiltrar").click(function(){
+        GeraTabela();
+        filtrosSip.hide()
+    })
     
     $("#btnAtualizaSip").click(function(){
         confirmaAcao("Deseja atualizar a lista de operadores?", UpdateSipList, [])
@@ -95,11 +109,11 @@ $(function(){
 })
 
 // let filtros   = new bootstrap.Modal("#modalFiltros", modalOption);
-let formSip       = new bootstrap.Modal("#modalFormSip", modalOption);
+let filtrosSip = new bootstrap.Modal("#modalFiltrosSip", modalOption);
+let formSip    = new bootstrap.Modal("#modalFormSip", modalOption);
 
 const GeraTabela = () => {
-    // let form = $("#formFiltro").serializeObject();
-    let form = [];
+    let form = $("#formFiltro").serializeObject();
 
     $.ajax({url: '{{route()->link("sip-list")}}',method:"POST", data: form})
     .done(resp => {
@@ -141,7 +155,7 @@ const renderAcoes = (data, type, row) => {
     let botoes = '&nbsp';
 
     <?php 
-        if($this->CheckPermission(10)){
+        if($this->CheckPermission(28)){
     ?>
             botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
     <?php
@@ -149,7 +163,7 @@ const renderAcoes = (data, type, row) => {
     ?>
 
     <?php 
-        if($this->CheckPermission(14) ){
+        if($this->CheckPermission(29) ){
     ?>
         
         if(row.sip_status === "1"){
@@ -205,10 +219,10 @@ const CloseModal = () => {
 
 const ConfirmToggleStatus = (id_sip,sip_status) => {
     let dados = {id_sip, sip_status};
-    confirmaAcao("Confirma alterar status do operador?", ToggleStatusUser, dados)
+    confirmaAcao("Confirma alterar status do operador?", ToggleStatusSip, dados)
 }
 
-const ToggleStatusUser = dados => {
+const ToggleStatusSip = dados => {
     let {id_sip, sip_status} = dados;
 
     $.ajax({url: `{{route()->link("change-sip-status")}}${id_sip}/${sip_status}`})

@@ -26,7 +26,22 @@ class SipController extends Controller{
     public function GetSipList(){
         try{
             $this->CheckSession();
-            $sip = $this->SipDAO->getAll();
+
+            $input = $this->getPost();
+
+            extract($input);
+            $where = "1=1";
+
+            if( is_array( $sip_status ) ){
+                $sip_status = implode("','",$sip_status);
+                $where .= " AND sip_status in ('{$sip_status}')";
+            }else{
+                if($sip_status !== "-1"){
+                    $where .= " AND sip_status = '{$sip_status}'";
+                }
+            }
+
+            $sip = $this->SipDAO->getAll($where);
 
             $this->data = $sip;
             $this->retorna();

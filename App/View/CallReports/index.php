@@ -39,28 +39,38 @@ include_once "modalFiltros.php";
 let filtros = new bootstrap.Modal("#modalFiltros", modalOption);
 
 $(function(){
-    $('#data_de,#data_ate').datepicker({
+    $('#data_de').datepicker({
         endDate: new Date(),
         todayBtn: "linked",
         todayHighlight: true
     });
+    $('#data_de').datepicker().on("changeDate", function({date}){
+        $('#data_ate').datepicker("setStartDate", date)
+    })
+
+    $('#data_ate').datepicker({
+        endDate: new Date(),
+        startDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
+
     $("#status,#origem, #destino").select2({
         width: '100%',
         dropdownParent: $('#modalFiltros'),
         closeOnSelect: false,
+    });
+
+    $("#btnFiltros").click(() => filtros.show() );
+
+    $("#btnFiltrar").click(function(){
+        GeraTabela();
+        filtros.hide()
     })
-    GeraTabela()
-})
-
-$("#btnFiltros").click(function(){
-    
-    filtros.show()
-})
-
-$("#btnFiltrar").click(function(){
+    ModalDraggable();
     GeraTabela();
-    filtros.hide()
 })
+
 
 const GeraTabela = () => {
     let form = $("#formFiltro").serializeObject();
