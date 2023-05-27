@@ -119,14 +119,40 @@ class AuthController extends Controller{
                 $dados = [
                     ...$dados,
                     "status" => false,
-                    "msg" => "Erro do token"
+                    "msg"    => "Token inválido."
                 ];
             }
             
             $user_token     = json_decode($user_token, true);
             $user           = $this->UsersDAO->getOne(" id = '{$user_token['id']}'");
-            $dados["dados"] = ["id" => $user['id']];
 
+            if($user['user_forgotpassword'] === "0"){
+
+                $dados = [
+                    ...$dados,
+                    "status" => false,
+                    "msg"    => "<strong>Atenção:</strong> O token de redefinição de senha expirou.<br>
+                    Por favor, solicite uma nova redefinição de senha."
+                ];
+
+            }
+
+            $tokenTime      = $user_token['expires'];
+            $tempoAtual     = date('Y-m-d H:i:s');
+
+            $tokenLifeTime  = strtotime($tokenTime);
+            $timestampAtual = strtotime($tempoAtual);
+
+            if ($tokenLifeTime < $timestampAtual) {
+                $dados = [
+                    ...$dados,
+                    "status" => false,
+                    "msg"    => "Atenção: O token de redefinição de senha expirou.<br/>
+                    Por favor, solicite uma nova redefinição de senha."
+                ];
+            }
+
+            $dados["dados"] = ["id" => $user['id']];
 
             $this
             ->setShowMenu(false)
@@ -145,13 +171,14 @@ class AuthController extends Controller{
     */
     public function RequestRecover(){
         try{
+            $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
             extract($this->getPost());
             $id = $this->getQuery("id_user");
-            $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
             
-            (new \App\Classes\UsersClass)->RequestRecover($id,$password,$confirm_password);
+            (new \App\Classes\UsersClass)->RequestRecover($id, $password, $confirm_password);
 
             $this->masterMysqli->commit();
+            $this->retorna();
         }catch(\Exception $e){
             $this->masterMysqli->rollback();
             throw $e;

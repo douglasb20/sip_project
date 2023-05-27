@@ -131,9 +131,9 @@
 
 <?php
 if(!$status){
-    echo "<div class='alert alert-danger w-75' role='alert'>
-            {$msg}
-        </div>";
+    echo "  <div class='alert alert-danger w-75' role='alert'>
+                {$msg}
+            </div>";
 }else{
 
 ?>
@@ -162,39 +162,53 @@ if(!$status){
         <button type="button" id="btnEnviar" class="btn btn-primary">Enviar</button>
     </div>
 </div>
+
+<div class='alert alert-success w-75 d-none' role='alert'>
+    {{$msg}}
+</div>
 <?php
 }
 
 ?>
 
-<?php $this->captureEnd("body") ?>
+<?php 
 
-<?php $this->captureStart("js") ?>
+$this->captureEnd("body") ;
+$this->captureStart("js") 
+
+?>
 <script>
 
 $("#btnEnviar").click(function(){
     let required = required_elements($("#recoverRealForm input"));
 
     if(required.valid){
-        let formInput = $("#recoverRealForm").serializeObject();
-
-        if(formInput.confirm_password !== formInput.password){
-            alerta("Senhas não coincidem.", "Erro validação", "error");
-            return;
-        }
-
-        $.ajax({
-            url    : "{{route()->link('request-recover')}}{{$dados['id']}}",
-            method : "POST",
-            data   : formInput
-        }).done(function(data){
-            alerta("Senha alterada com sucesso!");
-        })
+        ChangePassword();
     }else{
         alerta("Campos login e senha não podem ficar em branco.", "Erro validação", "error");
     }
-    
 });
+
+const ChangePassword = () => {
+    let formInput = $("#recoverRealForm").serializeObject();
+
+    if(formInput.confirm_password !== formInput.password){
+        alerta("Senhas não coincidem.", "Erro validação", "error");
+        return;
+    }
+
+    $.ajax({
+        url    : "{{route()->link('request-recover')}}{{$dados['id']}}",
+        method : "POST",
+        data   : formInput
+    }).done(function(data){
+        $(".loginForm").addClass("d-none");
+        let clique = "A sua senha foi redefinida com sucesso!<br/>"
+            clique += "Agora você pode acessar a sua conta utilizando a nova senha criada.";
+        
+        $(".alert").html(clique).removeClass("d-none");
+    })
+}
 
 </script>
 <?php $this->captureEnd("js") ?>
