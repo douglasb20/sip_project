@@ -122,24 +122,36 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "expires"      => date("Y-m-d H:i:s", strtotime("+ 3 days"))
             ];
 
-            $url_token = encrypt(json_encode($forgot));
+            $token = encrypt(json_encode($forgot));
+            $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
+            $corpoEmail = "Olá,<br /><br />
+            Recebemos uma solicitação para redefinir a sua senha. Clique no link abaixo para criar uma nova senha.<br />
+            Este link é válido por 3 dias a partir do recebimento deste email:
+            <br /><br />
+            {$url_token}
+            <br /><br />
+            Se você não solicitou essa redefinição, por favor, ignore este email.
+            <br /><br />
+            Atenciosamente,
+            Equipe de suporte";
 
             $m = [
-                "host"     => "smtp.gmail.com",
-                "port"     => "587",
-                "SMTPAuth" => true,
-                "user"     => "douglaassgenesis@gmail.com",
-                "password" => "lrxbasicdtjhhgbu",
-                "frommail" => "douglaassgenesis@gmail.com",
-                "fromname" => "Douglas A. Silva",
-                "tomail"   => "douglas.silva@atendecerto.com.br",
-                "toname"   => "Douglas Atende",
-                "IsHTML"   => true,
-            ];
+                    "host"     => "smtp.gmail.com",
+                    "port"     => "587",
+                    "SMTPAuth" => true,
+                    "user"     => "douglaassgenesis@gmail.com",
+                    "password" => "lrxbasicdtjhhgbu",
+                    "frommail" => "douglaassgenesis@gmail.com",
+                    "fromname" => "Douglas A. Silva",
+                    "tomail"   => "douglas.silva@atendecerto.com.br",
+                    "toname"   => "Douglas Atende",
+                    "IsHTML"   => true,
+                ];
             
             $mail = new \App\Services\PhpMailerPortal($m);
-            $mail->Subject = "Recuperação de senha";
-            $mail->Body = trim(URL_ROOT, "/") . route()->link("recover-password") . $url_token;
+            $mail->Subject = "Redefinição de senha";
+            
+            $mail->Body = $corpoEmail;
             $mail->send();
 
             $this->UsersDAO->update(["user_forgotpassword" => 1], " id = '{$user['id']}' ");

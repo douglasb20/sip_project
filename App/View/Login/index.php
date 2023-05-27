@@ -173,8 +173,8 @@
             </form>
         </div>
         <div class="caixaAcoes justify-content-between">
-            <a id="forgotPassword" class="text-primary link" href="#">Esqueci minha senha</a>
             <button type="button" id="btnEntrar" class="btn btn-primary">Entrar</button>
+            <a id="forgotPassword" class="text-primary link" href="#">Esqueci minha senha</a>
         </div>
     </div>
     <div class="forgotForm ">
@@ -193,8 +193,8 @@
             </form>
         </div>
         <div class="caixaAcoes">
-            <a id="backLogin" class="text-primary link" href="#">Fazer login</a>
             <button id="btnForgotPassword" class="btn btn-primary">Enviar</button>
+            <a id="backLogin" class="text-primary link" href="#">Fazer login</a>
         </div>
     </div>
     <div class="areaImage bg-primary ">
@@ -250,6 +250,7 @@ $("#btnForgotPassword").click(function(){
             url : `{{route()->link('forgot-password')}}` + `${formInput.user_email}`
         }).done(function(data){
             alerta("Solicitação de senha realizada com sucesso. Aguarde alguns minutos e confira seu email para recuperação de senha.")
+            $("#backLogin").click()
         })
     }else{
         alerta("Campos email não pode ficar em branco.", "Erro validação", "error");
