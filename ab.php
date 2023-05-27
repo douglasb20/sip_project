@@ -2,32 +2,26 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Symfony\Component\Config\Loader\FileLoader;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Loader\LoaderInterface;
-
-
-class ConfFileLoader extends FileLoader
-{
-    public function load($resource, $type = null)
-    {
-        $path = $this->locator->locate($resource);
-        $config = parse_ini_file($path, true);
-
-        return $config;
-    }
-
-    public function supports($resource, $type = null)
-    {
-        return is_string($resource) && 'conf' === pathinfo($resource, PATHINFO_EXTENSION);
-    }
+try{
+    
+    $m = [
+        "host"     => "smtp.gmail.com",
+        "port"     => "587",
+        "SMTPAuth" => true,
+        "user"     => "douglaassgenesis@gmail.com",
+        "password" => "lrxbasicdtjhhgbu",
+        "frommail" => "douglaassgenesis@gmail.com",
+        "fromname" => "Douglas A. Silva",
+        "tomail"   => "douglas.silva@atendecerto.com.br",
+        "toname"   => "Douglas Atende",
+        "IsHTML"   => true,
+    ];
+    
+    $mail = new \App\Services\PhpMailerPortal($m);
+    $mail->Subject = "Teste de Email";
+    $mail->Body = "Estou testando envio de mensagem";
+    $mail->send();
+}catch(\Exception $e){
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 
-$loader = new ConfFileLoader(new FileLocator(__DIR__));
-$config = $loader->load('sip_additional.conf');
-
-foreach($config as $key => $val){
-    if(!empty($val['callerid'])){
-        echo "{$key} => ".preg_replace("/\s?<\d+>/", "", $val['callerid'])."<br/>";   
-    }
-}

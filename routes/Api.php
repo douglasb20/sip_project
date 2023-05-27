@@ -4,6 +4,8 @@ Router::group("/api", function(){
 
     Router::post('/auth',"AuthController@Authentication");
     Router::post("/login_auth_request", "AuthController@AuthLogin")->name("login-auth");
+    Router::get("/password_forgot_request/{user_email:[\W|\w]}", "AuthController@ForgotPassword")->name("forgot-password");
+    Router::post("/request_recover/{id_user}", "AuthController@RequestRecover")->name("request-recover");
     Router::get("/get_dados_grafico_dashboard/{tipo:[a-z]}", "HomeController@GeraDadosGraficos")->name("dados-dashboard");
     Router::get("/get_lista_callback", "HomeController@ListaCallback")->name("lista-callback");
     Router::get("/add_callback/{cpf}/{numero}", "Controller@AddCallback")->name("add-callback");

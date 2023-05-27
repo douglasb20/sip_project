@@ -88,15 +88,10 @@ function encrypt($data) {
     try{     
         //Modelo encriptação
         $method = "AES-256-CBC";
-        
-        //Chave e IV secretos , muda a cada dia
-        
-        // $secret_key = gmdate('dmy').'c09275cbd16a911a00c3a077e36f379b';
-        // $secret_iv = gmdate('dmy').'549d0aad4f261463b179c94c2ea3c736';
 
         //Chave e IV secretos , não mudam
-        $secret_key = 'c09275cbd16a911a00c3a077e36f379b';
-        $secret_iv  = '549d0aad4f261463b179c94c2ea3c736';
+        $secret_key = '9rv7rg9p3ox26vtr1i91p4j57gp5d6ja';
+        $secret_iv  = 'l0mticdy4rm9l472jstnfolseud929j4';
     
         //Faço um hash dos dois para gerar a chave e o IV
         $key = hash('sha256', $secret_key);
@@ -106,7 +101,7 @@ function encrypt($data) {
         
         //Transformo texto em claro para texto cifrado
         $data = openssl_encrypt($data, $method, $key, 0, $iv);
-        $data = base64_encode($data);
+        $data = base64url_encode($data);
 
         return $data;
     }catch(Exception $e){
@@ -116,19 +111,14 @@ function encrypt($data) {
 
 function decrypt($data){
     try{
-        $data = base64_decode($data);
+        $data = base64url_decode($data);
         
         //Modelo encriptação
         $method = "AES-256-CBC";
-        
-        //Chave e IV secretos , muda a cada dia
-        
-        // $secret_key = gmdate('dmy').'c09275cbd16a911a00c3a077e36f379b';
-        // $secret_iv = gmdate('dmy').'549d0aad4f261463b179c94c2ea3c736';
 
         //Chave e IV secretos , não mudam
-        $secret_key = 'c09275cbd16a911a00c3a077e36f379b';
-        $secret_iv  = '549d0aad4f261463b179c94c2ea3c736';
+        $secret_key = '9rv7rg9p3ox26vtr1i91p4j57gp5d6ja';
+        $secret_iv  = 'l0mticdy4rm9l472jstnfolseud929j4';
         
         //Faço um hash dos dois para gerar a chave e o IV
         $key = hash('sha256', $secret_key);

@@ -184,15 +184,17 @@
             <h5 class="subtitle">Insira um email válido</h5>
         </div>
         <div class="caixaInputs">
-            <div class="wrapInput">
-                <input type="text" placeholder=" "/>
-                <label class="labelInput" >Email</label>
-                <i class="fa-regular fa-envelope iconInput fa-lg"></i>
-            </div>
+            <form id="forgotRealForm" autocomplete="off">
+                <div class="wrapInput">
+                    <input id="user_email" name="user_email" type="text" placeholder=" "/>
+                    <label class="labelInput" >Email</label>
+                    <i class="fa-regular fa-envelope iconInput fa-lg"></i>
+                </div>
+            </form>
         </div>
         <div class="caixaAcoes">
             <a id="backLogin" class="text-primary link" href="#">Fazer login</a>
-            <button class="btn btn-primary">Enviar</button>
+            <button id="btnForgotPassword" class="btn btn-primary">Enviar</button>
         </div>
     </div>
     <div class="areaImage bg-primary ">
@@ -228,10 +230,33 @@ $("#btnEntrar").click(function(){
             window.location.href = "{{route()->link('home')}}"
         })
     }else{
-        alerta("Campos login e senha não podem ficar em branco.");
+        alerta("Campos login e senha não podem ficar em branco.", "Erro validação", "error");
     }
     
-})
+});
+
+$("#btnForgotPassword").click(function(){
+    let required = required_elements($("#forgotRealForm input"));
+    if(required.valid){
+        let formInput = $("#forgotRealForm").serializeObject();
+
+        if(!formInput.user_email.match(/^(\w|\W)+@(\W|\w)+\.\w+(\.(\w))?$/) ){
+            alerta("Formato de email inválido.", "Formatação inválida", "error");
+            $("#forgotRealForm input").addClass("invalid")
+            return;
+        }
+        
+        $.ajax({
+            url : `{{route()->link('forgot-password')}}` + `${formInput.user_email}`
+        }).done(function(data){
+            alerta("Solicitação de senha realizada com sucesso. Aguarde alguns minutos e confira seu email para recuperação de senha.")
+        })
+    }else{
+        alerta("Campos email não pode ficar em branco.", "Erro validação", "error");
+    }
+});
+
+
 
 $("#forgotPassword").click(function(){
     if(window.innerWidth < 576){
