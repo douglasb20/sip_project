@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Exception;
 use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
@@ -81,16 +82,74 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 throw new \Exception("Usuário inativo.", -1);
             }
 
-            // SetSessao("autenticado", true);
+
             SetSessao("id_usuario", $user['id']);
             SetSessao("nome_usuario", $user['user_fullname']);
             SetSessao("autenticado", true);
             SetSessao("ramal", $user['id_sip']);
             SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')) );
+            SetSessao("lastlogin", $user['user_lastlogin'] );
 
-            return (new \App\Services\CdrService)->GetDevices();
+            $bindUser = [
+                'user_forgotpassword' => 0,
+                "user_lastlogin"      => date("Y-m-d H:i:s")
+            ];
+
+            $this->UsersDAO->update($bindUser, "id = '{$user['id']}'");
+
         }catch(\Exception $e){
             throw $e;
+        }
+    }
+
+    /**
+    * Função para processar pedido de Password forgotten
+    * @author Douglas A. Silva
+    * @return void
+    */
+    public function ForgotPassword(string $user_email){
+        try{
+            $user = $this->UsersDAO->getAll("user_email = '".strtolower( $user_email )."'");
+
+            if(empty($user)){
+                throw new \Exception("Email não localizado.",-1);
+            }
+
+            $user = $user[0];
+
+            $forgot = [
+                "id"           => $user['id'],
+                "expires"      => date("Y-m-d H:i:s", strtotime("+ 3 days"))
+            ];
+
+            $url_token = encrypt(json_encode($forgot));
+
+            $m = [
+                "host"     => "smtp.gmail.com",
+                "port"     => "587",
+                "SMTPAuth" => true,
+                "user"     => "douglaassgenesis@gmail.com",
+                "password" => "lrxbasicdtjhhgbu",
+                "frommail" => "douglaassgenesis@gmail.com",
+                "fromname" => "Douglas A. Silva",
+                "tomail"   => "douglas.silva@atendecerto.com.br",
+                "toname"   => "Douglas Atende",
+                "IsHTML"   => true,
+            ];
+            
+            $mail = new \App\Services\PhpMailerPortal($m);
+            $mail->Subject = "Recuperação de senha";
+            $mail->Body = trim(URL_ROOT, "/") . route()->link("recover-password") . $url_token;
+            $mail->send();
+
+            $this->UsersDAO->update(["user_forgotpassword" => 1], " id = '{$user['id']}' ");
+
+        }catch(\Exception $e){
+            if(isset($mail->ErrorInfo)){
+                throw new \Exception($mail->ErrorInfo);
+            }else{
+                throw $e;
+            }
         }
     }
 
@@ -280,6 +339,25 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         }
     }
 
+    /**
+    * Função para criar nova senha para o usuário
+    * @author Douglas A. Silva
+    * @return void
+    */
+    public function RequestRecover(string $id_user, string $password){
+        try{
+            $user = $this->UsersDAO->getOne(" id = '{$id_user}'");
+
+            $bindUser = [
+                "user_pass"           => password_hash($password, PASSWORD_BCRYPT),
+                "user_forgotpassword" => 0
+            ];
+            $this->UsersDAO->update($bindUser, "id = '{$id_user}'");
+            
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
 }
 
 ?>

@@ -7,9 +7,10 @@ CREATE TABLE `users` (
   `user_nome` varchar(30) NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `user_pass` varchar(80) NOT NULL,
-  `user_passres` int(1) NOT NULL,
-  `user_sts` int(1) NOT NULL,
+  `user_passres` TINYINT(1) NOT NULL,
+  `user_sts` TINYINT(1) NOT NULL,
   `user_lastlogin` timestamp DEFAULT current_timestamp(),
+  `user_forgotpassword` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `email_idx` (`user_email`),
   KEY `login_idx` (`user_nome`,`user_email`,`user_pass`)
@@ -109,7 +110,6 @@ ADD CONSTRAINT `id_user_fk`
   REFERENCES `users` (`id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT;
-
 
 
 CREATE TABLE `sip` (

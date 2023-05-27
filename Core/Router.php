@@ -419,6 +419,12 @@ class Router{
         
     }
 
+    /**
+     * Função para retornar o caminho da rota desejada
+     * @author Douglas A. Silva
+     * @param string $route Rota solicitada, sendo por nome ou uri
+     * @return string caminho da rota solicitada
+     */
     public static function link(string $route){
         try{
             $links = self::getRouteList(true);
