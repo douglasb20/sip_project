@@ -3,8 +3,14 @@ if ($("#sidebar").length > 0) {
     
     $(".nav-link").addClass("collapsed");
     let menu_route = $(`#sidebar [href="${route}"]`);
-    // if(menu_route)
-    menu_route.removeClass("collapsed");
+
+    if (menu_route.parents("ul").hasClass("nav-content")) {
+        menu_route.parents("ul").addClass("show");
+        menu_route.addClass("active");
+        menu_route.parents(".nav-item").find(".nav-link").removeClass("collapsed")
+    } else {
+        menu_route.removeClass("collapsed");
+    }
 
 }
 

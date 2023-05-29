@@ -254,18 +254,28 @@ class DefaultController{
             $uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             $pathExcept = [
-                "/login",
-                "/api/validate_login",
-                "/api/login_auth_request",
-                "/api/login_auth_request",
+                "/\/login/",
+                "/\/api\/validate_login/",
+                "/\/api\/login_auth_request/",
+                "/\/api\/password_forgot_request\/[\W|\w]+/",
+                "/\/recover_password\/[\W|\w]+/",
+                "/\/api\/request_recover\/[\W|\w]+/",
             ];
+
+            $except = false;
+
+            foreach($pathExcept as $ex){
+                if(preg_match($ex, $uri, $matches)){
+                    $except = true;
+                }
+            }
             
             if(GetSessao("autenticado") == true){
                 if(GetSessao('id_usuario') === "1"){
                     return true;
                 }
 
-                if(!in_array( $uri, $pathExcept )){
+                if(!$except){
                     $permission = $this->UsersPermissionsXUsersDAO->ValidatePermission(GetSessao('id_usuario'), $uri);
                     if(empty($permission)){
                         if($GLOBALS['ROUTE_TYPE'] != 'web'){
@@ -274,6 +284,10 @@ class DefaultController{
                             echo "<script>alert('Você não tem permissão para acessar este recurso!');window.location='/';</script>";
                         }
                     }
+                }
+            }else{
+                if(!$except){
+                    throw new Exception("Você não tem permissão para acessar este recurso!",-1);
                 }
             }
 
@@ -332,7 +346,7 @@ class DefaultController{
                     (new \App\Classes\UsersClass)->ValidateUser($dados['id']);
                 break;
                 case "session":
-                    $autenticado     = false;
+                    $autenticado     = true;
 
                     if(GetSessao("lifetime")){
 
@@ -348,7 +362,11 @@ class DefaultController{
                         }else{
                             $autenticado = true;
                         }
+                    }else{
+                        $autenticado = false;
+                        clearSessao();
                     }
+
                     return $autenticado;
                 break;
             }
