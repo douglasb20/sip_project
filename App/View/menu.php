@@ -217,13 +217,7 @@
 			</a>
 		</li><!-- End Dashboard Nav -->
 
-		<!-- Calls Panel Nav -->
-		<li class="nav-item" >
-			<a class="nav-link collapsed" href="{{route()->link('calls-panel')}}">
-				<i class="fa-regular fa-phone-office"></i>
-				<span>Painel de Ligações</span>
-			</a>
-		</li><!-- End Reports Nav -->
+		
 
 		<!-- Calls Panel Nav -->
 		<li class="nav-item" >
@@ -232,6 +226,22 @@
 				<span>Relatório de Ligações</span>
 			</a>
 		</li><!-- End Reports Nav -->
+
+		<!-- Calls Panel Nav -->
+		<li class="nav-item" >
+			<a class="nav-link collapsed" data-bs-target="#pabx-nav" data-bs-toggle="collapse" href="#">
+				<i class="fa-regular fa-phone-office"></i>
+				<span>PABX</span>
+				<i class="fa-regular fa-chevron-down ms-auto"></i>
+			</a>
+			<ul id="pabx-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+				<li>
+					<a href="{{route()->link('calls-panel')}}" >
+						<i class="fa-regular fa-circle "></i><span>Painel de Ligações</span>
+					</a>
+				</li>
+			</ul>
+		</li><!-- End PABX Nav -->
 
 		<!-- Start Settings Nav -->
 		<li class="nav-item" >
