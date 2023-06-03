@@ -28,7 +28,8 @@ $(document).on("click",".modal",function(){
 $.extend( $.fn.datepicker.defaults, {format: 'dd-mm-yyyy', language: 'pt-BR', autoclose: true} );
 
 // let datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
-// $.fn.bootstrapDP = datepicker;  
+// $.fn.bootstrapDP = datepicker;
+
 
 $(() => {
     $('body').tooltip({
@@ -48,22 +49,29 @@ $(() => {
         },150)
     })
 
-    $(".selectWithAll").change(function(){
+    $('.selectWithAll').on('select2:select', function ({params:{data}}) {
+        // Do something
+        if (data.id === "-1") {
+            $(this).select2("close").val("-1").change();
+        }
+    });
+
+    $(".selectWithAll").on("change",function(e){
         if($(this).val() ==""){
-            $(this).val("-1").trigger("change")
+            $(this).val("-1");
         }
     
         if($(this).val().length > 1){
             if($(this).val().includes("-1")){
                 var select = $(this);
-    
+                
                 // Remove o item com valor "2" da seleção
                 var selectedValues = select.val(); // Obtém os valores selecionados
                 var indexToRemove = selectedValues.indexOf("-1"); // Encontra o índice do valor a ser removido
                 if (indexToRemove !== -1) { // Se o valor existe na seleção
                     selectedValues.splice(indexToRemove, 1); // Remove o valor do array
                 }
-                select.val(selectedValues).trigger("change"); // Atualiza a seleção do Select2
+                select.val(selectedValues); // Atualiza a seleção do Select2
             }
         }
         
@@ -73,7 +81,11 @@ $(() => {
         if ($(this).val() === "") {
             $(this).val(moment().format("DD/MM/YYYY"))
         }
-    })
+    });
+
+
+    
+
 
 })
 const ModalDraggable = () => $(".modal-dialog").draggable({ handle: ".modal-header" });
@@ -366,4 +378,26 @@ function floatToMoney(money) {
 
 renderizaTooltip = () => {
     return $(`[title]`).not('.select2-selection__choice, .select2-selection__rendered, .select2-selection__choice__remove').attr('data-toggle',"tooltip");
+}
+
+const secToTime = sec => {
+    var hours   = Math.floor(sec / 3600);
+    var minutes = Math.floor((sec - (hours * 3600)) / 60);
+    var seconds = sec - (hours * 3600) - (minutes * 60);
+
+    hours   = `00${hours}`.slice(-2);
+    minutes = `00${minutes}`.slice(-2);
+    seconds = `00${seconds}`.slice(-2);
+    
+    return hours + ':' + minutes + ':' + seconds;
+}
+
+const tempoParaSegundos = tempo => {
+    var partes   = tempo.split(":");
+    var horas    = parseInt(partes[0]);
+    var minutos  = parseInt(partes[1]);
+    var segundos = parseInt(partes[2]);
+    
+    var totalSegundos = horas * 3600 + minutos * 60 + segundos;
+    return totalSegundos;
 }

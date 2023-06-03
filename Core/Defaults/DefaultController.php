@@ -254,6 +254,7 @@ class DefaultController{
             $uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             $pathExcept = [
+                "/\//",
                 "/\/login/",
                 "/\/api\/validate_login/",
                 "/\/api\/login_auth_request/",

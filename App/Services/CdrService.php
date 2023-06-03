@@ -64,7 +64,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada
                         FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN '".date("Y-m-d", strtotime("-8 days"))." ' and '".date("Y-m-d")."' 
+                        WHERE Date(cdrCerto.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id FROM asterisk.devices)
                         GROUP BY data_truncada
