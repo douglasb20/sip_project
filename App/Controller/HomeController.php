@@ -53,8 +53,8 @@ class HomeController extends Controller{
 
             $dados               = $cdr->GetDataDashboard($where);
 
-            $horas               = array_column($cdr->AgrupaHoraFormatado(), "hora_truncada");
-            $datas               = array_column($cdr->AgrupaDataFormatado(), "data_truncada");
+            $horas               = isset($dadosGraf['HORA_TRUNCADA']) ? $dadosGraf['HORA_TRUNCADA'] : [];
+            $datas               = isset($dataGraf['DATA_TRUNCADA']) ? array_unique($dataGraf['DATA_TRUNCADA']) : [];
 
             $dados["chart"]      = json_encode($reports);
             $dados["horas"]      = json_encode($horas);
@@ -124,7 +124,7 @@ class HomeController extends Controller{
                     ];
                 }
 
-                $horas = array_column($cdr->AgrupaHoraFormatado($where), "hora_truncada");
+                $horas               = isset($dadosGraf['HORA_TRUNCADA']) ? $dadosGraf['HORA_TRUNCADA'] : [];
             }
             
 

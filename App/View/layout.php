@@ -1,3 +1,4 @@
+<?php ob_start(); ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -84,3 +85,8 @@
 <?php echo $this->render['js']; ?>
 
 </html>
+<?php
+$content = ob_get_contents();
+ob_end_clean();
+echo $this->minify_html($content); 
+?>

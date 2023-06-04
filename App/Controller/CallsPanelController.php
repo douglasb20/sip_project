@@ -16,7 +16,7 @@ class CallsPanelController extends Controller{
             $this->CheckSession();
             $dados = [] ;
 
-            $dados["sip"] = $this->SipDAO->getAll();
+            $dados["sip"] = $this->SipDAO->getAll(" sip_status = 1");
 
             $this
             ->setClassDivContainer("container-fluid")
