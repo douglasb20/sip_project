@@ -314,7 +314,7 @@
                 fontWeight: '200'
             },
             formatter: function (val, opts) {
-                return val !== 0 ? val : ''
+                return val !== 0.05 ? val : 0
             },
         },
         stroke: {
@@ -337,7 +337,7 @@
         tooltip: {
             y: {
                 formatter: function(val) {
-                    return val + " ligações"
+                    return (val !== 0.05 ? val : 0) + " ligações"
                 }
             }
         }

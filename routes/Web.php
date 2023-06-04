@@ -23,15 +23,8 @@ Router::group("/system", function(){
 });
 
 Router::get("/teste", function(){
-    $forgot = [
-        "id"      => 2,
-        "expires" => date("Y-m-d H:i:s", strtotime("+ 3 days"))
-    ];
-
-    $url_token = encrypt(json_encode($forgot));
-
-    echo URL_ROOT . route()->link("recover-password") .$url_token;
-    printar(decrypt("VEFFOUM3RDRhM1NnRXZLZklzZU5mZEhZbTBQdmlGN1NTYUJtNjFOWml5c0k1OTkrWG5lQlprRFRzQVJvd1B2Yg"));
+    $cdr = new CdrService;
+    printar($cdr->GeraDadosGraficoData(" DATE(calldate) = DATE_SUB(curdate(), interval 9 day) "));
 });
 
 

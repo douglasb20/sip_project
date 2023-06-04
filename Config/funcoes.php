@@ -510,6 +510,7 @@ function AllSessao(){
 function SetSessao(string $key, string|null $value){
     $_SESSION[$key] = $value;
 }
+
 function GetSessao(string $key){
     return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 }
@@ -565,6 +566,15 @@ function bitconverter($valor, $csdecimal=2){
     }else{
         return number_format(($valor/$divisao ),$csdecimal,".","").$sigla;
     }
+}
+
+function getTimeExecution(string | DateTime $start):string{
+    $fim        = date('Y-m-d H:i:s');
+
+    $timeInicio = strtotime($start);
+    $timeFim    = strtotime($fim);
+
+    return gmdate("H:i:s", $timeFim - $timeInicio);
 }
 
 ?>

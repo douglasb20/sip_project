@@ -254,7 +254,6 @@ class DefaultController{
             $uri        = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
             $pathExcept = [
-                "/\//",
                 "/\/login/",
                 "/\/api\/validate_login/",
                 "/\/api\/login_auth_request/",
@@ -287,6 +286,10 @@ class DefaultController{
                     }
                 }
             }else{
+                if($uri === "/"){
+                    return false;
+                }
+
                 if(!$except){
                     throw new Exception("Você não tem permissão para acessar este recurso!",-1);
                 }
@@ -572,6 +575,33 @@ class DefaultController{
         } 
     }
 
+    public function minify_html($html){
+        $search =   array(
+                        '/(\n|^)(\x20+|\t)/',
+                        '/(\n|^)\/\/(.*?)(\n|$)/',
+                        '/\n/',
+                        '/\<\!--.*?-->/',
+                        '/(\x20+|\t)/', # Delete multispace (Without \n)
+                        '/\>\s+\</', # strip whitespaces between tags
+                        '/(\"|\')\s+\>/', # strip whitespaces between quotation ("') and end tags
+                        '/=\s+(\"|\')/'
+                    ); # strip whitespaces between = "'
+
+        $replace =  array(
+                        "\n",
+                        "\n",
+                        " ",
+                        "",
+                        " ",
+                        "><",
+                        "$1>",
+                        "=$1"
+                    );
+
+        $html = preg_replace($search,$replace,$html);
+        return $html;
+    }
+
     /**
     * ob_end, salvando conteúdo na variável conforme parte do corpo
     * 
@@ -581,7 +611,6 @@ class DefaultController{
     protected function captureEnd(string $name): void{
         try{
             $capture = ob_get_contents();
-            // $capture = preg_replace('/\@(\w*?)(\([^)]*\))([\s\S]*?)\@end(\w*)/', '$1$2{$3}', $capture);
 
             $resultado = preg_replace_callback("/{{(.*?)}}/", function($matches){
                 $chave = $matches[1];
@@ -589,7 +618,7 @@ class DefaultController{
                 return eval("return {$chave};");
             }, $capture);
 
-            $this->render[(string)$name] = $resultado;
+            $this->render[(string)$name] = $this->minify_html($resultado);
             ob_end_clean();
         }catch(Exception $e){
             throw $e;
