@@ -618,7 +618,7 @@ class DefaultController{
                 return eval("return {$chave};");
             }, $capture);
 
-            $this->render[(string)$name] = $this->minify_html($resultado);
+            $this->render[(string)$name] = $resultado;
             ob_end_clean();
         }catch(Exception $e){
             throw $e;
