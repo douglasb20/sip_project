@@ -106,6 +106,8 @@ class ComposerStaticInite33ae91ab06d9f3646e9569bfd343bf0
     );
 
     public static $classMap = array (
+        'AGI' => __DIR__ . '/..' . '/welltime/phpagi/src/phpagi.php',
+        'AGI_AsteriskManager' => __DIR__ . '/..' . '/welltime/phpagi/src/phpagi-asmanager.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',

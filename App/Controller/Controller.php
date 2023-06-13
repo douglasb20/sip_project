@@ -22,6 +22,7 @@ class Controller extends \Core\Defaults\DefaultController{
         try{
             if(!$this->validateAuth()){
                 route()->redirect("login");
+                die();
             }
         }catch(\Exception $e){
             throw $e;
