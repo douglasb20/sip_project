@@ -10,6 +10,7 @@ class HomeController extends Controller{
     public function Index(){
         try {
             $this->CheckSession();
+            
             $cdr             = (new \App\Services\CdrService);
             $dadosGraf       = $cdr->GeraDadosGraficoHora();
             $dataGraf        = $cdr->GeraDadosGraficoData();
