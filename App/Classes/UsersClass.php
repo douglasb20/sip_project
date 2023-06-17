@@ -89,6 +89,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             SetSessao("ramal", $user['id_sip']);
             SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')) );
             SetSessao("lastlogin", $user['user_lastlogin'] );
+            SetSessao("id_empresa", $user['id_empresa'] );
+            SetSessao("admin", $user['user_admin'] );
 
             $bindUser = [
                 'user_forgotpassword' => 0,
@@ -211,6 +213,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             $user_lastname = trim(strtoupper($user_lastname));
             $user_email    = trim(strtolower($user_email));
             $user_fullname = "{$user_nome} {$user_lastname}";
+            $id_empresa    = GetSessao('id_empresa');
 
             $this->ValidaLoginlUser($user_login, $id);
             $this->ValidaEmailUser($user_email, $id);
@@ -230,7 +233,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 $bindUser['user_pass'] = password_hash(trim($user_pass), PASSWORD_BCRYPT);
             }
 
-            $this->UsersDAO->update($bindUser, "id = {$id}");
+            $this->UsersDAO->update($bindUser, "id = {$id} AND id_empresa = {$id_empresa}");
 
             if($id === GetSessao("id_usuario")){
                 SetSessao("ramal", $id_sip);
@@ -257,6 +260,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             $user_email    = strtolower($user_email);
 
             $user_fullname = "{$user_nome} {$user_lastname}";
+            $id_empresa    = GetSessao('id_empresa');
 
             $bindUser = [
                 "user_fullname" => $user_fullname,
@@ -267,6 +271,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "user_pass"     => password_hash($user_pass, PASSWORD_BCRYPT),
                 "user_passres"  => 0,
                 "user_sts"      => 1,
+                "id_empresa"    => $id_empresa
             ];
 
             $this->UsersDAO->insert($bindUser);
@@ -343,8 +348,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
     */
     public function ToggleUserStatus(int $id_user, int $status){
         try{
-
-            $this->UsersDAO->update(["user_sts" => $status], "id = {$id_user}");
+            $id_empresa    = GetSessao('id_empresa');
+            $this->UsersDAO->update(["user_sts" => $status], "id = {$id_user} AND id_empresa = {$id_empresa}");
 
         }catch(\Exception $e){
             throw $e;

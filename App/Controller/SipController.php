@@ -27,8 +27,9 @@ class SipController extends Controller{
         try{
             $this->CheckSession();
 
-            $input = $this->getPost();
-
+            $input      = $this->getPost();
+            $id_empresa = GetSessao('id_empresa');
+            
             extract($input);
             $where = "1=1";
 
@@ -40,6 +41,9 @@ class SipController extends Controller{
                     $where .= " AND sip_status = '{$sip_status}'";
                 }
             }
+
+            
+            $where .= " AND id_empresa={$id_empresa}";
 
             $sip = $this->SipDAO->getAll($where);
 
@@ -102,8 +106,9 @@ class SipController extends Controller{
 
             $id_sip     = $this->getQuery("id_sip");
             $sip_status = $this->getQuery("sip_status");
+            $id_empresa = GetSessao('id_empresa');
 
-            (new \App\Classes\SipClass)->ToggleSipStatus($id_sip,$sip_status);
+            (new \App\Classes\SipClass)->ToggleSipStatus($id_sip,$sip_status, $id_empresa);
 
             $this->masterMysqli->commit();
             $this->retorna();
