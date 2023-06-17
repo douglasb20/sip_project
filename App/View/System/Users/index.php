@@ -166,7 +166,13 @@ const renderAcoes = (data, type, row) => {
     <?php 
         if($this->CheckPermission(10)){
     ?>
-            botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+            if(row.user_admin === "1"){
+                if("{{GetSessao('admin')}}" === "1"){
+                    botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+                }
+            }else{
+                botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+            }
     <?php
         }
     ?>
