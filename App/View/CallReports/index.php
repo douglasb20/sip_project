@@ -81,8 +81,9 @@ const GeraTabela = () => {
             columns: [
                 { data: 'calldate',         title: "Data",        className: "text-center", render: renderFormataDataHora},
                 { data: 'src',              title: "Origem",      className: "text-center", render: renderSrc, orderable: false },
-                { data: 'dst',              title: "Destino",     className: "text-center", render: renderDst , orderable: false },
+                { data: 'dstchannel',       title: "Destino",     className: "text-center", render: renderDst , orderable: false },
                 { data: 'time_duration',    title: "Duração",     className: "text-center", orderable: false },
+                { data: 'protocolo',        title: "Protocolo",   className: "text-center", orderable: false },
                 { data: 'status',           title: "Status",      className: "text-center", render: renderStatus },
             ],
             data: resp,
@@ -93,33 +94,44 @@ const GeraTabela = () => {
     })
 }
 
-
-
 const renderSrc = (data, type, {src_name}) => {
     let src = src_name === null ? data : `${data} - (${src_name})`;
 
     return src;
 }
 
-const renderDst = (data, type, {dst_name}) => {
-    let dst = dst_name === null ? data : `${data} - (${dst_name})`;
+const renderDst = (data, type, {dst_name, dst}) => {
+    let dstRender
+    if(dst_name){
+        dstRender = `${data} - ${dst_name}`
+    }else{
+        if(!data){
+            dstRender = data
+        }else{
+            dstRender = dst
+        }
+    }
 
-    return dst;
+    return dstRender;
 }
 
-const renderStatus = (data, type, row) => {
+const renderStatus = (data, type, {dstchannel}) => {
     let status = "";
-    switch(data){
-        case "NO ANSWER":
-            status = `<span class="badge bg-danger">Não atendida</span>`;
-        break;
-        case "BUSY":
-            status = `<span class="badge bg-warning">Ocupada</span>`;
-        break;
-
-        case "ANSWERED":
-            status = `<span class="badge bg-success">Atendida</span>`;
-        break;
+    if(dstchannel === ""){
+        status = `<span class="badge bg-danger">Parou na URA</span>`;
+    }else{
+        switch(data){
+            case "NO ANSWER":
+                status = `<span class="badge bg-danger">Não atendida</span>`;
+            break;
+            case "BUSY":
+                status = `<span class="badge bg-warning">Ocupada</span>`;
+            break;
+    
+            case "ANSWERED":
+                status = `<span class="badge bg-success">Atendida</span>`;
+            break;
+        }
     }
 
     return status;

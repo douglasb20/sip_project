@@ -191,6 +191,7 @@
 <?php $this->captureStart('js'); ?>
 
 <script>
+    let chartColors = ['#4154f1', '#2eca6a', '#ff771d','#FFDA6F'];
     let chart          = JSON.parse('{{$chart}}');
     let horas          = JSON.parse('{{$horas}}');
 
@@ -203,6 +204,7 @@
     let modalRetornado = new bootstrap.Modal("#modalRetornado",modalOption);
     let grafHoras;
     let tableCallback;
+
 
     grafHoras = new ApexCharts(document.querySelector("#reportsChart"), {
         series: chart,
@@ -225,7 +227,7 @@
         markers: {
             size: 4
         },
-        colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        colors: chartColors,
         fill: {
             type: "gradient",
             gradient: {
@@ -293,7 +295,7 @@
                 }
             },
         },
-        colors: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        colors: chartColors,
         plotOptions: {
             bar: {
                 horizontal: false,
@@ -347,7 +349,7 @@
         tooltip: {
             trigger: 'item'
         },
-        color: ['#4154f1', '#2eca6a', '#ff771d','#f9c784'],
+        color: chartColors,
         legend: {
             orient: 'horizontal',
             // right: '10px',

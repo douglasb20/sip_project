@@ -52,7 +52,7 @@
                                         foreach($devices as $key => $d){
                                             
                                     ?>
-                                        <option value="<?=$d['id']?>"><?=$d['text']?></option>
+                                        <option value="<?=$d['id_sip']?>"><?=$d['text']?></option>
                                     <?php
                                         }
                                     ?>
@@ -69,7 +69,7 @@
                                         foreach($devices as $key => $d){
                                         
                                     ?>
-                                        <option value="<?=$d['id']?>"><?=$d['text']?></option>
+                                        <option value="<?=$d['id_sip']?>"><?=$d['text']?></option>
                                     <?php
                                         }
                                     ?>

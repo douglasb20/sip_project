@@ -6,6 +6,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 class CdrService extends \Core\Defaults\DefaultModel{
     private $mysqli;
+    private $dbname;
 
     function __construct(){
         $host     = $_ENV['CDRDBHOST'];
@@ -14,6 +15,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
         $dbname   = $_ENV['CDRDBNAME'];
         $port     = $_ENV['CDRDBPORT'];
         
+        $this->dbname = $dbname;
         $this->tabela = "cdrCerto";
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
@@ -34,10 +36,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function GraficoHora(string $hora){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, status
-                        FROM asteriskcdrdb.cdrCerto
+                        FROM {$this->dbname}.{$this->tabela}
                         WHERE cdrCerto.calldate BETWEEN '{$hora}:00:00' and '{$hora}:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id FROM asterisk.devices)
+                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -49,9 +51,9 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function GraficoData(string $data){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, status
-                        FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id FROM asterisk.devices)
+                        FROM {$this->dbname}.{$this->tabela}
+                        WHERE Date({$this->tabela}.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -65,10 +67,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada,
                         status, 
                         count(*) registros
-                        FROM asteriskcdrdb.cdrCerto
+                        FROM {$this->dbname}.{$this->tabela}
                         WHERE Date(cdrCerto.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
-                        AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id FROM asterisk.devices)
+                        AND status IN ('ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -84,10 +86,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         DATE_FORMAT(calldate, '%Y-%m-%d %H:00:00') AS hora_truncada, 
                         status, 
                         count(*) registros
-                        FROM asteriskcdrdb.cdrCerto
+                        FROM {$this->dbname}.{$this->tabela}
                         WHERE {$where}
-                        AND status IN ('BUSY' , 'ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id FROM asterisk.devices)
+                        AND status IN ('ANSWERED', 'NO ANSWER')
+                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -103,7 +105,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM asteriskcdrdb.cdrCerto
                         WHERE Date(cdrCerto.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id FROM asterisk.devices)
+                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada
                         order by calldate
                     ";
@@ -123,8 +125,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             if(count($dados) === 1){
                 $dadosGraf = [
-                    "BUSY"       => ["data" => [0]],
-                    "CONGESTION" => ["data" => [0]],
+                    // "BUSY"       => ["data" => [0]],
+                    // "CONGESTION" => ["data" => [0]],
                     "ANSWERED"   => ["data" => [0]],
                     "NO_ANSWER"  => ["data" => [0]],
                     "HORA_TRUNCADA" => []
@@ -136,19 +138,19 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($dados as $key => $dado){
 
-                if($dado['status'] === "BUSY"){
-                    $dadosGraf["BUSY"]["data"][] = $dado["registros"];
-                }else{
+                // if($dado['status'] === "BUSY"){
+                //     $dadosGraf["BUSY"]["data"][] = $dado["registros"];
+                // }else{
                     
-                    $dadosGraf["BUSY"]["data"][] = 0;
-                }
+                //     $dadosGraf["BUSY"]["data"][] = 0;
+                // }
 
-                if($dado['status'] === "CONGESTION"){
-                    $dadosGraf["CONGESTION"]["data"][] = $dado["registros"];
-                }else{
+                // if($dado['status'] === "CONGESTION"){
+                //     $dadosGraf["CONGESTION"]["data"][] = $dado["registros"];
+                // }else{
                     
-                    $dadosGraf["CONGESTION"]["data"][] = 0;
-                }
+                //     $dadosGraf["CONGESTION"]["data"][] = 0;
+                // }
 
                 if($dado['status'] === "ANSWERED"){
                     $dadosGraf["ANSWERED"]["data"][] = $dado["registros"];
@@ -189,8 +191,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($dadosGraf as $key => $graf){
                 
-                $grafico["BUSY"]["data"][]       = isset($graf['BUSY'])         ? $graf['BUSY']["data"]         : 0.05;
-                $grafico["CONGESTION"]["data"][] = isset($graf['CONGESTION'])   ? $graf['CONGESTION']["data"]   : 0.05;
+                // $grafico["BUSY"]["data"][]       = isset($graf['BUSY'])         ? $graf['BUSY']["data"]         : 0.05;
+                // $grafico["CONGESTION"]["data"][] = isset($graf['CONGESTION'])   ? $graf['CONGESTION']["data"]   : 0.05;
                 $grafico["ANSWERED"]["data"][]   = isset($graf['ANSWERED'])     ? $graf['ANSWERED']["data"]     : 0.05;
                 $grafico["NO ANSWER"]["data"][]  = isset($graf['NO ANSWER'])    ? $graf['NO ANSWER']["data"]    : 0.05;
 
@@ -217,7 +219,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         WHERE
                             1=1
                             AND {$where}
-                            AND src NOT IN (SELECT id FROM asterisk.devices)
+                            AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         order by cdrCerto.calldate desc) as cdr_formatado
                         on cdr_formatado.status = subquery.status
                         group by subquery.status";
@@ -236,22 +238,22 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GetLinkedQueue(){
         try{
-            $query      = "SELECT extension, descr FROM asterisk.queues_config where extension != 99";
+            $query      = "SELECT * FROM sip_lanteca.queue where queue_code not in (99,9900)";
             $exts       = $this->executeQuery($query);
             $extensions = [];
             $re         = '/(\d+)@/m';
 
-            foreach(array_column($exts, "extension") as $key => $ext){
-                $qry                        = "SELECT group_concat(data) as linked FROM asterisk.queues_details WHERE keyword = 'member' AND id = {$ext}";
-                $resp                       = $this->executeQuery($qry)[0]['linked'];
-                $extensions[$ext]['nome']   = $exts[$key]["descr"];
-                $extensions[$ext]['ramais'] = $resp;
+            foreach($exts as $key => $ext){
+                $qry                        = "SELECT member FROM sip_lanteca.queue_members WHERE id_queue = {$ext['id_queue']}";
+                $resp                       = $this->executeQuery($qry);
+                $extensions[$ext['queue_code']]['nome']   = $ext["queue_name"];
+                $extensions[$ext['queue_code']]['ramais'] = array_column($resp,"member");
             }
 
-            foreach($extensions as $key => $exts){
-                preg_match_all($re, $exts['ramais'], $matches);
-                $extensions[$key]['ramais'] = $matches[1];
-            }
+            // foreach($extensions as $key => $exts){
+            //     preg_match_all($re, $exts['ramais'], $matches);
+            //     $extensions[$key]['ramais'] = $matches[1];
+            // }
 
             return $extensions;
         }catch(\Exception $e){
@@ -266,10 +268,10 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($queues as $key => $queue){
                 $result = ["name" => $queue['nome']];
-                $query = "SELECT count(*) as qtd FROM cdrCerto
+                $query = "SELECT count(*) as qtd FROM {$this->dbname}.{$this->tabela}
                 WHERE {$where}
-                    AND src not in (SELECT id FROM asterisk.devices)
-                    AND dst in (".implode(",", $queue['ramais']).")";
+                    AND src not in (SELECT id_sip FROM sip_lanteca.sip)
+                    AND dstchannel in (".implode(",", $queue['ramais']).")";
                 
                 $registo = $this->executeQuery($query)[0]['qtd'];
                 $result["value"] = (int)$registo;
@@ -285,7 +287,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GetDevices(){
         try{
-            $query = "SELECT id, concat(id, ' - ', description) as text  FROM asterisk.devices";
+            $query = "SELECT id_sip, concat(id_sip, ' - ', callerId) as text  FROM sip_lanteca.sip";
             $devices = $this->executeQuery($query);
 
             return $devices;
@@ -299,11 +301,11 @@ class CdrService extends \Core\Defaults\DefaultModel{
         try{
             $query = "SELECT 
                         c.*,
-                        sec_to_time(c.tempo) as time_duration,
-                        (SELECT d.description FROM asterisk.devices as d WHERE d.id = c.dst) as dst_name,
-                        (SELECT d.description FROM asterisk.devices as d WHERE d.id = c.src) as src_name
+                        sec_to_time(cast(c.duration as int)) as time_duration,
+                        (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.dstchannel) as dst_name,
+                        (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.src) as src_name
                     FROM
-                        asteriskcdrdb.cdrCerto as c
+                        asterisk.{$this->tabela} as c
                     WHERE
                         {$where}";
 

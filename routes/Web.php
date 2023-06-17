@@ -24,7 +24,7 @@ Router::group("/system", function(){
 
 Router::get("/teste", function(){
     $cdr = new CdrService;
-    printar($cdr->GeraDadosGraficoData(" DATE(calldate) = DATE_SUB(curdate(), interval 9 day) "));
+    printar($cdr->GeraDadosGraficosGrupo(" DATE(calldate) = curdate() "));
 });
 
 
