@@ -14,9 +14,9 @@ class HomeController extends Controller{
             $cdr             = (new \App\Services\CdrService);
             $dadosGraf       = $cdr->GeraDadosGraficoHora();
             $dataGraf        = $cdr->GeraDadosGraficoData();
-
+            
             $where           = " DATE(calldate) = CURDATE() ";
-            $whereRealizadas = " {$where} and src IN (SELECT id FROM asterisk.devices)";
+            $whereRealizadas = " {$where} and src IN (SELECT id_sip FROM sip_lanteca.sip)";
             $realizadas      = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
             $reports         = [];
@@ -28,10 +28,10 @@ class HomeController extends Controller{
                         "name" => "Atentidas",
                         "data" => $dadosGraf['ANSWERED']['data']
                     ],
-                    [
-                        "name" => "Ocupadas",
-                        "data" => $dadosGraf['BUSY']['data']
-                    ],
+                    // [
+                    //     "name" => "Ocupadas",
+                    //     "data" => $dadosGraf['BUSY']['data']
+                    // ],
                     [
                         "name" => "Perdidas",
                         "data" => $dadosGraf['NO_ANSWER']['data']
@@ -114,10 +114,10 @@ class HomeController extends Controller{
                             "name" => "Atentidas",
                             "data" => $dadosGraf['ANSWERED']['data']
                         ],
-                        [
-                            "name" => "Ocupadas",
-                            "data" => $dadosGraf['BUSY']['data']
-                        ],
+                        // [
+                        //     "name" => "Ocupadas",
+                        //     "data" => $dadosGraf['BUSY']['data']
+                        // ],
                         [
                             "name" => "Perdidas",
                             "data" => $dadosGraf['NO_ANSWER']['data']
@@ -129,7 +129,7 @@ class HomeController extends Controller{
             }
             
 
-            $whereRealizadas     = " {$where} and src in (SELECT id FROM asterisk.devices)";
+            $whereRealizadas     = " {$where} and src in (SELECT id_sip FROM sip_lanteca.sip)";
             $realizadas          = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount     = count($realizadas);
 
