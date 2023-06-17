@@ -39,8 +39,9 @@ class CallbackClass extends \Core\Defaults\DefaultClassController{
             extract($dados);
 
             $bindCallback = [
-                "cpf_callback" => $cpf,
-                "numero_callback" => $numero
+                "cpf_callback"    => $cpf,
+                "numero_callback" => $numero,
+                "id_empresa"      => $id_empresa
             ];
 
             $this->CallbackDAO->insert($bindCallback);
