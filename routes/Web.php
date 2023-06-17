@@ -24,7 +24,9 @@ Router::group("/system", function(){
 
 Router::get("/teste", function(){
     $cdr = new CdrService;
-    printar($cdr->GeraDadosGraficosGrupo(" DATE(calldate) = curdate() "));
+    $arquivo = ROOT_PATH . '/queues-base.conf';
+    $config  = (new  \App\Classes\ConfiLoaderClass)->loadConfig($arquivo);
+    printar($config);
 });
 
 

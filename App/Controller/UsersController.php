@@ -18,7 +18,7 @@ class UsersController extends Controller{
             $this->CheckSession();
 
             $permissions = (new \App\Classes\UsersClass)->GetPermissions();
-            $sip         = $this->SipDAO->getAll();
+            $sip         = $this->SipDAO->getAll(" id_empresa = " . GetSessao("id_empresa"));
 
             $this
             ->setBreadcrumb(["Sistema", "Usuários"])
@@ -46,6 +46,7 @@ class UsersController extends Controller{
         try{
             $this->CheckSession();
             $input = $this->getPost();
+            $id_empresa = GetSessao('id_empresa');
 
             extract($input);
             $where = "1=1";
@@ -65,6 +66,7 @@ class UsersController extends Controller{
                 $where .= " AND DATE(user_lastlogin) BETWEEN '$data_de' AND '$data_ate' ";
             }
 
+            $where .= " AND id_empresa={$id_empresa}";
 
             $users = $this->UsersDAO->getView($where);
             $this->data = $users;
@@ -82,9 +84,10 @@ class UsersController extends Controller{
         try{
             $this->CheckSession();
 
-            $id = $this->getQuery("id");
+            $id         = $this->getQuery("id");
+            $id_empresa = GetSessao('id_empresa');
 
-            $user = $this->UsersDAO->getView(" id={$id}")[0];
+            $user       = $this->UsersDAO->getView(" id={$id} AND id_empresa = {$id_empresa}")[0];
 
             $this->data = $user;
             $this->retorna();

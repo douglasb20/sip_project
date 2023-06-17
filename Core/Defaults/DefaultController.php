@@ -394,7 +394,7 @@ class DefaultController{
 
             $permission = $this->UsersPermissionsXUsersDAO->CheckPermission(GetSessao('id_usuario'), $id_permissao);
 
-            if(GetSessao('id_usuario') === "1"){
+            if(GetSessao('admin') === "1"){
                 return true;
             }else{
                 if(!empty($permission)){

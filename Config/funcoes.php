@@ -413,40 +413,6 @@ function handler( $errNo, $errMsg, $errFile, $errLine ){
     die();
 }
 
-
-// Carrega docx
-function read_word($input_file){	
-    $strip_texts = '';
-        $texts = ''; 	
-        if(!$input_file || !file_exists($input_file)) return false;
-            
-        $zip = zip_open($input_file);
-            
-        if (!$zip || is_numeric($zip)) return false;
-
-        while ($zip_entry = zip_read($zip)) {
-                
-            if (zip_entry_open($zip, $zip_entry) == FALSE) continue;
-                
-            if (zip_entry_name($zip_entry) != "word/document.xml") continue;
-
-            $texts .= zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
-                
-            zip_entry_close($zip_entry);
-        }
-
-        zip_close($zip);
-            
-    $texts = str_replace("</w:p>", "\r\n", $texts);
-    $texts = preg_replace("/<w\:i\/>(.*?)<w:t(.*?)>(.*?)<\/w\:t>/is", "<w:i/>$1<w:t$2><i>$3</i></w:t>", $texts);
-    $texts = preg_replace("/<w\:b\/>(.*?)<w:t(.*?)>(.*?)<\/w\:t>/is", "<w:b/>$1<w:t$2><b>$3</b></w:t>", $texts);
-    $texts = preg_replace("/<w\:u(.*?)\/>(.*?)<w:t(.*?)>(.*?)<\/w\:t>/is", "<w:u$1/>$2<w:t$3><u>$4</u></w:t>", $texts);
-
-    $strip_texts = nl2br(strip_tags($texts,''));
-
-    return $texts;
-}
-
 function convertDateToScreen($data, $separator = "/") {
     //convert date to screen with separator in day/month/year format
     $data = substr ( $data, 0, 10 );
