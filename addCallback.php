@@ -9,6 +9,8 @@ array_shift($args) ;
 $cpf = $args[0];
 $numero = $args[1];
 
+$id_empresa = 1;
+
 $ch = curl_init();
 
 $headers =  [
@@ -16,11 +18,17 @@ $headers =  [
             ];
 
 
-curl_setopt($ch, CURLOPT_URL,"https://teste.lanteca.com.br/api/add_callback/{$cpf}/{$numero}");
+curl_setopt($ch, CURLOPT_URL,"http://sip.lanteca.com.br/api/add_callback/{$cpf}/{$numero}/{$id_empresa}");
 curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 curl_exec($ch);
+
+if(curl_error($ch)){
+    echo curl_error($ch);
+}else{
+    echo "Solicitação feita com sucesso";
+}
 
