@@ -271,7 +271,7 @@ class DefaultController{
             }
             
             if(GetSessao("autenticado") == true){
-                if(GetSessao('id_usuario') === "1"){
+                if(GetSessao('admin') === "1"){
                     return true;
                 }
 
@@ -286,13 +286,7 @@ class DefaultController{
                     }
                 }
             }else{
-                if($uri === "/"){
-                    return false;
-                }
-
-                if(!$except){
-                    throw new Exception("Você não tem permissão para acessar este recurso!",-1);
-                }
+                return false;
             }
 
             return $result;
