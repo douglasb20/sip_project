@@ -89,7 +89,7 @@
                         </span>
                         <small><?=$s['callerId']?></small>
                         <div class="text-sm">
-                            <span class="state">Sem ligações</span>
+                            <span class="state">Off-Line</span>
                             <span class="callDuration"></span>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ $(function(){
 function ConnectToWS() {
     try{
 
-        socket          = new WebSocket('ws://localhost:8080');
+        socket          = new WebSocket("{{$_ENV['URL_WEBSOCKET']}}");
         let alertServer = $(".alert-server");
     
         socket.onopen = function(event) {
