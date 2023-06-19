@@ -126,7 +126,7 @@ function ConnectToWS() {
                 alertServer.html("<span class='badge text-bg-success rounded-circle'>&nbsp</span>");
                 alertServer.removeClass("text-danger").addClass("text-success");
                 clearInterval(tryReconnect);
-                PeersInfo();
+                // PeersInfo();
 
             }catch(error){
                 console.log("Erro to open: ", error);
