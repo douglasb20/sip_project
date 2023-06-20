@@ -82,6 +82,23 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 throw new \Exception("Usuário inativo.", -1);
             }
 
+            $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+
+            $token = [
+                "iss"        => $actual_link,
+                "aud"        => $actual_link,
+                "sub"        => $user['id'],
+                "id"         => $user['id'],
+                "name"       => $user['user_nome'],
+                "fullname"   => $user['user_fullname'],
+                "email"      => $user['user_email'],
+                "reseted"    => $user['user_passres'],
+                "last_login" => $user['user_lastlogin'],
+                "iat"        => time(),
+                "exp"        => (time() +  ((60 * 60) * 8))  // numero 2 é a quantidade de horas que irá expirar
+            ];
+
+            $jwt = JWT::encode($token, $_ENV['KEY_JWT'], 'HS256');
 
             SetSessao("id_usuario", $user['id']);
             SetSessao("nome_usuario", $user['user_fullname']);
@@ -91,6 +108,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             SetSessao("lastlogin", $user['user_lastlogin'] );
             SetSessao("id_empresa", $user['id_empresa'] );
             SetSessao("admin", $user['user_admin'] );
+            SetSessao("jwt", $jwt );
 
             $bindUser = [
                 'user_forgotpassword' => 0,

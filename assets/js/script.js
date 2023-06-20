@@ -401,3 +401,305 @@ const tempoParaSegundos = tempo => {
     var totalSegundos = horas * 3600 + minutos * 60 + segundos;
     return totalSegundos;
 }
+
+let socket       = null
+let tryReconnect = null;
+let timers       = [];
+
+function ConnectToWS(host, jwt ="") {
+
+    let alertServer = $(".alert-server");
+    try{
+
+        socket          = new WebSocket(host);
+    
+        socket.onopen = function() {
+            try{
+                // PeersInfo();
+            }catch(error){
+                console.log("Erro to open: ", error);
+            }
+        };
+        
+        socket.onerror = function(error) {
+            alertServer.text('Erro do WebSocket: ' + error);
+            alertServer.addClass("text-danger").removeClass("text-success");
+
+            if (!socket.CLOSED ) {
+                socket.close()
+            }
+        };
+    
+        socket.onclose = function() {
+            alertServer.html("<span class='badge text-bg-danger rounded-circle'>&nbsp</span>");
+            alertServer.addClass("text-danger").removeClass("text-success")
+            clearInterval(tryReconnect);
+
+            $(".extensionsSip")
+            .addClass("offline")
+            .find(".state")
+            .text("Off-Line");
+            tryReconnect = setInterval(() => ConnectToWS(host, jwt),5000)
+        };
+    
+        socket.onmessage = function (event) {
+    
+            const accepts = [
+                "Newchannel",
+                "NewCallerid",
+                "DialState",
+                "Newstate",
+                "DialBegin",
+                "DialEnd",
+                "Hangup",
+                "BridgeEnter",
+                "BridgeLeave",
+                "CoreShowChannel",
+                "PeerStatus",
+                "PeerEntry",
+                "PeerlistComplete",
+                "ConnectionStatus",
+            ];
+            
+            let eventos = JSON.parse(event.data);
+            
+            if (accepts.includes(eventos.Event)) {
+                let evt = eventos;
+                let caller;
+                let dst;
+                
+                switch (evt.Event) {
+                    
+                    case "DialBegin":
+                        caller = evt.CallerIDNum;
+                        dst    = evt.DestCallerIDNum;
+    
+                        var qdCaller = document.querySelector(`.sip-${caller}`);
+                        // let qdDst = document.querySelector(`#${dst}`);
+                        if (qdCaller) {
+                            qdCaller.classList.remove(...["onCall","riging"]);
+                            qdCaller.classList.add("calling");
+                            document.querySelector(`.sip-${caller} .state`).innerHTML = `Ligando para ${dst}`
+                        }
+    
+                    break;
+
+                    case "Hangup":
+                    case "BridgeLeave":
+                        caller = evt.CallerIDNum;
+                        
+                        qdCaller = document.querySelector(`.sip-${caller}`);
+                        if (qdCaller) {
+                            qdCaller.classList.remove(...["ringing","calling","onCall"]);
+                            document.querySelector(`.sip-${caller} .state`).innerHTML = `Sem Ligação`
+                            document.querySelector(`.sip-${caller} .callDuration`).innerHTML = ``
+                            
+                            clearInterval(timers[`sip${caller}`]); // Para o primeiro intervalo após 5 segundos
+                        }
+                    break;
+
+                    case "BridgeEnter":
+                        caller = evt.CallerIDNum;
+                        dst = evt.ConnectedLineNum
+
+                        qdCaller = document.querySelector(`.sip-${caller}`);
+                        if (qdCaller) {
+                            qdCaller.classList.remove(...["ringing","calling"]);
+                            qdCaller.classList.add("onCall");
+    
+                            let segundos = 0;
+                            document.querySelector(`.sip-${caller} .state`).innerHTML = `${dst}:`;
+                            document.querySelector(`.sip-${caller} .callDuration`).innerHTML = secToTime(segundos);
+                            let intervalId = setInterval(function() {
+                                document.querySelector(`.sip-${caller} .callDuration`).innerHTML = secToTime(++segundos);
+                            },1E3)
+    
+                            timers[`sip${caller}`] = intervalId;
+                        }
+                    break;
+
+                    case "Newstate":
+                        caller   = evt.CallerIDNum;
+                        dst      = evt.ConnectedLineNum
+                        qdCaller = document.querySelector(`.sip-${caller}`);
+    
+                        if (qdCaller) {
+                            if (evt.ChannelStateDesc === "Ringing") {
+                                
+                                qdCaller.classList.remove(...["onCall","calling"]);
+                                qdCaller.classList.add("ringing");
+                                document.querySelector(`.sip-${caller} .state`).innerHTML = `Recebendo ligação de ${dst}`
+                                TocaRing()
+                            }
+                        }
+                    break;
+
+                    case "CoreShowChannel":
+                        GetCoreInfo(evt)
+                    break;
+
+                    case "PeerStatus":
+                        peer  = evt.Peer.replace("SIP/","");
+                        qdSip = $(`.sip-${peer}`);
+
+                        if(qdSip){
+                            if(evt.PeerStatus === "Registered"){
+                                qdSip
+                                .removeClass("offline")
+                                .find(".state")
+                                .text("Sem ligações")
+                            }
+                            if(evt.PeerStatus === "Unregistered"){
+                                qdSip
+                                .addClass("offline")
+                                .find(".state")
+                                .text("Off-Line");
+                            }
+                        }
+                    break;
+
+                    case "PeerEntry":
+                        peer  = evt.ObjectName;
+                        qdSip = $(`.sip-${peer}`);
+                        
+                        if(qdSip){
+                            if(evt.Status.includes("OK")){
+                                qdSip.removeClass("offline");
+                                qdSip.find(".state").text("Sem ligações")
+                            }
+                            if(evt.Status === "UNKNOWN"){
+                                qdSip.addClass("offline");
+                                qdSip.find(".state").text("Off-Line")
+                            }
+                        }
+                    break;
+                    
+                    case "PeerlistComplete":
+                        SipsInfo();
+                    break;
+                    
+                    case "ConnectionStatus":
+                        StatusConnection(evt);
+                    break;
+
+                }
+            }
+    
+        };
+    }catch(error){
+        console.log(error)
+    }
+
+    function SipsInfo(){
+        socket.send(JSON.stringify(
+            {
+                Action   : "CoreShowChannels",
+            }
+        ))
+    }
+
+    function PeersInfo(){
+        socket.send(JSON.stringify(
+            {
+                Action   : "SIPpeers",
+            }
+        ))
+    }
+
+    function StatusOk() {
+        alertServer.html("<span class='badge text-bg-success rounded-circle'>&nbsp</span>");
+        alertServer.removeClass("text-danger").addClass("text-success");
+        clearInterval(tryReconnect);
+    }
+
+    function StatusConnection(even) {
+        if (even.status === "OK") {
+            StatusOk();
+        }
+    }
+
+    function GetCoreInfo(even){
+        
+        let channel = even.Channel;
+        channel     = channel.replace(channel.slice(-9),"");
+        channel     = channel.replace("SIP/","");
+
+        switch(even.Application){
+            case "AppDial":
+                let caller = even.ConnectedLineNum;
+                let dst    = document.querySelector(`.sip-${channel}`);
+                
+                switch(even.ChannelStateDesc){
+
+                    case "Ringing":
+                        if(dst){
+                            dst.classList.remove(...["onCall","calling"]);
+                            dst.classList.add("ringing");
+                            document.querySelector(`.sip-${channel} .state`).innerHTML = `Recebendo ligação de ${caller}`
+                        }
+                    break;
+
+                    case "Up":
+
+                        if(dst){
+                            dst.classList.remove(...["ringing","calling"]);
+                            dst.classList.add("onCall");
+
+                            let segundos = tempoParaSegundos(even.Duration);
+                            document.querySelector(`.sip-${channel} .state`).innerHTML = `${caller}:`;
+                            document.querySelector(`.sip-${channel} .callDuration`).innerHTML = even.Duration;
+                            let intervalId = setInterval(function() {
+                                document.querySelector(`.sip-${channel} .callDuration`).innerHTML = secToTime(++segundos);
+                            },1E3)
+
+                            timers[`sip${channel}`] = intervalId;
+                        }
+                    break;
+
+                }
+            break;
+
+            case "Dial":
+                let qdCaller = document.querySelector(`.sip-${channel}`);
+                let dstCall    = even.ConnectedLineNum;
+                
+                switch(even.ChannelStateDesc){
+
+                    case "Ringing":
+                        document.querySelector(`.sip-${channel} .state`).innerHTML = `Recebendo ligação de ${dstCall}`
+                    break;
+                    case "Ring":
+                        if(qdCaller){
+                            qdCaller.classList.remove(...["onCall","riging"]);
+                            qdCaller.classList.add("calling");
+                            document.querySelector(`.sip-${channel} .state`).innerHTML = `Ligando para ${dstCall}`
+                        }
+                    break;
+
+                    case "Up":
+
+                        if(qdCaller){
+                            qdCaller.classList.remove(...["ringing","calling"]);
+                            qdCaller.classList.add("onCall");
+
+                            let segundos = tempoParaSegundos(even.Duration);
+                            document.querySelector(`.sip-${channel} .state`).innerHTML = `${dstCall}:`;
+                            document.querySelector(`.sip-${channel} .callDuration`).innerHTML = even.Duration;
+                            let intervalId = setInterval(function() {
+                                document.querySelector(`.sip-${channel} .callDuration`).innerHTML = secToTime(++segundos);
+                            },1E3)
+
+                            timers[`sip${channel}`] = intervalId;
+                        }
+                    break;
+                }
+            break;
+        }
+    }
+
+    async function TocaRing(){
+        var audio = await new Audio('/assets/audios/ring.wav');
+        audio.play();
+    }
+
+}

@@ -125,47 +125,33 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             if(count($dados) === 1){
                 $dadosGraf = [
-                    // "BUSY"       => ["data" => [0]],
-                    // "CONGESTION" => ["data" => [0]],
-                    "ANSWERED"   => ["data" => [0]],
-                    "NO_ANSWER"  => ["data" => [0]],
+                    "ANSWERED"      => ["data" => [0]],
+                    "NO_ANSWER"     => ["data" => [0]],
                     "HORA_TRUNCADA" => []
                 ];
-
                 $horas = [date("Y-m-d 06:00:00", strtotime($dados[0]['hora_truncada']))];
             }
 
+            $tmp = [];
 
             foreach($dados as $key => $dado){
+                $tmp[$dado['hora_truncada']][$dado['status']]["data"] = $dado["registros"];
+            }
 
-                // if($dado['status'] === "BUSY"){
-                //     $dadosGraf["BUSY"]["data"][] = $dado["registros"];
-                // }else{
-                    
-                //     $dadosGraf["BUSY"]["data"][] = 0;
-                // }
-
-                // if($dado['status'] === "CONGESTION"){
-                //     $dadosGraf["CONGESTION"]["data"][] = $dado["registros"];
-                // }else{
-                    
-                //     $dadosGraf["CONGESTION"]["data"][] = 0;
-                // }
-
-                if($dado['status'] === "ANSWERED"){
-                    $dadosGraf["ANSWERED"]["data"][] = $dado["registros"];
+            foreach($tmp as $key => $t){
+                if( isset($t['ANSWERED']) ){
+                    $dadosGraf["ANSWERED"]["data"][] = $t['ANSWERED']["data"];
                 }else{
-                    
                     $dadosGraf["ANSWERED"]["data"][] = 0;
                 }
 
-                if($dado['status'] === "NO ANSWER"){
-                    $dadosGraf["NO_ANSWER"]["data"][] = $dado["registros"];
+                if( isset($t["NO ANSWER"]) ){
+                    $dadosGraf["NO_ANSWER"]["data"][] = $t['NO ANSWER']["data"];
                 }else{
-                    
                     $dadosGraf["NO_ANSWER"]["data"][] = 0;
                 }
-                array_push($horas, $dado['hora_truncada']);
+
+                array_push($horas, $key);
             }
 
             if(!empty($dadosGraf)){
@@ -191,8 +177,6 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($dadosGraf as $key => $graf){
                 
-                // $grafico["BUSY"]["data"][]       = isset($graf['BUSY'])         ? $graf['BUSY']["data"]         : 0.05;
-                // $grafico["CONGESTION"]["data"][] = isset($graf['CONGESTION'])   ? $graf['CONGESTION']["data"]   : 0.05;
                 $grafico["ANSWERED"]["data"][]   = isset($graf['ANSWERED'])     ? $graf['ANSWERED']["data"]     : 0.05;
                 $grafico["NO ANSWER"]["data"][]  = isset($graf['NO ANSWER'])    ? $graf['NO ANSWER']["data"]    : 0.05;
 

@@ -24,9 +24,8 @@ Router::group("/system", function(){
 
 Router::get("/teste", function(){
     $cdr = new CdrService;
-    $arquivo = ROOT_PATH . '/queues-base.conf';
-    $config  = (new  \App\Classes\ConfiLoaderClass)->loadConfig($arquivo);
-    printar($config);
+    printar($cdr->GeraDadosGraficoHora());
+    
 });
 
 
