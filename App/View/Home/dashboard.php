@@ -205,6 +205,8 @@
     let grafHoras;
     let tableCallback;
 
+    console.log(chart)
+    console.log(Object.values(horas))
 
     grafHoras = new ApexCharts(document.querySelector("#reportsChart"), {
         series: chart,
@@ -246,7 +248,7 @@
         },
         xaxis: {
             type: 'category',
-            categories: horas,
+            categories: Object.values(horas),
             labels: {
                 show: true,
                 format: 'dd/MM',
