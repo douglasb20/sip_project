@@ -7,7 +7,9 @@ class BaixaCallbackCron extends \Core\Defaults\DefaultCronController{
     public function Baixa(){
         try{
             $cdr = new \App\Services\CdrService;
+
             
+
         }catch(\Exception $e){
             throw $e;
         }
