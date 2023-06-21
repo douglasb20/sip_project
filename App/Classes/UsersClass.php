@@ -272,10 +272,10 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         try{
             extract($dados);
 
-            $user_login    = strtoupper($user_login);
-            $user_nome     = strtoupper($user_nome);
-            $user_lastname = strtoupper($user_lastname);
-            $user_email    = strtolower($user_email);
+            $user_login    = mb_strtoupper($user_login);
+            $user_nome     = mb_strtoupper($user_nome);
+            $user_lastname = mb_strtoupper($user_lastname);
+            $user_email    = mb_strtolower($user_email);
 
             $user_fullname = "{$user_nome} {$user_lastname}";
             $id_empresa    = GetSessao('id_empresa');
@@ -285,7 +285,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "user_login"    => $user_login,
                 "user_nome"     => $user_nome,
                 "user_email"    => $user_email,
-                "id_sip"        => $id_sip,
+                "id_sip"        => empty($id_sip) ? null : $id_sip,
                 "user_pass"     => password_hash($user_pass, PASSWORD_BCRYPT),
                 "user_passres"  => 0,
                 "user_sts"      => 1,
