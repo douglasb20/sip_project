@@ -32,6 +32,41 @@ class {$argv[1]}Class extends \Core\Defaults\DefaultClassController{
 ?>");
     echo "Classe criado com sucesso !";
     break;
+    case 'make:cron':
+
+        $nameCron = str_replace("_cron", "", $argv[1]);
+        $nemaFile = strtolower(  $nameCron );
+
+        $nameCron  = str_replace("_"," ", $nameCron);
+
+        $nameCron = ucwords($nameCron);
+        $nameCron = str_replace(" ","", $nameCron);
+
+        $file = fopen("App\\Cron\\{$nemaFile}_cron.php", "w+");
+        fwrite($file, "<?php
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+class {$nameCron}Cron extends \Core\Defaults\DefaultCronController{
+
+    public function Funcao(){
+        try{
+            return true;
+        }catch(\\Exception \$e){
+            throw \$e;
+        }
+    }
+}
+
+try{
+    (new {$nameCron}Cron)->Funcao();
+}catch(\Exception \$e){
+    throw \$e;
+}
+
+?>");
+    echo "Cron  criado com sucesso !";
+    break;
     case 'make:model':
         $nameDao = str_replace("DAO", "", $argv[1]);
         $tableName = "";
