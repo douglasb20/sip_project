@@ -1,0 +1,1 @@
+* * * * * php /var/www/html/sip_project/App/cron/teste_cron.php >  /var/www/html/sip_project/logs/teste_cron_log.log

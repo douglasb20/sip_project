@@ -6,7 +6,7 @@ class Teste extends \Core\Defaults\DefaultCronController{
 
     public function funcao(){
         try{
-            return (Object)(new \App\Controller\UsersController(false))->testeUser();
+            return "Douglas";
         }catch(\Exception $e){
             throw $e;
         }

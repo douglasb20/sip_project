@@ -6,8 +6,8 @@
 $args = $argv;
 array_shift($args) ;
 
-$cpf = $args[0];
-$numero = $args[1];
+$cpf        = $args[0];
+$numero     = $args[1];
 
 $id_empresa = 1;
 
