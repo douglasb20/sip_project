@@ -29,6 +29,6 @@ $resp = curl_exec($ch);
 if(curl_error($ch)){
     echo curl_error($ch);
 }else{
-    echo "Solicitação feita com sucesso: " . $resp;
+    echo "Solicitação feita com sucesso";
 }
 

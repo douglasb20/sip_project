@@ -17,14 +17,12 @@ abstract class DefaultCronController{
     public $array_ignorar_log =  [
     ];
 
-    private $masterMysqli;
-    private $id_usuario;
+    public $masterMysqli;
 
     function __construct(){
         try{
 
             $this->masterMysqli = $GLOBALS['_DB_MYSQLI'];
-            $this->id_usuario   = $GLOBALS['_ID_USUARIO'];
 
             $this->iniciaModels();
             // $this->salvaLogController();
