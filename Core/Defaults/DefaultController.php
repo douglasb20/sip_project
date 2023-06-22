@@ -4,6 +4,7 @@ namespace Core\Defaults;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use mysqli;
 use ReflectionClass;
 
 class DefaultController{
