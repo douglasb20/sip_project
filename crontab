@@ -1,1 +1,1 @@
-* * * * * php /var/www/html/sip_project/App/Cron/baixa_callback_cron.php >>  /var/www/html/sip_project/logs/baixa_callback_cron_log.log
+*/10 * * * * php /var/www/html/sip_project/App/Cron/baixa_callback_cron.php >>  /var/www/html/sip_project/logs/baixa_callback_cron_log.log

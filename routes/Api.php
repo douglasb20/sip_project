@@ -14,6 +14,7 @@ Router::group("/api", function(){
     
     Router::put("/atualiza_status_callback", "HomeController@AtualizaCallback")->name("atualiza-callback");
 
+    Router::get("/check_callback", "HomeController@VerificaCallback")->name("verifica-callback");
 
     Router::group("/system",function(){
 
