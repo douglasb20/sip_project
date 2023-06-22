@@ -83,15 +83,13 @@ $(() => {
         }
     });
 
-
-    
-
-
 })
+let loading = true;
 const ModalDraggable = () => $(".modal-dialog").draggable({ handle: ".modal-header" });
 
 const StartLoading = () => $('body').LoadingOverlay("show",{image:"", fontawesome: "fa-duotone fa-spinner-third fa-spin iconLoading"});
 const EndLoading = () => $('body').LoadingOverlay("hide");
+const NoLoading = () => loading = false;
 $.fn.serializeObject = function() {
     var o = {};
     var a = this.serializeArray();
@@ -108,13 +106,15 @@ $.fn.serializeObject = function() {
     return o;
 };
 
-$(document).ajaxStart(function() {
-    StartLoading();
+$(document).ajaxStart(function () {
+    if (loading) {
+        StartLoading();
+    }
 });
 $(document).ajaxComplete(function(event, xhr, settings) {
 
     EndLoading();
-
+    loading = true;
 });
 
 $.ajaxSetup({

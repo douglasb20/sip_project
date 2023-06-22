@@ -190,7 +190,8 @@
 
 <?php $this->captureStart('js'); ?>
 
-<script>
+<script type="text/javascript">
+
     let chartColors = ['#4154f1', '#2eca6a', '#ff771d','#FFDA6F'];
     let chart          = JSON.parse('{{$chart}}');
     let horas          = JSON.parse('{{$horas}}');
@@ -204,9 +205,7 @@
     let modalRetornado = new bootstrap.Modal("#modalRetornado",modalOption);
     let grafHoras;
     let tableCallback;
-
-    console.log(chart)
-    console.log(Object.values(horas))
+    
 
     grafHoras = new ApexCharts(document.querySelector("#reportsChart"), {
         series: chart,
@@ -525,6 +524,18 @@
 
         })
     }
+
+    const VerificaCallback = () => {
+        NoLoading();
+
+        $.ajax({url: '{{route()->link("verifica-callback")}}' })
+        .done(resp => {
+            $("#nmroRetorno").text(resp.nmro_retorno);
+            setTimeout(VerificaCallback, 10000)
+        })
+    }
+    
+    setTimeout(VerificaCallback, 10000);
 
 </script>
 
