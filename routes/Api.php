@@ -1,5 +1,6 @@
 <?php
 use Core\Router;
+
 Router::group("/api", function(){
 
     Router::post('/auth',"AuthController@Authentication");
