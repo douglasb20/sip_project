@@ -159,14 +159,14 @@
             <h5 class="subtitle">Faça o login para entrar no sistema</h5>
         </div>
         <div class="caixaInputs">
-            <form id="loginRealForm" autocomplete="off">
+            <form id="loginRealForm" autocomplete="none">
                 <div class="wrapInput">
-                    <input type="text" name="username" id="username" placeholder=" " autocomplete="off"/>
+                    <input type="text" name="username" id="username" placeholder=" " autocomplete="none"/>
                     <label class="labelInput" >Usuário</label>
                     <i class="fa-regular fa-user iconInput fa-lg"></i>
                 </div>
                 <div class="wrapInput">
-                    <input type="password" name="password" id="password" placeholder=" " autocomplete="off"/>
+                    <input type="password" name="password" id="password" placeholder=" " autocomplete="none"/>
                     <label class="labelInput" >Senha</label>
                     <i class="fa-regular fa-lock iconInput fa-lg"></i>
                 </div>
@@ -174,7 +174,7 @@
         </div>
         <div class="caixaAcoes justify-content-between">
             <button type="button" id="btnEntrar" class="btn btn-primary">Entrar</button>
-            <a id="forgotPassword" class="text-primary link" href="#">Esqueci minha senha</a>
+            <a id="forgotPassword" class="text-primary link d-none" href="#">Esqueci minha senha</a>
         </div>
     </div>
     <div class="forgotForm ">

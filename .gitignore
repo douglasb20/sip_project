@@ -2,6 +2,8 @@
 .env.production
 /manager
 
+/logs/*
+
 oneChange.php
 /.idea
 *.lnk

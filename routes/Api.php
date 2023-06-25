@@ -1,5 +1,6 @@
 <?php
 use Core\Router;
+
 Router::group("/api", function(){
 
     Router::post('/auth',"AuthController@Authentication");
@@ -8,12 +9,13 @@ Router::group("/api", function(){
     Router::post("/request_recover/{id_user}", "AuthController@RequestRecover")->name("request-recover");
     Router::get("/get_dados_grafico_dashboard/{tipo:[a-z]}", "HomeController@GeraDadosGraficos")->name("dados-dashboard");
     Router::get("/get_lista_callback", "HomeController@ListaCallback")->name("lista-callback");
-    Router::get("/add_callback/{cpf}/{numero}", "Controller@AddCallback")->name("add-callback");
+    Router::get("/add_callback/{cpf}/{numero}/{id_empresa}", "Controller@AddCallback")->name("add-callback");
 
     Router::post("/calls_report", "CallReportsController@CallReports")->name("lista-ligacoes");
     
     Router::put("/atualiza_status_callback", "HomeController@AtualizaCallback")->name("atualiza-callback");
 
+    Router::get("/check_callback", "HomeController@VerificaCallback")->name("verifica-callback");
 
     Router::group("/system",function(){
 

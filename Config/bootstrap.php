@@ -1,6 +1,7 @@
 <?php
 
 global $_DB_MYSQLI;
+date_default_timezone_set("America/Sao_Paulo");
 
 $envFile = ".env";
 

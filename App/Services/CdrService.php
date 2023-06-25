@@ -2,21 +2,25 @@
 
 namespace App\Services;
 
+use mysqli;
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 class CdrService extends \Core\Defaults\DefaultModel{
-    private $mysqli;
+    private mysqli $mysqli;
     private $dbname;
+    private $view;
 
     function __construct(){
-        $host     = $_ENV['CDRDBHOST'];
-        $username = $_ENV['CDRDBUSER'];
-        $passwd   = $_ENV['CDRDBPWD'];
-        $dbname   = $_ENV['CDRDBNAME'];
-        $port     = $_ENV['CDRDBPORT'];
+        $host         = $_ENV['CDRDBHOST'];
+        $username     = $_ENV['CDRDBUSER'];
+        $passwd       = $_ENV['CDRDBPWD'];
+        $dbname       = $_ENV['CDRDBNAME'];
+        $port         = $_ENV['CDRDBPORT'];
         
         $this->dbname = $dbname;
-        $this->tabela = "cdrCerto";
+        $this->tabela = "cdr";
+        $this->view   = "vw_cdr";
         $this->mysqli = new \mysqli($host,$username,$passwd,$dbname, $port);
         $this->mysqli->set_charset("utf8");
 
@@ -36,8 +40,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function GraficoHora(string $hora){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%H:00') AS hora_truncada, COUNT(*) AS registros, status
-                        FROM {$this->dbname}.{$this->tabela}
-                        WHERE cdrCerto.calldate BETWEEN '{$hora}:00:00' and '{$hora}:59:59' 
+                        FROM {$this->dbname}.{$this->view}
+                        WHERE {$this->view}.calldate BETWEEN '{$hora}:00:00' and '{$hora}:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY hora_truncada, status
@@ -51,8 +55,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function GraficoData(string $data){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, status
-                        FROM {$this->dbname}.{$this->tabela}
-                        WHERE Date({$this->tabela}.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
+                        FROM {$this->dbname}.{$this->view}
+                        WHERE Date({$this->view}.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada, status
                     ";
@@ -67,8 +71,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada,
                         status, 
                         count(*) registros
-                        FROM {$this->dbname}.{$this->tabela}
-                        WHERE Date(cdrCerto.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
+                        FROM {$this->dbname}.{$this->view}
+                        WHERE Date({$this->view}.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada, status
@@ -86,7 +90,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         DATE_FORMAT(calldate, '%Y-%m-%d %H:00:00') AS hora_truncada, 
                         status, 
                         count(*) registros
-                        FROM {$this->dbname}.{$this->tabela}
+                        FROM {$this->dbname}.{$this->view}
                         WHERE {$where}
                         AND status IN ('ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
@@ -102,8 +106,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
     public function AgrupaDataFormatado(){
         try{
             $query = "  SELECT DATE_FORMAT( calldate, '%d/%m') AS data_truncada
-                        FROM asteriskcdrdb.cdrCerto
-                        WHERE Date(cdrCerto.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
+                        FROM {$this->dbname}.{$this->view}
+                        WHERE Date({$this->view}.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
                         AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
                         GROUP BY data_truncada
@@ -122,50 +126,37 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $dados     = $this->AgrupaHora($where);
             $dadosGraf = [];
             $horas     = [];
+            
 
             if(count($dados) === 1){
                 $dadosGraf = [
-                    // "BUSY"       => ["data" => [0]],
-                    // "CONGESTION" => ["data" => [0]],
-                    "ANSWERED"   => ["data" => [0]],
-                    "NO_ANSWER"  => ["data" => [0]],
+                    "ANSWERED"      => ["data" => [0]],
+                    "NO_ANSWER"     => ["data" => [0]],
                     "HORA_TRUNCADA" => []
                 ];
-
                 $horas = [date("Y-m-d 06:00:00", strtotime($dados[0]['hora_truncada']))];
             }
 
+            $tmp = [];
 
             foreach($dados as $key => $dado){
+                $tmp[$dado['hora_truncada']][$dado['status']]["data"] = $dado["registros"];
+            }
 
-                // if($dado['status'] === "BUSY"){
-                //     $dadosGraf["BUSY"]["data"][] = $dado["registros"];
-                // }else{
-                    
-                //     $dadosGraf["BUSY"]["data"][] = 0;
-                // }
-
-                // if($dado['status'] === "CONGESTION"){
-                //     $dadosGraf["CONGESTION"]["data"][] = $dado["registros"];
-                // }else{
-                    
-                //     $dadosGraf["CONGESTION"]["data"][] = 0;
-                // }
-
-                if($dado['status'] === "ANSWERED"){
-                    $dadosGraf["ANSWERED"]["data"][] = $dado["registros"];
+            foreach($tmp as $key => $t){
+                if( isset($t['ANSWERED']) ){
+                    $dadosGraf["ANSWERED"]["data"][] = $t['ANSWERED']["data"];
                 }else{
-                    
                     $dadosGraf["ANSWERED"]["data"][] = 0;
                 }
 
-                if($dado['status'] === "NO ANSWER"){
-                    $dadosGraf["NO_ANSWER"]["data"][] = $dado["registros"];
+                if( isset($t["NO ANSWER"]) ){
+                    $dadosGraf["NO_ANSWER"]["data"][] = $t['NO ANSWER']["data"];
                 }else{
-                    
                     $dadosGraf["NO_ANSWER"]["data"][] = 0;
                 }
-                array_push($horas, $dado['hora_truncada']);
+
+                array_push($horas, $key);
             }
 
             if(!empty($dadosGraf)){
@@ -191,8 +182,6 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($dadosGraf as $key => $graf){
                 
-                // $grafico["BUSY"]["data"][]       = isset($graf['BUSY'])         ? $graf['BUSY']["data"]         : 0.05;
-                // $grafico["CONGESTION"]["data"][] = isset($graf['CONGESTION'])   ? $graf['CONGESTION']["data"]   : 0.05;
                 $grafico["ANSWERED"]["data"][]   = isset($graf['ANSWERED'])     ? $graf['ANSWERED']["data"]     : 0.05;
                 $grafico["NO ANSWER"]["data"][]  = isset($graf['NO ANSWER'])    ? $graf['NO ANSWER']["data"]    : 0.05;
 
@@ -215,12 +204,12 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         SELECT 
                             *
                         FROM
-                            cdrCerto 
+                            {$this->dbname}.{$this->view}
                         WHERE
                             1=1
                             AND {$where}
                             AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
-                        order by cdrCerto.calldate desc) as cdr_formatado
+                        order by {$this->view}.calldate desc) as cdr_formatado
                         on cdr_formatado.status = subquery.status
                         group by subquery.status";
             $status = $this->executeQuery($query);
@@ -268,7 +257,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
             foreach($queues as $key => $queue){
                 $result = ["name" => $queue['nome']];
-                $query = "SELECT count(*) as qtd FROM {$this->dbname}.{$this->tabela}
+                $query = "SELECT count(*) as qtd FROM {$this->dbname}.{$this->view}
                 WHERE {$where}
                     AND src not in (SELECT id_sip FROM sip_lanteca.sip)
                     AND dstchannel in (".implode(",", $queue['ramais']).")";
@@ -305,7 +294,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.dstchannel) as dst_name,
                         (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.src) as src_name
                     FROM
-                        asterisk.{$this->tabela} as c
+                        {$this->dbname}.{$this->view} as c
                     WHERE
                         {$where}";
 

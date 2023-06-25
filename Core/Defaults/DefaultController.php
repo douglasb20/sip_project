@@ -4,7 +4,6 @@ namespace Core\Defaults;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use ReflectionClass;
 
 class DefaultController{
     
@@ -271,7 +270,7 @@ class DefaultController{
             }
             
             if(GetSessao("autenticado") == true){
-                if(GetSessao('id_usuario') === "1"){
+                if(GetSessao('admin') === "1"){
                     return true;
                 }
 
@@ -286,13 +285,7 @@ class DefaultController{
                     }
                 }
             }else{
-                if($uri === "/"){
-                    return false;
-                }
-
-                if(!$except){
-                    throw new Exception("Você não tem permissão para acessar este recurso!",-1);
-                }
+                return false;
             }
 
             return $result;
@@ -394,7 +387,7 @@ class DefaultController{
 
             $permission = $this->UsersPermissionsXUsersDAO->CheckPermission(GetSessao('id_usuario'), $id_permissao);
 
-            if(GetSessao('id_usuario') === "1"){
+            if(GetSessao('admin') === "1"){
                 return true;
             }else{
                 if(!empty($permission)){
@@ -553,8 +546,6 @@ class DefaultController{
             }
             
             include_once(ROOT_PATH . "/App/View/layout.php"); 
-            
-            return $this;
 
         }catch(Exception $e){
             throw $e;

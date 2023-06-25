@@ -178,6 +178,23 @@ class HomeController extends Controller{
         }
     }
 
+    /**
+    * Função para verificar quantidade de retornos
+    * @author Douglas A. Silva
+    * @return array
+    */
+    public function VerificaCallback(){
+        try{
+            $qtd = $this->CallbackDAO->getAll(" id_status_callback = 1");
+
+
+            $this->data = ["nmro_retorno" => count($qtd)];
+            $this->retorna();
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
 }
 
 ?>

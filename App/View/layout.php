@@ -40,10 +40,10 @@
 
 <body class="dark">
 
-    <?php echo $this->render['menu']; ?>
     <!-- Inicio - Body -->
-    <?php if ($this->getShowMenu()){
-    
+    <?php 
+        echo $this->render['menu'];
+        if ($this->getShowMenu()){
     ?>
     <main id="main" class="main">
         <?php

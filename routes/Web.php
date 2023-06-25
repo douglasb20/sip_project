@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\CdrService;
+use App\Services\TwigService;
 use Core\Router;
 
 // Router::get("/","HomeController@index", false);
@@ -23,8 +24,9 @@ Router::group("/system", function(){
 });
 
 Router::get("/teste", function(){
-    $cdr = new CdrService;
-    printar($cdr->GeraDadosGraficosGrupo(" DATE(calldate) = curdate() "));
+    $twg = new TwigService;
+    $twg->addGlobal("nome", "Rayene");
+    echo $twg->render("teste.twig");
 });
 
 
