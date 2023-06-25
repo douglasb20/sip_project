@@ -30,6 +30,7 @@
         "symfony/config": "^6.2",
         "phpmailer/phpmailer": "^6.8",
         "adrian0350/php-ami": "^1.0",
-        "welltime/phpagi": "^2.20"
+        "welltime/phpagi": "^2.20",
+        "twig/twig": "^3.0"
     }
 }

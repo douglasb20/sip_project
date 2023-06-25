@@ -4,8 +4,6 @@ namespace Core\Defaults;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use mysqli;
-use ReflectionClass;
 
 class DefaultController{
     
@@ -548,8 +546,6 @@ class DefaultController{
             }
             
             include_once(ROOT_PATH . "/App/View/layout.php"); 
-            
-            return $this;
 
         }catch(Exception $e){
             throw $e;
