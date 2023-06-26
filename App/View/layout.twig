@@ -48,7 +48,7 @@
         {{ include("menu.twig") }}
         
         <main id="main" class="main">
-            {{ include('breadcrumb.twig') }} 
+            {% include('breadcrumb.twig') with { buttons: block('buttons') ?? '' } %} 
             <div class="{{ getClassDivContainer() }}">
                 {% block body %} {% endblock %}
             </div>

@@ -12,7 +12,7 @@ class SipController extends Controller{
 
             $this
             ->setBreadcrumb(["Sistema", "Operadores"])
-            ->renderTwig("System.Sip");
+            ->render("System.Sip");
         }catch(\Exception $e){
             throw $e;
         }

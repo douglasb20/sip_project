@@ -1,10 +1,12 @@
-<?php $this->captureStart('css'); ?>
+{% extends "layout.twig" %}
+
+{% block css %}
 <style>
 
 </style>
-<?php $this->captureEnd('css'); ?>
+{% endblock css %}
 
-<?php $this->captureStart('body'); ?>
+{% block body %}
     <div class="pt-5 d-flex align-items-center flex-column">
         <h1 class="h1">Bem-vindo(a) ao Amaris</h1>
         <h1 class="h3 mb-5">Aproveite do simples, porém eficiente framework.</h1>
@@ -17,15 +19,13 @@
             Se precisar de ajuda, nossa equipe de suporte estará pronta para ajudá-lo. Obrigado por escolher o nosso mini framework!</h1>
             <button type="button" class="btn btn-primary" id="alerta" >Alertar</button>
     </div>
-<?php $this->captureEnd('body'); ?>
+{% endblock css %}
 
 
-<?php $this->captureStart('js'); ?>
-
+{% block js %}
 <script>
     $("#alerta").click(() => {
         alerta("Oii")
     })
 </script>
-
-<?php $this->captureEnd('js'); ?>
+{% endblock js %}

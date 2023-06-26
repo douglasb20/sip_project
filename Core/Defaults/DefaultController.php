@@ -45,8 +45,8 @@ class DefaultController{
             }
 
             $this->validatePermission();
-            
             $this->processaRequest();
+            
         }catch(Exception $e){ 
             throw($e);
         }
@@ -509,65 +509,6 @@ class DefaultController{
         try{
 
             //define titulo pagina e detalhes para breadcrumbs em todos os renders
-
-            if(empty($rota)){
-                throw new Exception("Rota de view não definida",-1);
-            }
-            
-            $this->view = $data;
-
-            if(!empty($data)){
-                //Extraio os parametros passados para a view e os transformo em variaveis 
-                extract($data); 
-            }
-
-            $rota               = explode(".", $rota);
-            $routeWithSeparator = implode("/", $rota);
-            $file_route         = ROOT_PATH . "/App/View/". $routeWithSeparator .".php";
-            
-            if( is_file($file_route)){
-                include_once($file_route);
-            }else{
-                $maybeDir = str_replace(".php", "", $file_route );
-
-                if(is_dir( $maybeDir) ){
-                    if(is_file($maybeDir. "/index.php")){
-                        include_once($maybeDir . "/index.php");
-                    }else{
-                        throw new Exception( "Não achou " . $file_route , -1);
-                    }
-                }else{
-                    throw new Exception( "Não achou " . $file_route , -1);
-                }
-            }
-
-            if($this->mostraMenu && GetSessao("autenticado")){
-                $this->captureStart("menu");
-                include_once(ROOT_PATH . "/App/View/menu.php");
-                $this->captureEnd("menu");
-            }
-            
-            include_once(ROOT_PATH . "/App/View/layout.php"); 
-
-        }catch(Exception $e){
-            throw $e;
-        } 
-    }
-
-    /**
-    * Função que renderiza a página. No arquivo da view (rota), as partes do corpo está 
-    * entre captureStart e captureEnd (body, js, css) são salvos nas respectivas variáveis.
-    * 
-    * Em seguida chama o layout que organiza como os arquivos saem na tela.
-    * converte array em variáveis na view => https://www.php.net/manual/en/function.extract.php
-    * 
-    * @access protected 
-    * @param string $rota rota da view
-    */
-    public function renderTwig(?string $rota = null, ?array $data = []){
-        try{
-
-            //define titulo pagina e detalhes para breadcrumbs em todos os renders
             $this->twig = new TwigService;
 
             if(empty($rota)){
@@ -603,27 +544,6 @@ class DefaultController{
                     throw new Exception( "Não achou " . $file_route , -1);
                 }
             }
-
-            // if($this->mostraMenu && GetSessao("autenticado")){
-            //     include_once(ROOT_PATH . "/App/View/menu.php");
-            // }
-            
-            // include_once(ROOT_PATH . "/App/View/layout.php"); 
-
-        }catch(Exception $e){
-            throw $e;
-        } 
-    }
-
-        /**
-    * ob_start das views conforme partes do corpo
-    * 
-    * @access protected 
-    * @param parte do corpo
-    */
-    protected function captureStart(string $name): void{
-        try{
-            ob_start();
         }catch(Exception $e){
             throw $e;
         } 
@@ -662,29 +582,6 @@ class DefaultController{
         }catch(\Exception $e){
             throw $e;
         }
-    }
-
-    /**
-    * ob_end, salvando conteúdo na variável conforme parte do corpo
-    * 
-    * @access protected 
-    * @param parte do corpo
-    */
-    protected function captureEnd(string $name): void{
-        try{
-            $capture = ob_get_contents();
-
-            $resultado = preg_replace_callback("/{{(.*?)}}/", function($matches){
-                $chave = $matches[1];
-                extract($this->view);
-                return eval("return {$chave};");
-            }, $capture);
-
-            $this->render[(string)$name] = $resultado;
-            ob_end_clean();
-        }catch(Exception $e){
-            throw $e;
-        } 
     }
 
     /**

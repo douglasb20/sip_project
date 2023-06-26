@@ -22,7 +22,7 @@ class UsersController extends Controller{
 
             $this
             ->setBreadcrumb(["Sistema", "Usuários"])
-            ->renderTwig("System.Users", ["permissions" => $permissions, "sip" => $sip]);
+            ->render("System.Users", ["permissions" => $permissions, "sip" => $sip]);
         }catch(\Exception $e){
             throw $e;
         }

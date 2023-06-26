@@ -1,4 +1,6 @@
-<?php $this->captureStart("css") ?>
+{% extends "layout.twig" %}
+
+{% block css %}
 <style>
 .text-title{
     font-size   : 18px;
@@ -57,10 +59,9 @@
 
 
 </style>
+{% endblock css %}
 
-<?php $this->captureEnd("css") ?>
-
-<?php $this->captureStart("body") ?>
+{% block body %}
 
 <div class="col-12 ">
     <div class="card ">
@@ -70,44 +71,37 @@
         </div>
         <div class="card-body mt-4 ">
             <div class="baloes">
-            <?php
-                foreach($sip as $s){
-                    $own = false;
-                    if(GetSessao("ramal") === $s['id_sip']){
-                        $own = true;
-                    }
-            ?>
-                <div class="colunas extensionsSip px-3 pt-2 pb-2 sip-<?=$s['id_sip']?> <?=($own ? 'own' : 'wait')?> offline" >
+            {% for s in sip %}
+                {% set own = GetSessao("ramal") == s.id_sip ? true : false %}
+
+                <div class="colunas extensionsSip px-3 pt-2 pb-2 sip-{{ s.id_sip }} {{ own ? 'own' : 'wait'}} offline" >
                     <div class="d-flex flex-column align-items-center justify-content-start">
                         <span class="text-xl">
-                            <?=$s['id_sip']?>
-                        <?php
-                            if($own){
-                                echo "<i class='fa-regular fa-badge-check'></i>";
-                            }
-                        ?>
+                            {{ s.id_sip }}
+                        
+                            {% if own %}
+                                <i class='fa-regular fa-badge-check'></i>
+                            {% endif %}
                         </span>
-                        <small><?=$s['callerId']?></small>
+                        <small>{{ s.callerId }}</small>
                         <div class="text-sm">
                             <span class="state">Off-Line</span>
                             <span class="callDuration"></span>
                         </div>
                     </div>
                 </div>
-            <?php
-                }
-            ?>
+            {% endfor %}
             </div>
         </div>
     </div>
 </div>
 
-<?php $this->captureEnd("body") ?>
+{% endblock body %}
 
-<?php $this->captureStart("js") ?>
+{% block js %}
 <script>
 
-let wsHost       = "{{$_ENV['URL_WEBSOCKET']}}";
+let wsHost       = "{{ ENV.URL_WEBSOCKET }}";
 
 $(function(){
     ConnectToWS(wsHost)
@@ -115,4 +109,4 @@ $(function(){
 
 </script>
 
-<?php $this->captureEnd("js") ?>
+{% endblock js %}

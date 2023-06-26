@@ -2,7 +2,7 @@
     <div class="infoBar">
         {% set bread = getBreadcrumb() %}
         
-        <h1>{{bread|last}}</h1>
+        <h1>{{ bread|last }}</h1>
         <nav>
             <ol class="breadcrumb user-select-none">
                 {% for b in bread %}
@@ -12,6 +12,6 @@
         </nav>
     </div>
     <div class="buttonBar pe-3">
-        {{ buttons }}
+        {{ buttons|raw }}
     </div>
 </div><!-- End Page Title -->

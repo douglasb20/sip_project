@@ -1,15 +1,13 @@
-<?php $this->captureStart('css'); ?>
+{% extends "layout.twig" %}
+
+{% block css %}
 <style>
 
 
 </style>
-<?php $this->captureEnd('css'); ?>
+{% endblock css %}
 
-<?php $this->captureStart('body'); ?>
-
-    <?php
-        ob_start()
-    ?>
+{% block buttons %}
 
     <div class="btn-group" role="group" aria-label="Basic outlined example ">
         <button type="button" onClick="AtualizaDadosPeriodo('today', this)" class="btn btn-outline-primary btnPeriodo active">Hoje</button>
@@ -17,12 +15,12 @@
         <button type="button" onClick="AtualizaDadosPeriodo('week', this)" class="btn btn-outline-primary btnPeriodo">Esta semana</button>
         <button type="button" onClick="AtualizaDadosPeriodo('month', this)" class="btn btn-outline-primary btnPeriodo">30 dias</button>
     </div>
-    
-    <?php
-        $this->buttons = ob_get_contents();
-        ob_end_clean();
-        include_once"modalCallback.php";
-    ?>
+
+{% endblock buttons %}
+
+{% block body %}
+
+{% include("Home/modalCallback.twig") %}
 
     <section class="dashboard">
         
@@ -61,7 +59,7 @@
                                             <i class="fa-regular fa-phone-arrow-up-right"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroRealizadas">{{$realizadas}}</h6>
+                                            <h6 id="nmroRealizadas">{{ realizadas }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -78,7 +76,7 @@
                                             <i class="fa-regular fa-phone-xmark "></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroOcupadas">{{$busy}}</h6>
+                                            <h6 id="nmroOcupadas">{{ busy }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -95,7 +93,7 @@
                                             <i class="fa-regular fa-phone-volume" style="transform:rotate(-45deg) !important"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroAtendidas">{{$answered}}</h6>
+                                            <h6 id="nmroAtendidas">{{ answered }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +110,7 @@
                                             <i class="fa-regular fa-phone-missed"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroPerdidas">{{$no_answer}}</h6>
+                                            <h6 id="nmroPerdidas">{{ no_answer }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -129,7 +127,7 @@
                                             <i class="fa-regular fa-rotate-exclamation"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 id="nmroRetorno">{{$callback}}</h6>
+                                            <h6 id="nmroRetorno">{{ callback }}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -185,20 +183,20 @@
             </div>
         </div>
     </section>
-<?php $this->captureEnd('body'); ?>
+{% endblock body %}
 
 
-<?php $this->captureStart('js'); ?>
+{% block js %}
 
 <script type="text/javascript">
 
     let chartColors = ['#4154f1', '#2eca6a', '#ff771d','#FFDA6F'];
-    let chart          = JSON.parse('{{$chart}}');
-    let horas          = JSON.parse('{{$horas}}');
+    let chart          = JSON.parse('{{ chart|raw }}');
+    let horas          = JSON.parse('{{ horas|raw }}');
 
-    let porDatas       = JSON.parse('{{$porDatas}}');
-    let datas          = JSON.parse('{{$datas}}');
-    let pieChart       = JSON.parse('{{$pie}}');
+    let porDatas       = JSON.parse('{{ porDatas|raw }}');
+    let datas          = JSON.parse('{{ datas|raw }}');
+    let pieChart       = JSON.parse('{{ pie|raw }}');
 
     let total          = pieChart.reduce((acc, cur) => acc + cur.value, 0)
     let pieGraf        = echarts.init(document.querySelector("#groupsChart"));
@@ -407,7 +405,7 @@
     $("#cardRetorno").click(function(){
         tableCallback = $('#tableCallback').DataTable({
             ajax: {
-                url: '{{route()->link("lista-callback")}}',
+                url: '{{route().link("lista-callback")}}',
                 type: "GET",
                 dataSrc: parserDataTable,
                 async: true
@@ -447,7 +445,7 @@
             dropdownParent: $('#modalRetornado'),
             width: "50%",
             closeOnSelect: true,
-            data: JSON.parse('{{$selectCallback}}'),
+            data: JSON.parse('{{ selectCallback }}'),
             language: 'pt-BR',
             minimumResultsForSearch: -1
         });
@@ -460,7 +458,7 @@
 
     const SalvaStatusRetorno = async (id_callback) => {
         $.ajax({
-            url: '{{route()->link("atualiza-callback")}}' ,
+            url: '{{route().link("atualiza-callback")}}' ,
             method: "PUT",
             data: {
                 id_callback,
@@ -483,7 +481,7 @@
         $(".btnPeriodo").removeClass("active")
         $(btn).addClass("active")
         
-        $.ajax({url: '{{route()->link("dados-dashboard")}}' + periodo})
+        $.ajax({url: '{{route().link("dados-dashboard")}}' + periodo})
         .done(resp => {
             let {no_answer, answered, busy, realizadas, pie, horas} = resp;
             $("#nmroRealizadas").text(realizadas);
@@ -528,7 +526,7 @@
     const VerificaCallback = () => {
         NoLoading();
 
-        $.ajax({url: '{{route()->link("verifica-callback")}}' })
+        $.ajax({url: '{{route().link("verifica-callback")}}' })
         .done(resp => {
             $("#nmroRetorno").text(resp.nmro_retorno);
             setTimeout(VerificaCallback, 10000)
@@ -539,4 +537,4 @@
 
 </script>
 
-<?php $this->captureEnd('js'); ?>
+{% endblock js %}
