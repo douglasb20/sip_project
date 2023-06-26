@@ -187,7 +187,6 @@ class HomeController extends Controller{
         try{
             $qtd = $this->CallbackDAO->getAll(" id_status_callback = 1");
 
-
             $this->data = ["nmro_retorno" => count($qtd)];
             $this->retorna();
         }catch(\Exception $e){
