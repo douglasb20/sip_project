@@ -156,13 +156,13 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             Equipe de suporte";
 
             $m = [
-                    "host"     => "smtp.gmail.com",
-                    "port"     => "587",
+                    "host"     => "mail.lantecatelecom.com.br",
+                    "port"     => 587,
                     "SMTPAuth" => true,
-                    "user"     => "douglaassgenesis@gmail.com",
-                    "password" => "lrxbasicdtjhhgbu",
-                    "frommail" => "douglaassgenesis@gmail.com",
-                    "fromname" => "Douglas A. Silva",
+                    "user"     => "no-reply@ltcfibra.com.br",
+                    "password" => $_ENV['PASSWORD_EMAIL'],
+                    "frommail" => "no-reply@ltcfibra.com.br",
+                    "fromname" => "LTC Fibra",
                     "tomail"   => "douglas.silva@atendecerto.com.br",
                     "toname"   => "Douglas Atende",
                     "IsHTML"   => true,

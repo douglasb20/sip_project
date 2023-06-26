@@ -1,4 +1,6 @@
-<?php $this->captureStart("css")?>
+{% extends "layout.twig" %}
+
+{% block css %}
 <style>
 .text-title{
     font-size   : 18px;
@@ -19,15 +21,13 @@
 }
 
 </style>
-<?php 
+{% endblock css %}
 
-$this->captureEnd("css");
-$this->captureStart("body");
+{% block body %}
 
-include_once "modalFiltrosSip.php";
-include_once "modalFormSip.php";
+{{ include("System/Sip/modalFiltrosSip.twig") }}
+{{ include("System/Sip/modalFormSip.twig") }}
 
-?>
 
 <!-- <section class="section"> -->
     <div class="col-12 ">
@@ -37,23 +37,14 @@ include_once "modalFormSip.php";
                 <div>
                     <button id="btnFiltros" class="btn btn-outline-info btn-sm" >Filtros</button>
 
-                    <?php 
-                        if($this->CheckPermission(24)){
-                    ?>
+                    {% if CheckPermission(24) %}
                         <button type="button" onClick="NewSip()" class="btn btn-primary btn-sm">Novo operador</button>
-                    <?php
-                        }
-                    ?>
-
-                    <?php 
-                        if($this->CheckPermission(25)){
-                    ?>
+                    {% endif %}
+                    {% if CheckPermission(25) %}
                         <button type="button" id="btnAtualizaSip" class="btn btn-success btn-sm" title="Atualizar lista de operadores pelo config">
                             <i class="fa-regular fa-arrows-rotate"></i>
                         </button>
-                    <?php
-                        }
-                    ?>
+                    {% endif %}
                     
                 </div>
             </div>
@@ -67,13 +58,10 @@ include_once "modalFormSip.php";
 
 <!-- </section> -->
 
-<?php 
+{% endblock body %}
 
-$this->captureEnd("body");
-$this->captureStart("js")
 
-?>
-
+{% block js %}
 <script>
 
 $(function(){
@@ -115,7 +103,7 @@ let formSip    = new bootstrap.Modal("#modalFormSip", modalOption);
 const GeraTabela = () => {
     let form = $("#formFiltro").serializeObject();
 
-    $.ajax({url: '{{route()->link("sip-list")}}',method:"POST", data: form})
+    $.ajax({url: '{{route().link("sip-list")}}',method:"POST", data: form})
     .done(resp => {
 
         $('#tableSips').DataTable({
@@ -154,17 +142,11 @@ const renderStatus = (data) => {
 const renderAcoes = (data, type, row) => {
     let botoes = '&nbsp';
 
-    <?php 
-        if($this->CheckPermission(28)){
-    ?>
+    {% if CheckPermission(28) %}
             botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
-    <?php
-        }
-    ?>
+    {% endif %}
 
-    <?php 
-        if($this->CheckPermission(29) ){
-    ?>
+    {% if CheckPermission(29) %}
         
         if(row.sip_status === "1"){
             botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar operador'><i class="fa-regular fa-xmark"></button>`;
@@ -172,10 +154,7 @@ const renderAcoes = (data, type, row) => {
             botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar operador'><i class="fa-regular fa-check"></button>`;
         }
         
-    <?php
-        }
-    ?>
-    
+    {% endif %}
 
     return botoes;
 }
@@ -201,7 +180,7 @@ const SaveFormSip = () => {
 
     let form = new FormData( $("#formSip")[0] );
 
-    $.ajax({url: `{{route()->link("save-sip")}}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
+    $.ajax({url: `{{route().link("save-sip")}}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
     .done(resp => {
         SaveSipDone()
     })
@@ -225,7 +204,7 @@ const ConfirmToggleStatus = (id_sip,sip_status) => {
 const ToggleStatusSip = dados => {
     let {id_sip, sip_status} = dados;
 
-    $.ajax({url: `{{route()->link("change-sip-status")}}${id_sip}/${sip_status}`})
+    $.ajax({url: `{{route().link("change-sip-status")}}${id_sip}/${sip_status}`})
     .done(resp => {
         alerta("Status atualizado com sucesso.", "Sucesso", "success");
         GeraTabela();
@@ -234,7 +213,7 @@ const ToggleStatusSip = dados => {
 
 const UpdateSipList = () => {
 
-    $.ajax({url: `{{route()->link("get-sip-config")}}`})
+    $.ajax({url: `{{route().link("get-sip-config")}}`})
     .done(resp => {
         alerta("Operadores atualizado com sucesso.", "Sucesso", "success");
         GeraTabela();
@@ -242,4 +221,5 @@ const UpdateSipList = () => {
 }
 
 </script>
-<?php $this->captureEnd("js")?>
+
+{% endblock js %}

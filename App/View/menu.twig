@@ -166,7 +166,7 @@
 					{# <?php
 						echo ucwords(strtolower(GetSessao('nome_usuario'))). (!empty(GetSessao('ramal') ) ? "(".GetSessao('ramal').")" : "")
 					?> #}
-					{{ GetSessao('nome_usuario')|title  }}
+					{{ GetSessao('nome_usuario')|title ~ (GetSessao('ramal') ? "(" ~ GetSessao('ramal') ~ ")" ) }}
 				</span>
 			</a><!-- End Profile Iamge Icon -->
 

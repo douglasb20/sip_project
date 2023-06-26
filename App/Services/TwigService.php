@@ -33,6 +33,10 @@ class TwigService{
         $this->twig->addGlobal($key, $value);
     }
 
+    public function load($name){
+        return $this->twig->load($name);
+    }
+
     public function addFunction(string $name, $callback){
         $f = new \Twig\TwigFunction($name, $callback);
         $this->twig->addFunction($f);

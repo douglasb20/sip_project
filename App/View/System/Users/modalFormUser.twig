@@ -36,11 +36,9 @@
                         <label for="user_email" class="form-label required-label">Ramal</label>
                         <select name="id_sip" id="id_sip" class="form-select">
                             <option value="">Nenhum ramal</option>
-                            <?php
-                                foreach($sip as $key => $v){
-                                    echo "<option value='{$v['id_sip']}'>{$v['id_sip']} - {$v['callerId']}</option>";
-                                }
-                            ?>
+                            {% for v in sip %}
+                                <option value='{{ v.id_sip }}'>{{ v.id_sip }} - {{ v.callerId }}</option>";
+                            {% endfor %}
                         </select>
                     </div>
                 </form>

@@ -1,4 +1,6 @@
-<?php $this->captureStart("css")?>
+{% extends "layout.twig" %}
+
+{% block css %}
 <style>
 .text-title{
     font-size   : 18px;
@@ -19,15 +21,15 @@
 }
 
 </style>
-<?php $this->captureEnd("css")?>
 
-<?php $this->captureStart("body") ?>
+{% endblock css %}
 
-<?php
-    include_once "modalFiltrosUsuarios.php";
-    include_once "modalFormUser.php";
-    include_once "modaPermissionsUser.php";
-?>
+{% block body %}
+
+{{ include("System/Users/modalFiltrosUsuarios.twig") }}
+{{ include("System/Users/modalFormUser.twig") }}
+{{ include("System/Users/modaPermissionsUser.twig") }}
+
 
 <!-- <section class="section"> -->
     <div class="col-12 ">
@@ -36,13 +38,9 @@
                 <span class="text-title">Lista de usuários</span>
                 <div>
                     <button id="btnFiltros" class="btn btn-outline-info btn-sm" >Filtros</button>
-                    <?php 
-                        if($this->CheckPermission(11)){
-                    ?>
+                    {% if CheckPermission(11) %}
                         <button type="button" onClick="NewUser()" class="btn btn-primary btn-sm">Novo usuário</button>
-                    <?php
-                        }
-                    ?>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body mt-4">
@@ -55,10 +53,9 @@
 
 <!-- </section> -->
 
-<?php $this->captureEnd("body")?>
+{% endblock body %}
 
-<?php $this->captureStart("js")?>
-
+{% block js %}
 <script>
 let filtrosUsers    = new bootstrap.Modal("#modalFiltrosUsuarios", modalOption);
 let formUsers       = new bootstrap.Modal("#modalFormUser", modalOption);
@@ -121,7 +118,7 @@ $(function(){
 const GeraTabela = () => {
     let form = $("#formFiltro").serializeObject();
 
-    $.ajax({url: '{{route()->link("users-list")}}',method:"POST", data: form})
+    $.ajax({url: '{{route().link("users-list")}}',method:"POST", data: form})
     .done(resp => {
 
         $('#tableUsers').DataTable({
@@ -163,33 +160,23 @@ const renderStatus = (data) => {
 const renderAcoes = (data, type, row) => {
     let botoes = '&nbsp';
 
-    <?php 
-        if($this->CheckPermission(10)){
-    ?>
+    {% if CheckPermission(10) %}
             if(row.user_admin === "1"){
-                if("{{GetSessao('admin')}}" === "1"){
+                if("{{ GetSessao('admin')}}" === "1" ){
                     botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
                 }
             }else{
                 botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
             }
-    <?php
-        }
-    ?>
+    {% endif %}
 
-    <?php 
-        if($this->CheckPermission(12) ){
-    ?>
+    {% if CheckPermission(12) %}
         if(row.id !== "1"){
             botoes += `<button type='button' class='btn btn-info btn-sm' onclick='ModalPermission("${row.id}")' title='Permissões do usuário'><i class="fa-regular fa-key"></i></button>`;
         }
-    <?php
-        }
-    ?>
+    {% endif %}
 
-    <?php 
-        if($this->CheckPermission(14) ){
-    ?>
+    {% if CheckPermission(14) %}
         if(row.id !== "1"){
             if(row.user_sts === "1"){
                 botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></button>`;
@@ -197,9 +184,7 @@ const renderAcoes = (data, type, row) => {
                 botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar usuário'><i class="fa-regular fa-check"></button>`;
             }
         }
-    <?php
-        }
-    ?>
+    {% endif %}
     
 
     return botoes;
@@ -208,7 +193,7 @@ const renderAcoes = (data, type, row) => {
 const EditUser = idUser => {
     document.forms["formUser"].reset();
 
-    $.ajax({url: '{{route()->link("get-user")}}' + `${idUser}`,})
+    $.ajax({url: '{{route().link("get-user")}}' + `${idUser}`,})
     .done(resp => {
         formUsers.show();
         let lastName = resp.user_fullname.replace(resp.user_nome, "").trim();
@@ -238,12 +223,12 @@ const SaveFormUser = () => {
     let form = new FormData( $("#formUser")[0] );
 
     if( id === "" ){
-        $.ajax({url: `{{route()->link("new-user")}}${id}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
+        $.ajax({url: `{{route().link("new-user")}}${id}`,type:"POST",dataType:"json", data: form, processData: false, contentType: false})
         .done(resp => {
             SaveUserDone()
         })
     }else{
-        $.ajax({url: `{{route()->link("update-user")}}${id}`,type:"POST",dataType:"json", data: form,processData: false, contentType: false})
+        $.ajax({url: `{{route().link("update-user")}}${id}`,type:"POST",dataType:"json", data: form,processData: false, contentType: false})
         .done(resp => {
             SaveUserDone()
         })
@@ -262,7 +247,7 @@ const CloseModal = () => {
 }
 
 const ModalPermission = id_user => {
-    $.ajax({url: `{{route()->link("user-permissions")}}${id_user}`})
+    $.ajax({url: `{{route().link("user-permissions")}}${id_user}`})
     .done(resp => {
         $("#formPermissionsUser input:checkbox").prop("checked", false)
         Array.from(resp).forEach((v) =>{
@@ -277,7 +262,7 @@ const ModalPermission = id_user => {
 const ConfirmSavePermissions = () => {
     let {permissions,id_user} = $("#formPermissionsUser").serializeObject();
 
-    $.ajax({url: `{{route()->link("save-permissions")}}${id_user}`,method: "POST", data : {permissions}})
+    $.ajax({url: `{{route().link("save-permissions")}}${id_user}`,method: "POST", data : {permissions}})
     .done(resp => {
         alerta("Permissões atualizadas com sucesso.", "Sucesso", "success");
         CloseModal();
@@ -292,7 +277,7 @@ const ConfirmToggleStatus = (id_user,id_status) => {
 const ToggleStatusUser = dados => {
     let {id_user, id_status} = dados;
 
-    $.ajax({url: `{{route()->link("change-user-status")}}${id_user}/${id_status}`})
+    $.ajax({url: `{{route().link("change-user-status")}}${id_user}/${id_status}`})
     .done(resp => {
         alerta("Status atualizado com sucesso.", "Sucesso", "success");
         GeraTabela();
@@ -300,4 +285,4 @@ const ToggleStatusUser = dados => {
 }
 
 </script>
-<?php $this->captureEnd("js")?>
+{% endblock js %}

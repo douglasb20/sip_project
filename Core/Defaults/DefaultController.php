@@ -578,11 +578,12 @@ class DefaultController{
             $routeWithSeparator = implode("/", $rota);
             $file_route         = ROOT_PATH . "/App/View/". $routeWithSeparator .".twig";
             
-            $this->twig->addFunction("getShowMenu", fn(...$args) => call_user_func([$this, 'getShowMenu'], ...$args));
-            $this->twig->addFunction("getClassDivContainer", fn(...$args) => call_user_func([$this, 'getClassDivContainer'], ...$args));
-            $this->twig->addFunction("getBreadcrumb", fn(...$args) => call_user_func([$this, 'getBreadcrumb'], ...$args));
-            $this->twig->addFunction("getShowFooter", fn(...$args) => call_user_func([$this, 'getShowFooter'], ...$args));
-            $this->twig->addFunction("getTituloPagina", fn(...$args) => call_user_func([$this, 'getTituloPagina'], ...$args));
+            $this->AddFunctionTwig("getShowMenu");
+            $this->AddFunctionTwig("getClassDivContainer");
+            $this->AddFunctionTwig("getBreadcrumb");
+            $this->AddFunctionTwig("getShowFooter");
+            $this->AddFunctionTwig("getTituloPagina");
+            $this->AddFunctionTwig("CheckPermission");
             
             $this->twig->addGlobal("buttons", $this->buttons);
 
@@ -653,6 +654,14 @@ class DefaultController{
 
         $html = preg_replace($search,$replace,$html);
         return $html;
+    }
+
+    private function AddFunctionTwig($name){
+        try{
+            $this->twig->addFunction($name, fn(...$args) => call_user_func([$this, $name], ...$args));
+        }catch(\Exception $e){
+            throw $e;
+        }
     }
 
     /**

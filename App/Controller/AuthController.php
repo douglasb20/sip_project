@@ -16,9 +16,9 @@ class AuthController extends Controller{
             }
 
             $this->setShowMenu(false)
-            ->setTituloPagina("SIP Lanteca")
+            // ->setTituloPagina("SIP Lanteca")
             ->setClassDivContainer("container d-flex justify-content-center align-items-center h-100")
-            ->render("Login");
+            ->renderTwig("Login");
         }catch(\Exception $e){
             throw $e;
         }
@@ -158,7 +158,7 @@ class AuthController extends Controller{
             ->setShowMenu(false)
             ->setTituloPagina("Recuperação de senha")
             ->setClassDivContainer("container d-flex justify-content-center align-items-start pt-5 h-100")
-            ->render("Login.recoverPassword", $dados);
+            ->renderTwig("Login.recoverPassword", $dados);
         }catch(\Exception $e){
             throw $e;
         }
