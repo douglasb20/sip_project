@@ -13,7 +13,7 @@ class CallReportsController extends Controller{
 
             $this
             ->setBreadcrumb(["Home", "Relatório de ligações"])
-            ->render("CallReports", $dados);
+            ->renderTwig("CallReports", $dados);
         }catch(\Exception $e){
             throw $e;
         }

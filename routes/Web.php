@@ -26,6 +26,7 @@ Router::group("/system", function(){
 Router::get("/teste", function(){
     $twg = new TwigService;
     $twg->addGlobal("nome", "Rayene");
+    $twg->addGlobal("ENV", $_ENV);
     echo $twg->render("teste.twig");
 });
 

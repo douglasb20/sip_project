@@ -7,17 +7,22 @@ use Twig\Environment;
 class TwigService{
 
     private $functions;
-    private $twig;
+    public $twig;
     public function __construct()
     {
         $this->functions = $this->get_defined_functions_in_file(ROOT_PATH . "/Config/funcoes.php") ;
         $loader          = new FilesystemLoader(ROOT_PATH . "/App/View");
-        $this->twig = new Environment($loader);
+        $this->twig      = new Environment($loader);
+
         foreach($this->functions as $func){
             $f = new \Twig\TwigFunction($func, fn(...$args) => call_user_func($func, ...$args));
         
             $this->twig->addFunction($f);
         }
+
+        // $this->twig->addExtension(new \Twig\Extension\DebugExtension());
+
+        $this->twig->addGlobal("ENV", $_ENV);
     }
 
     public function getFunction(){
@@ -26,6 +31,11 @@ class TwigService{
 
     public function addGlobal($key, $value){
         $this->twig->addGlobal($key, $value);
+    }
+
+    public function addFunction(string $name, $callback){
+        $f = new \Twig\TwigFunction($name, $callback);
+        $this->twig->addFunction($f);
     }
 
     public function render($name, ...$args){

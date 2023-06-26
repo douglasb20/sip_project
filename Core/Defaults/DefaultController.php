@@ -5,12 +5,15 @@ use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+use \App\Services\TwigService;
+
 class DefaultController{
     
     public DefaultModel $ControleDAO;
     public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
 
     public $masterMysqli;
+    private TwigService $twig;
     public string $id_usuario         = "";
     public array $retorno             = [];
     public bool $preventXss           = false;
@@ -44,7 +47,6 @@ class DefaultController{
             $this->validatePermission();
             
             $this->processaRequest();
-
         }catch(Exception $e){ 
             throw($e);
         }
@@ -552,6 +554,66 @@ class DefaultController{
         } 
     }
 
+    /**
+    * Função que renderiza a página. No arquivo da view (rota), as partes do corpo está 
+    * entre captureStart e captureEnd (body, js, css) são salvos nas respectivas variáveis.
+    * 
+    * Em seguida chama o layout que organiza como os arquivos saem na tela.
+    * converte array em variáveis na view => https://www.php.net/manual/en/function.extract.php
+    * 
+    * @access protected 
+    * @param string $rota rota da view
+    */
+    public function renderTwig(?string $rota = null, ?array $data = []){
+        try{
+
+            //define titulo pagina e detalhes para breadcrumbs em todos os renders
+            $this->twig = new TwigService;
+
+            if(empty($rota)){
+                throw new Exception("Rota de view não definida",-1);
+            }
+            
+            $rota               = explode(".", $rota);
+            $routeWithSeparator = implode("/", $rota);
+            $file_route         = ROOT_PATH . "/App/View/". $routeWithSeparator .".twig";
+            
+            $this->twig->addFunction("getShowMenu", fn(...$args) => call_user_func([$this, 'getShowMenu'], ...$args));
+            $this->twig->addFunction("getClassDivContainer", fn(...$args) => call_user_func([$this, 'getClassDivContainer'], ...$args));
+            $this->twig->addFunction("getBreadcrumb", fn(...$args) => call_user_func([$this, 'getBreadcrumb'], ...$args));
+            $this->twig->addFunction("getShowFooter", fn(...$args) => call_user_func([$this, 'getShowFooter'], ...$args));
+            $this->twig->addFunction("getTituloPagina", fn(...$args) => call_user_func([$this, 'getTituloPagina'], ...$args));
+            
+            $this->twig->addGlobal("buttons", $this->buttons);
+
+            if( is_file($file_route)){
+                echo $this->twig->render($routeWithSeparator .".twig", $data);
+            }else{
+                $maybeDir = str_replace(".twig", "", $file_route );
+                
+                if(is_dir( $maybeDir) ){
+                    if(is_file($maybeDir. "/index.twig")){
+                        
+                        echo $this->twig->render($routeWithSeparator . "/index.twig", $data);
+                    }else{
+                        throw new Exception( "Não achou " . $file_route , -1);
+                    }
+                }else{
+                    throw new Exception( "Não achou " . $file_route , -1);
+                }
+            }
+
+            // if($this->mostraMenu && GetSessao("autenticado")){
+            //     include_once(ROOT_PATH . "/App/View/menu.php");
+            // }
+            
+            // include_once(ROOT_PATH . "/App/View/layout.php"); 
+
+        }catch(Exception $e){
+            throw $e;
+        } 
+    }
+
         /**
     * ob_start das views conforme partes do corpo
     * 
@@ -648,6 +710,14 @@ class DefaultController{
         }
     }
 
+    public function getTituloPagina(){
+        try{
+            return $this->titulo_pagina;
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
+
     public function getBreadcrumb(){
         try{
             return $this->breadcrumb;
@@ -682,7 +752,7 @@ class DefaultController{
             throw $e;
         }
     }
-    protected function getShowMenu(): bool{
+    public function getShowMenu(): bool{
         try{
             return $this->mostraMenu;
         }catch (Exception $e) {
