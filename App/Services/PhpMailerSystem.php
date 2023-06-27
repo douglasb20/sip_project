@@ -3,7 +3,7 @@ namespace App\Services;
 
 use PHPMailer\PHPMailer\PHPMailer;
 
-Class PhpMailerPortal Extends PHPMailer{
+Class PhpMailerSystem Extends PHPMailer{
 
     public function __construct($smtp=null,$show_exception = true){
         try{
