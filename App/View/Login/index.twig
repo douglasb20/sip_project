@@ -1,4 +1,4 @@
-{% extends "layout.twig" %}
+{% extends "layout_noauth.twig" %}
 
 {% block css %}
 <style>
@@ -234,7 +234,6 @@ $("#btnEntrar").click(function(){
     }else{
         alerta("Campos login e senha não podem ficar em branco.", "Erro validação", "error");
     }
-    
 });
 
 $("#btnForgotPassword").click(function(){

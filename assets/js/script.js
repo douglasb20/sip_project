@@ -83,7 +83,15 @@ $(() => {
         }
     });
 
+    $('.modal').on('hidden.bs.modal', event => {
+        $(".modal .ui-draggable").removeAttr('style');
+    });
+
 })
+
+
+
+
 let loading = true;
 const ModalDraggable = () => $(".modal-dialog").draggable({ handle: ".modal-header" });
 
@@ -205,7 +213,6 @@ getFormData = form => {
 
     for (var value of form.entries()) {
         ret[value[0]] = value[1];
-
     }
 
     ret = {...ret};

@@ -194,6 +194,25 @@ class HomeController extends Controller{
         }
     }
 
+    /**
+    * Função para atualizar senha do usuário
+    * @author Douglas A. Silva
+    * @return void
+    */
+    public function ChangeUserPassword(){
+        try{
+            $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+            extract($this->getPost());
+
+            (new \App\Classes\UsersClass)->UpdateUserPassword(GetSessao("id_usuario"), $user_pass);
+            $this->masterMysqli->commit();
+            $this->retorna();
+        }catch(\Exception $e){
+            $this->masterMysqli->rollback();
+            throw $e;
+        }
+    }
+
 }
 
 ?>

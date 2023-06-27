@@ -175,7 +175,7 @@ class AuthController extends Controller{
             extract($this->getPost());
             $id = $this->getQuery("id_user");
             
-            (new \App\Classes\UsersClass)->RequestRecover($id, $password, $confirm_password);
+            (new \App\Classes\UsersClass)->UpdateUserPassword($id, $password);
 
             $this->masterMysqli->commit();
             $this->retorna();

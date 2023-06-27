@@ -20,7 +20,9 @@
                                     <div class="accordion-body">
                                         <ul class="permissions-list p-0">
                                         {% for key, p in perm %}
-                                            <li class="user-select-none"><label><input class="form-check-input" name="permissions" type="checkbox" value="{{ p.id }}"> {{ p.permission_label }} {{ p.type == "view" ? " - (View)" }} </label></li>
+                                            {% if p.type != "same" %}
+                                                <li class="user-select-none"><label><input class="form-check-input" name="permissions" type="checkbox" value="{{ p.id }}"> {{ p.permission_label }} {{ p.type == "view" ? " - (View)" }} </label></li>
+                                            {% endif %}
                                         {% endfor %}
                                         </ul>
                                     </div>
