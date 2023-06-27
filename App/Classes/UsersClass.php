@@ -166,8 +166,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                     "password" => $_ENV['PASSWORD_EMAIL'],
                     "frommail" => "no-reply@ltcfibra.com.br",
                     "fromname" => "LTC Fibra",
-                    "tomail"   => "douglas.silva@atendecerto.com.br",
-                    "toname"   => "Douglas Atende",
+                    "tomail"   => $user['user_email'],
+                    "toname"   => ucwords( mb_strtolower( $user['user_fullname'] ) ),
                     "IsHTML"   => true,
                 ];
             
