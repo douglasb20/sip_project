@@ -171,7 +171,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                     "IsHTML"   => true,
                 ];
             
-            $mail = new \App\Services\PhpMailer($m);
+            $mail = new \App\Services\PhpMailerSystem($m);
             $mail->Subject = "Redefinição de senha";
             
             $mail->Body = $corpoEmail;
