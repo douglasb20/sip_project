@@ -534,6 +534,10 @@ function bitconverter($valor, $csdecimal=2){
     }
 }
 
+function fileTime($file){
+    return filemtime(ROOT_PATH . $file);
+}
+
 function getTimeExecution(string | DateTime $start):string{
     $fim        = date('Y-m-d H:i:s');
 

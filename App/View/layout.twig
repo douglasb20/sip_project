@@ -16,8 +16,8 @@
     <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/vendor/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
     <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/vendor/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/vendor/select2/4.1.0/css/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/css/admin.css">
-    <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/css/layout.css">
+    <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/css/admin.css?{{ fileTime('/assets/css/admin.css') }}">
+    <link rel="stylesheet" type="text/css" href="/{{ ENV.BASE_URL }}assets/css/layout.css?{{ fileTime('/assets/css/layout.css') }}">
 
     <!-- Javascript -->
     <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/vendor/jquery/jquery-3.6.3.min.js"></script>
@@ -68,11 +68,11 @@
 
     <!-- Fim - Footer -->
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="fa-regular fa-arrow-up fa-sm"></i></a>
-    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/script.js"></script>
-    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/menu.js"></script>
-    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/admin.js"></script>
-    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/mascaras.js"></script>
-    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/datatables.js"></script>
+    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/script.js?{{ fileTime('/assets/js/script.js') }}"></script>
+    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/menu.js?{{ fileTime('/assets/js/menu.js') }}"></script>
+    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/admin.js?{{ fileTime('/assets/js/admin.js') }}"></script>
+    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/mascaras.js?{{ fileTime('/assets/js/mascaras.js') }}"></script>
+    <script type="text/javascript" src="/{{ ENV.BASE_URL }}assets/js/datatables.js?{{ fileTime('/assets/js/datatables.js') }}"></script>
 </body>
 
 {% block js %} {% endblock %}
