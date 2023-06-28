@@ -260,7 +260,7 @@
         yaxis:{
             max: max => max + Math.round(max / 2),
             labels:{
-                formatter: val => val
+                formatter: val => val.toFixed(0)
             }
         },
         tooltip: {
@@ -273,7 +273,7 @@
                 }
             },
             y: {
-                formatter: value => value,
+                formatter: value => value.toFixed(0),
                 title: {
                     formatter: (seriesName) => seriesName,
                 },
@@ -442,12 +442,12 @@
         modalRetornado.show();
         $("#idCallback").val(id_callback);
         $("#selectStatusCallback").select2({
-            dropdownParent: $('#modalRetornado'),
-            width: "50%",
-            closeOnSelect: true,
-            data: JSON.parse('{{ selectCallback }}'),
-            language: 'pt-BR',
-            minimumResultsForSearch: -1
+            dropdownParent          : $('#modalRetornado'),
+            width                   : "50%",
+            closeOnSelect           : true,
+            data                    : JSON.parse('{{ selectCallback|raw }}'),
+            language                : 'pt-BR',
+            minimumResultsForSearch : -1
         });
     }
 

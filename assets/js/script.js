@@ -21,7 +21,7 @@ $(document).on("click",".modal",function(){
     
         // move modal up (in z)
         var ZindexModal = parseInt($(".modal").eq(0).css("z-index"))+20;
-        $(".modal").eq(1).css({"z-index":ZindexModal});
+        $(".modal").eq(2).css({"z-index":ZindexModal});
     }
 });
 
