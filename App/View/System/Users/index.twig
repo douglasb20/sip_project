@@ -55,6 +55,91 @@ let filtrosUsers    = new bootstrap.Modal("#modalFiltrosUsuarios", modalOption);
 let formUsers       = new bootstrap.Modal("#modalFormUser", modalOption);
 let permissionsUser = new bootstrap.Modal("#modalPermissionsUser", modalOption);
 
+const validUser = new JustValidate('#formUser', {
+        // errorLabelCssClass: ['hidden'],
+        errorFieldCssClass: ['invalid'],
+        focusInvalidField: false,
+    });
+
+validUser
+.addField("#user_login", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_nome", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_lastname", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_email", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+        {
+            rule: 'customRegexp',
+            value: /^[\w|\W]+\@[0-9a-zA-z-]+\.[a-zA-Z]{2,3}(\.[a-zA-z]{2,3})?$/,
+            errorMessage: "Formato de email inválido."
+        },
+    ]
+)
+.addField("#user_pass",[
+    {
+        validator: (val, fields) => {
+            let id = $("#id").val();
+            if(id === ""){
+                return val !== ""
+            }
+
+            return true;
+        },
+        errorMessage: "Campo não pode ficar em branco"
+    }
+])
+.addField("#confirm_pass",
+    [
+        {
+            validator: (val, fields) => 
+            {
+                const repeatPasswordValue = $('#user_pass').val();
+                return val === repeatPasswordValue;
+
+            } ,
+            errorMessage: 'Senha de confirmação incorreta.'
+        },
+        {
+            validator: (val, fields) => 
+            {
+                let id = $("#id").val();
+
+                if(id === ""){
+                    return val !== ""
+                }
+            } ,
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.onSuccess( function(){
+    confirmaAcao(`Confirma salvar usuário "${$("#user_login").val().toUpperCase()}"?`, SaveFormUser, [])
+} )
+
 $(function(){
     GeraTabela();
     ModalDraggable();
@@ -80,23 +165,6 @@ $(function(){
         closeOnSelect: false,
     });
     
-    $("#btnSalvar").click(function(){
-        const password        = $("#user_pass");
-        const confirmPassword = $("#confirm_pass");
-        if(password.val() !== "" || confirmPassword.val() !== ""){
-            if(password.val() !== confirmPassword.val()){
-                alerta("Senhas não coincidem.", "Erro validação", "error");
-                return;
-            }
-        }
-        
-        const frm = required_elements($("#formUser .required"))
-        if(!frm.valid){
-            alerta("Campos obrigatórios não preenchidos", "Erro validação", "error")
-        }else{
-            confirmaAcao(`Confirma salvar usuário "${$("#user_login").val().toUpperCase()}"?`, SaveFormUser, [])
-        }
-    })
     $("#btnFiltros").click(() => filtrosUsers.show() );
 
     $("#btnFiltrar").click(function(){
@@ -239,6 +307,7 @@ const SaveUserDone = () => {
 const CloseModal = () => {
     formUsers.hide();
     permissionsUser.hide();
+    validUser.refresh();
 }
 
 const ModalPermission = (id_user, nome) => {
