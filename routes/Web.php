@@ -19,14 +19,14 @@ Router::group("/pabx", function(){
 Router::group("/system", function(){
 
     Router::get("/users", "UsersController@Index")->name("users");
+    Router::get("/profile", "UsersController@ProfileIndex")->name("profile");
     Router::get("/operators", "SipController@Index")->name("sip");
 
 });
 
 Router::get("/teste", function(){
-    $system    = $this->SystemConfigDAO->getOne("keyword = 'records_path'");
-    $path      = str_replace("SISTEMA",ROOT_PATH, $system['value']);
-    $path      = realpath($path);
+    $twig = new TwigService;
+    echo $twig->render("teste.twig");
 });
 
 

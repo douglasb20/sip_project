@@ -170,6 +170,12 @@ function confirmaAcao(texto, callback, dados, titulo = 'Confirmação', btn_conf
     });
 }
 
+const UcWords = str => {
+    return (str + '')
+            .toLowerCase()
+            .replace( /^([a-z])|\s+([a-z])/g , $1 => $1.toUpperCase());
+}
+
 function alertaRedireciona(texto, redirecionamento =  false, icon = 'info', titulo = 'Aviso') {
     caixaAlerta.fire(
         {

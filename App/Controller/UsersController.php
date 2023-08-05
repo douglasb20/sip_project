@@ -27,6 +27,28 @@ class UsersController extends Controller{
             throw $e;
         }
     }
+    
+    /**
+    * Função Index
+    * @author Douglas A. Silva
+    * @return return
+    */
+    public function ProfileIndex(){
+        try{
+            $this->CheckSession();
+
+            $sip         = $this->SipDAO->getAll(" id_empresa = " . GetSessao("id_empresa"));
+            $user = $this->UsersDAO->getOne("id = " . GetSessao("id_usuario"));
+
+            $user['user_lastname'] = str_replace("", "", "");
+
+            $this
+            ->setBreadcrumb(["Sistema", "Perfil do usuário"])
+            ->render("System.Users.profile", ["user" => $user, "sip" => $sip]);
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
 
     public function devChangePass(){
         try{

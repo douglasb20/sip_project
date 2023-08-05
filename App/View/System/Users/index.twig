@@ -2,12 +2,6 @@
 
 {% block css %}
 <style>
-.text-title{
-    font-size   : 18px;
-    font-weight : 500;
-    color       : #060816;
-    font-family : "Poppins", sans-serif;
-}
 
 #formUser input[type='text']{
     text-transform: uppercase;
@@ -172,7 +166,7 @@ const renderAcoes = (data, type, row) => {
 
     {% if CheckPermission(12) %}
         if(row.id !== "1"){
-            botoes += `<button type='button' class='btn btn-info btn-sm' onclick='ModalPermission("${row.id}")' title='Permissões do usuário'><i class="fa-regular fa-key"></i></button>`;
+            botoes += `<button type='button' class='btn btn-info btn-sm' onclick='ModalPermission("${row.id}", "${row.user_fullname}")' title='Permissões do usuário'><i class="fa-regular fa-key"></i></button>`;
         }
     {% endif %}
 
@@ -247,7 +241,7 @@ const CloseModal = () => {
     permissionsUser.hide();
 }
 
-const ModalPermission = id_user => {
+const ModalPermission = (id_user, nome) => {
     $.ajax({url: `{{route().link("user-permissions")}}${id_user}`})
     .done(resp => {
         $("#formPermissionsUser input:checkbox").prop("checked", false)
@@ -255,6 +249,7 @@ const ModalPermission = id_user => {
             $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
         })
         $("#id_user").val(id_user)
+        $(".modal-title span").text(UcWords(nome))
         permissionsUser.show();
     })
     
