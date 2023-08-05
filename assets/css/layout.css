@@ -113,10 +113,6 @@ footer{
     outline: 2px solid var(--bs-blue);
 }
 
-.select2-container--open .select2-dropdown--below{
-    /* left: 12px; */
-}
-
 .form-label{
     font-weight: 600;
 }

@@ -15,7 +15,7 @@ class TwigService{
         $this->twig      = new Environment($loader);
 
         foreach($this->functions as $func){
-            $f = new \Twig\TwigFunction($func, fn(...$args) => call_user_func($func, ...$args));
+            $f = new \Twig\TwigFunction($func, $func);
         
             $this->twig->addFunction($f);
         }

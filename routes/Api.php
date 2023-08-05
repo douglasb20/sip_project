@@ -11,7 +11,10 @@ Router::group("/api", function(){
     Router::get("/get_lista_callback", "HomeController@ListaCallback")->name("lista-callback");
     Router::get("/add_callback/{cpf}/{numero}/{id_empresa}", "Controller@AddCallback")->name("add-callback");
 
-    Router::post("/calls_report", "CallReportsController@CallReports")->name("lista-ligacoes");
+    Router::group("/calls_report", function(){
+        Router::post("/", "CallReportsController@CallReports")->name("lista-ligacoes");
+        Router::get("/get_recorded_audio/{protocolo}", "CallReportsController@ListenRecorded")->name("listen-recorded");
+    });
     
     Router::put("/atualiza_status_callback", "HomeController@AtualizaCallback")->name("atualiza-callback");
 

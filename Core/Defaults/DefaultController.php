@@ -7,7 +7,7 @@ use Firebase\JWT\Key;
 
 use \App\Services\TwigService;
 
-class DefaultController{
+class DefaultController extends PropertiesClass{
     
     public DefaultModel $ControleDAO;
     public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
@@ -535,7 +535,6 @@ class DefaultController{
                 
                 if(is_dir( $maybeDir) ){
                     if(is_file($maybeDir. "/index.twig")){
-                        
                         echo $this->twig->render($routeWithSeparator . "/index.twig", $data);
                     }else{
                         throw new Exception( "Não achou " . $file_route , -1);
@@ -578,7 +577,7 @@ class DefaultController{
 
     private function AddFunctionTwig($name){
         try{
-            $this->twig->addFunction($name, fn(...$args) => call_user_func([$this, $name], ...$args));
+            $this->twig->addFunction($name, [$this, $name] );
         }catch(\Exception $e){
             throw $e;
         }
@@ -642,7 +641,7 @@ class DefaultController{
         }
     }
 
-    protected function getClassDivContainer(): string{
+    public function getClassDivContainer(): string{
         try{
             return $this->classDivContainer;
         }catch (Exception $e) {
@@ -650,7 +649,7 @@ class DefaultController{
         }
     }
 
-    protected function setShowMenu(bool $show){
+    public function setShowMenu(bool $show){
         try{
             $this->mostraMenu = $show;
             return $this;
@@ -666,7 +665,7 @@ class DefaultController{
         }
     }
 
-    protected function setShowFooter(bool $show): void{
+    public function setShowFooter(bool $show): void{
         try{
             $this->showFooter = $show;
         }catch (Exception $e) {
@@ -674,7 +673,7 @@ class DefaultController{
         }
     }
 
-    protected function getShowFooter(): string{
+    public function getShowFooter(): string{
         try{
             return $this->showFooter;
         }catch (Exception $e) {

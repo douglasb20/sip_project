@@ -1,9 +1,11 @@
 .env
 .env.production
 /manager
+/files
 
 /logs/*
 
 oneChange.php
 /.idea
 *.lnk
+Dockerfile

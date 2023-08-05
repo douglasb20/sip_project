@@ -8,6 +8,26 @@
     color       : #060816;
     font-family : "Poppins", sans-serif;
 }
+.overlayRecord{
+    position: fixed;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.overlayRecord audio{
+    width: 40%;
+}
+.closeOverlay{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 15px
+}
 
 </style>
 
@@ -16,6 +36,7 @@
 {% block body %}
 
 {{ include("CallReports/modalFiltros.twig") }}
+{{ include("CallReports/overlayRecord.twig") }}
 <!-- <section class="section"> -->
     <div class="col-12 ">
         <div class="card ">
@@ -88,6 +109,10 @@ const GeraTabela = () => {
                 { data: 'time_duration',    title: "Duração",     className: "text-center", orderable: false },
                 { data: 'protocolo',        title: "Protocolo",   className: "text-center", orderable: false },
                 { data: 'status',           title: "Status",      className: "text-center", render: renderStatus },
+                
+                {% if CheckPermission(33) %}
+                { data: 'status',           title: "Ação",      className: "text-center", render: renderAcoes },
+                {% endif %}
             ],
             data: resp,
             order: [["0", 'asc']],
@@ -139,6 +164,37 @@ const renderStatus = (data, type, {dstchannel}) => {
 
     return status;
 }
+
+const renderAcoes = (data, type, {protocolo}) => {
+    let botao = "";
+    
+    botao +=`
+    <button title="Ouvir ligação" class="btn btn-primary btn-sm"
+        onclick="ListenRecord(${protocolo})"
+    >
+        <i class="fa-regular fa-play"></i>
+    </button> `
+
+    return botao;
+}
+
+const ListenRecord = protocolo => {
+    $.ajax({url: `{{ route().link("listen-recorded") }}${protocolo}`})
+    .done(resp => {
+        console.log(resp)
+        $(".overlayRecord")
+        .removeClass("d-none")
+        .find("audio")
+        .attr("src", resp.audio)
+    })
+}
+
+$(".closeOverlay").click(function(){
+    $(".overlayRecord")
+    .addClass("d-none")
+    .find("audio")
+    .attr("src", "")
+})
 
 </script>
 
