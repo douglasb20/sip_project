@@ -24,10 +24,9 @@ Router::group("/system", function(){
 });
 
 Router::get("/teste", function(){
-    $twg = new TwigService;
-    $twg->addGlobal("nome", "Rayene");
-    $twg->addGlobal("ENV", $_ENV);
-    echo $twg->render("teste.twig");
+    $system    = $this->SystemConfigDAO->getOne("keyword = 'records_path'");
+    $path      = str_replace("SISTEMA",ROOT_PATH, $system['value']);
+    $path      = realpath($path);
 });
 
 

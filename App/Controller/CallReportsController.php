@@ -43,7 +43,6 @@ class CallReportsController extends Controller{
         try{
             $system    = $this->SystemConfigDAO->getOne("keyword = 'records_path'");
             $path      = str_replace("SISTEMA",ROOT_PATH, $system['value']);
-            $path      = realpath($path);
 
             $protocolo = $this->getQuery("protocolo");
 
@@ -51,7 +50,7 @@ class CallReportsController extends Controller{
             if( empty($cdr['monitor'])){
                 throw new \Exception("Ligação não tem gravação", -1);
             }
-            $file_path = realpath($path. "/". $cdr['monitor']);
+            $file_path = $path. "/". $cdr['monitor'];
 
             $file = file_get_contents($file_path);
             $data = [

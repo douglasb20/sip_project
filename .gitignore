@@ -3,6 +3,8 @@
 /manager
 /files
 
+*.log
+
 /logs/*
 
 oneChange.php
