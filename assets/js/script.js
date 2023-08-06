@@ -26,7 +26,11 @@ $(document).on("click",".modal",function(){
 });
 
 $.extend( $.fn.datepicker.defaults, {format: 'dd-mm-yyyy', language: 'pt-BR', autoclose: true} );
-
+$.fn.select2.defaults.set("language", "pt-BR");
+$.fn.select2.defaults.set("width", '100%');
+$.fn.select2.defaults.set("theme", 'bootstrap-5');
+$.fn.select2.defaults.set("selectionCssClass", 'select2--small');
+$.fn.select2.defaults.set("dropdownCssClass", 'select2--small');
 // let datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
 // $.fn.bootstrapDP = datepicker;
 

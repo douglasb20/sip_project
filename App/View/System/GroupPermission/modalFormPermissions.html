@@ -1,0 +1,48 @@
+<div id="modalGroupPermissions" class="modal fade" tabindex="-1" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            <div class="modal-header">
+                <h5 class="modal-title">Permissões <span></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formGroupPermissions" name="formGroupPermissions" class="g-3" autocomplete="off">
+                    <label class="form-label" for="group_users">Usuários</label>
+                    <select id="group_users" data-placeholder="Selecione um usuário" class="form-select" multiple >
+                        {% for user in users %}
+                            <option value="{{user.id}}">{{user.user_fullname}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" id="id_user" name="id_user">
+                    <div class="accordion mt-3" id="accordionExample">
+                        {% for key, perm in permissions %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{ key|replace({' ': '_'}) }}Collapse" aria-expanded="true" aria-controls="{{ key|replace({' ': '_'}) }}Collapse">
+                                        {{key}}
+                                    </button>
+                                </h2>
+                                <div id="{{ key|replace({' ': '_'}) }}Collapse" class="accordion-collapse collapse show" aria-labelledby="headingOne" >
+                                    <div class="accordion-body">
+                                        <ul class="permissions-list p-0">
+                                        <li class="user-select-none"><label><input class="selectAll form-check-input" name="permissions" type="checkbox" > Selecionar Tudo </label></li>
+                                        {% for key, p in perm %}
+                                            {% if p.type != "same" %}
+                                                <li class="user-select-none"><label><input class="form-check-input" name="permissions" type="checkbox" value="{{ p.id }}"> {{ p.permission_label }} {{ p.type == "view" ? " - (View)" }} </label></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button onclick="CloseModal()" type="button" class="btn btn-outline-danger" >Cancelar</button>
+                <button id="btnSalvarPermission" type="button" class="btn btn-primary" >Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

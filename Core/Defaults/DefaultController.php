@@ -517,7 +517,7 @@ class DefaultController extends PropertiesClass{
             
             $rota               = explode(".", $rota);
             $routeWithSeparator = implode("/", $rota);
-            $file_route         = ROOT_PATH . "/App/View/". $routeWithSeparator .".twig";
+            $file_route         = ROOT_PATH . "/App/View/". $routeWithSeparator .".html";
             
             $this->AddFunctionTwig("getShowMenu");
             $this->AddFunctionTwig("getClassDivContainer");
@@ -529,13 +529,13 @@ class DefaultController extends PropertiesClass{
             $this->twig->addGlobal("buttons", $this->buttons);
 
             if( is_file($file_route)){
-                echo $this->twig->render($routeWithSeparator .".twig", $data);
+                echo $this->twig->render($routeWithSeparator .".html", $data);
             }else{
-                $maybeDir = str_replace(".twig", "", $file_route );
+                $maybeDir = str_replace(".html", "", $file_route );
                 
                 if(is_dir( $maybeDir) ){
-                    if(is_file($maybeDir. "/index.twig")){
-                        echo $this->twig->render($routeWithSeparator . "/index.twig", $data);
+                    if(is_file($maybeDir. "/index.html")){
+                        echo $this->twig->render($routeWithSeparator . "/index.html", $data);
                     }else{
                         throw new Exception( "Não achou " . $file_route , -1);
                     }

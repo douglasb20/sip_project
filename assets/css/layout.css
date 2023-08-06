@@ -153,6 +153,20 @@ footer{
     color       : #060816;
     font-family : "Poppins", sans-serif;
 }
+.select2-selection__rendered{
+    padding-top: 0.35rem !important;
+}
+.select2-selection{
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important  ;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.select2-search{
+    width: auto !important;
+}
 
 .text-xs { font-size: .75rem !important}
 .text-sm { font-size: .875rem !important}

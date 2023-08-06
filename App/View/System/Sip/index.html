@@ -1,4 +1,4 @@
-{% extends "layout.twig" %}
+{% extends "layout.html" %}
 
 {% block css %}
 <style>
@@ -25,8 +25,8 @@
 
 {% block body %}
 
-{{ include("System/Sip/modalFiltrosSip.twig") }}
-{{ include("System/Sip/modalFormSip.twig") }}
+{{ include("System/Sip/modalFiltrosSip.html") }}
+{{ include("System/Sip/modalFormSip.html") }}
 
 
 <!-- <section class="section"> -->
@@ -62,7 +62,7 @@
 
 
 {% block js %}
-<script>
+<script type="text/javascript">
 
 $(function(){
     GeraTabela();
@@ -143,7 +143,7 @@ const renderAcoes = (data, type, row) => {
     let botoes = '&nbsp';
 
     {% if CheckPermission(28) %}
-            botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
+            botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
     {% endif %}
 
     {% if CheckPermission(29) %}
@@ -159,7 +159,7 @@ const renderAcoes = (data, type, row) => {
     return botoes;
 }
 
-const EdiSip = botao => {
+const EditSip = botao => {
     let data = $('#tableSips').DataTable().row( $(botao).parents('tr')).data()
     formSip.show();
 

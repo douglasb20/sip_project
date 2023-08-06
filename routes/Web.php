@@ -21,12 +21,13 @@ Router::group("/system", function(){
     Router::get("/users", "UsersController@Index")->name("users");
     Router::get("/profile", "UsersController@ProfileIndex")->name("profile");
     Router::get("/operators", "SipController@Index")->name("sip");
+    Router::get("/group_permission", "GroupPermissionController@Index")->name("group-permission");
 
 });
 
 Router::get("/teste", function(){
     $twig = new TwigService;
-    echo $twig->render("teste.twig");
+    echo $twig->render("teste.html");
 });
 
 

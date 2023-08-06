@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+
+{% block css %}
+<style>
+
+#formSip input[type='text']{
+    text-transform: uppercase;
+}
+.permissions-list{
+    list-style: none;
+}
+
+.dataTable td {
+    vertical-align: middle !important;
+}
+
+</style>
+{% endblock css %}
+
+{% block body %}
+
+{{ include("System/GroupPermission/modalFormPermissions.html") }}
+{{ include("System/GroupPermission/modalFiltrosGroup.html") }}
+
+
+<!-- <section class="section"> -->
+    <div class="col-12 ">
+        <div class="card ">
+            <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                <span class="text-title">Grupos de permissões</span>
+                <div>
+                    <button id="btnFiltros" class="btn btn-outline-info btn-sm" >Filtros</button>
+
+                    {% if CheckPermission(37) %}
+                        <button type="button" onClick="NewGroup()" class="btn btn-primary btn-sm">Novo Grupo</button>
+                    {% endif %}
+                    
+                </div>
+            </div>
+            <div class="card-body mt-4">
+                <div class="row table-responsive">
+                    <table id="tableGroups" class="table table-sm table-striped table-bordered w-100 "></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- </section> -->
+
+{% endblock body %}
+
+
+{% block js %}
+<script>
+
+$(function(){
+    GeraTabela();
+    ModalDraggable();
+    
+    $("#group_users").select2({
+        dropdownParent : $('#modalGroupPermissions'),
+        closeOnSelect  : !$(this).attr('multiple'),
+        
+    });
+    $("#group_status").select2({
+        dropdownParent : $('#modalFiltrosGroup'),
+        closeOnSelect  : !$(this).attr('multiple'),
+    });
+
+    $("#btnSalvarSip").click(function(){
+        
+        const frm = required_elements($("#formSip .required"))
+        if(!frm.valid){
+            alerta("Campos obrigatórios não preenchidos", "Erro validação", "error")
+        }else{
+            confirmaAcao(`Confirma salvar operador "${$("#id_sip").val().toUpperCase()}"?`, SaveFormSip, [])
+        }
+    })
+
+    $("#btnFiltros").click(() => filtrosGroup.show() );
+
+    $("#btnFiltrar").click(function(){
+        GeraTabela();
+        filtrosSip.hide()
+    })
+
+    $(".selectAll").change( function(e){
+        $(this)
+        .parents(".permissions-list")
+        .find(".form-check-input")
+        .not(this)
+        .prop("checked", this.checked)
+    })
+})
+
+let filtrosGroup = new bootstrap.Modal("#modalFiltrosGroup", modalOption);
+let formGroup    = new bootstrap.Modal("#modalGroupPermissions", modalOption);
+
+const GeraTabela = () => {
+    let form = $("#formFiltroGroup").serializeObject();
+
+    $.ajax({url: '{{route().link("group-list")}}', method:"POST", data: form})
+    .done(resp => {
+
+        $('#tableGroups').DataTable({
+            columns: [
+                { data: 'group_permission_description', title: "Descrição",     className: "text-center"},
+                { data: 'group_permission_created',     title: "Data Criação",  className: "text-center"},
+                { data: 'group_permission_status',      title: "Status",        className: "text-center", render: renderStatus, orderable: false  },
+                { data: '',                             title: "Ações",         className: "text-center", render: renderAcoes, orderable: false },
+            ],
+            data    : resp,
+            order   : [["0", 'asc']],
+            destroy : true,
+            buttons : ['pageLength', exportMenu('pdf', 'excelNumber')],
+        });
+    })
+}
+
+const renderStatus = (data) => {
+    let status = "";
+    switch(data){
+        case "1":
+            status = `<span class="badge bg-success">Ativo</span>`;
+        break;
+        case "0":
+            status = `<span class="badge bg-danger">Inativo</span>`;
+        break;
+    }
+
+    return status;
+}
+
+const renderAcoes = (data, type, row) => {
+    let botoes = '&nbsp';
+    
+    {% if CheckPermission(28) %}
+        botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
+    {% endif %}
+
+    {% if CheckPermission(29) %}
+        
+        if(row.sip_status === "1"){
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar operador'><i class="fa-regular fa-xmark"></button>`;
+        }else{
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar operador'><i class="fa-regular fa-check"></button>`;
+        }
+    {% endif %}
+
+    return botoes;
+}
+
+const NewGroup = () => {
+    try{
+        $("#formPermissionsUser input:checkbox").prop("checked", false);
+        $("#group_users").val("").change()
+        formGroup.show();
+    }catch(err){
+        
+    }
+}
+
+const ModalPermission = (id_user, nome) => {
+    $.ajax({url: `{{route().link("user-permissions")}}${id_user}`})
+    .done(resp => {
+        $("#formPermissionsUser input:checkbox").prop("checked", false)
+        Array.from(resp).forEach((v) =>{
+            $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
+        })
+        $("#id_user").val(id_user)
+        $(".modal-title span").text(UcWords(nome))
+        permissionsUser.show();
+    })
+    
+}
+
+const OpenModalPermission = (data) => {
+        $("#formPermissionsUser input:checkbox").prop("checked", false)
+        Array.from(data).forEach((v) =>{
+            $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
+        })
+        $("#id_user").val(id_user)
+        $(".modal-title span").text(UcWords(nome))
+        permissionsUser.show();
+}
+
+</script>
+
+{% endblock js %}

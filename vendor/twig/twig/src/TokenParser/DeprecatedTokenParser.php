@@ -18,7 +18,7 @@ use Twig\Token;
 /**
  * Deprecates a section of a template.
  *
- *    {% deprecated 'The "base.twig" template is deprecated, use "layout.twig" instead.' %}
+ *    {% deprecated 'The "base.twig" template is deprecated, use "layout.html" instead.' %}
  *    {% extends 'layout.html.twig' %}
  *
  * @author Yonel Ceruto <yonelceruto@gmail.com>
