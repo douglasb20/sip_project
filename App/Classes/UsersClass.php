@@ -258,6 +258,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
 
             if($id === GetSessao("id_usuario")){
                 SetSessao("ramal", $id_sip);
+                SetSessao("nome_usuario", $user_fullname);
             }
 
         }catch(\Exception $e){

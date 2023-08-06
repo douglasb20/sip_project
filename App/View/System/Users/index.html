@@ -131,6 +131,7 @@ validUser
                 if(id === ""){
                     return val !== ""
                 }
+                return true
             } ,
             errorMessage: "Campo não pode ficar em branco"
         },
@@ -259,11 +260,12 @@ const EditUser = idUser => {
     $.ajax({url: '{{route().link("get-user")}}' + `${idUser}`,})
     .done(resp => {
         formUsers.show();
+        validUser.refresh();
         let lastName = resp.user_fullname.replace(resp.user_nome, "").trim();
         $("#modalFormUser .modal-title").text("Alterar usuário");
         remove_required($("#formUser .required"))
         popula_dados("#formUser", resp);
-
+        
         $("#user_lastname").val(lastName);
         $("#user_pass, #confirm_pass").removeClass("required");
         $("label[for='user_pass'], label[for='confirm_pass']").removeClass("required-label");
@@ -273,7 +275,8 @@ const EditUser = idUser => {
 const NewUser = () => {
     document.forms["formUser"].reset()
     formUsers.show();
-
+    validUser.refresh();
+    $("#id").val("");
     $("#user_pass, #confirm_pass").addClass("required");
     $("label[for='user_pass'], label[for='confirm_pass']").addClass("required-label");
 
@@ -318,7 +321,8 @@ const ModalPermission = (id_user, nome) => {
             $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
         })
         $("#id_user").val(id_user)
-        $(".modal-title span").text(UcWords(nome))
+        $(".modal-title span").text(UcWords(nome));
+        validUser.refresh();
         permissionsUser.show();
     })
     
