@@ -224,7 +224,7 @@ const SaveGroupDone = () => {
 }
 
 const ClearGroupForm = () => {
-    $("#formPermissionsUser input:checkbox").prop("checked", false);
+    $("#accordionPermissions input:checkbox").prop("checked", false);
     $("#group_users").val("").change();
     $("#txtNomeGroup").val("");
     validPermissions.refresh();
