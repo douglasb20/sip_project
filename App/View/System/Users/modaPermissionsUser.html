@@ -19,6 +19,7 @@
                                 <div id="{{ key|replace({' ': '_'}) }}Collapse" class="accordion-collapse collapse show" aria-labelledby="headingOne" >
                                     <div class="accordion-body">
                                         <ul class="permissions-list p-0">
+                                            <li class="user-select-none"><label><input class="selectAll form-check-input" type="checkbox" > Selecionar Tudo </label></li>
                                         {% for key, p in perm %}
                                             {% if p.type != "same" %}
                                                 <li class="user-select-none"><label><input class="form-check-input" name="permissions" type="checkbox" value="{{ p.id }}"> {{ p.permission_label }} {{ p.type == "view" ? " - (View)" }} </label></li>

@@ -176,6 +176,14 @@ $(function(){
     $("#btnSalvarPermission").click(function(){
         confirmaAcao("Confirma atualizar as permissões do usuário?", ConfirmSavePermissions, [])
     })
+
+    $(".selectAll").change( function(e){
+        $(this)
+        .parents(".permissions-list")
+        .find(".form-check-input")
+        .not(this)
+        .prop("checked", this.checked)
+    })
 })
 
 const GeraTabela = () => {
