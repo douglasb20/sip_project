@@ -263,12 +263,11 @@ const EditUser = idUser => {
         validUser.refresh();
         let lastName = resp.user_fullname.replace(resp.user_nome, "").trim();
         $("#modalFormUser .modal-title").text("Alterar usuário");
-        remove_required($("#formUser .required"))
         popula_dados("#formUser", resp);
         
         $("#user_lastname").val(lastName);
-        $("#user_pass, #confirm_pass").removeClass("required");
-        $("label[for='user_pass'], label[for='confirm_pass']").removeClass("required-label");
+        $("label[for='user_pass'], label[for='confirm_pass'], label[for='id_group'], label[for='id_sip']")
+        .removeClass("required-label");
     })
 }
 

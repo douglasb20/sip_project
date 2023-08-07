@@ -217,6 +217,24 @@ function alerta(texto = '', titulo = null, tipo = 'info') {
     },100)
 }
 
+function alertaErro(texto = '', titulo = null) {
+    setTimeout( () => {
+        let tipo = 'error'
+        if(titulo == null || titulo == ''){
+            titulo = 'Erro'
+        }
+
+        caixaAlerta.fire(
+            {
+                title:titulo,
+                html:texto ,
+                footer: `<button type="button" class="btn btn-primary px-4 pl-1" onclick="Swal.close()">Fechar</button> `,
+                icon: tipo,
+            }
+        )
+    },100)
+}
+
 getFormData = form => {
 
     ret = [];

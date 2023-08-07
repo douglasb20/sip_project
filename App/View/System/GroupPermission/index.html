@@ -53,10 +53,38 @@
 {% block js %}
 <script>
 
+const validPermissions = new JustValidate('#formGroupPermissions', {
+    errorFieldCssClass: ['invalid'],
+    focusInvalidField: true,
+});
+
+validPermissions
+.addField("#txtNomeGroup", [
+    {
+        rule: 'required',
+        errorMessage: "Campo não pode ficar em branco"
+    }
+])
+.addField("#group_users", [
+    {
+        rule: 'required',
+        errorMessage: "Campo não pode ficar em branco"
+    }
+])
+.onSuccess( () => {
+
+    if( $(".selectPerm:checked").length === 0 ){
+        alertaErro("Selecione pelo menos uma permissão para salvar.");
+        return;
+    }
+    confirmaAcao(`Confirma salvar grupo de permissão?`, SaveFormGroup, [])
+})
+
+
 $(function(){
     GeraTabela();
     ModalDraggable();
-    
+
     $("#group_users").select2({
         dropdownParent : $('#modalGroupPermissions'),
         closeOnSelect  : !$(this).attr('multiple'),
@@ -66,16 +94,6 @@ $(function(){
         dropdownParent : $('#modalFiltrosGroup'),
         closeOnSelect  : !$(this).attr('multiple'),
     });
-
-    $("#btnSalvarSip").click(function(){
-        
-        const frm = required_elements($("#formSip .required"))
-        if(!frm.valid){
-            alerta("Campos obrigatórios não preenchidos", "Erro validação", "error")
-        }else{
-            confirmaAcao(`Confirma salvar operador "${$("#id_sip").val().toUpperCase()}"?`, SaveFormSip, [])
-        }
-    })
 
     $("#btnFiltros").click(() => filtrosGroup.show() );
 
@@ -105,7 +123,7 @@ const GeraTabela = () => {
         $('#tableGroups').DataTable({
             columns: [
                 { data: 'group_permission_description', title: "Descrição",     className: "text-center"},
-                { data: 'group_permission_created',     title: "Data Criação",  className: "text-center"},
+                { data: 'group_permission_created',     title: "Data Criação",  className: "text-center", render : renderFormataDataHora},
                 { data: 'group_permission_status',      title: "Status",        className: "text-center", render: renderStatus, orderable: false  },
                 { data: '',                             title: "Ações",         className: "text-center", render: renderAcoes, orderable: false },
             ],
@@ -135,15 +153,15 @@ const renderAcoes = (data, type, row) => {
     let botoes = '&nbsp';
     
     {% if CheckPermission(28) %}
-        botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EdiSip(this)" title='Editar operador'><i class="fa-regular fa-edit"></i></button>`;
+        botoes += `<button type='button' class='btn btn-primary btn-sm mx-1' onclick="ModalEditGroup(${row.id_group_permission}, '${row.group_permission_description}')" title='Editar grupo'><i class="fa-regular fa-edit"></i></button>`;
     {% endif %}
 
     {% if CheckPermission(29) %}
         
-        if(row.sip_status === "1"){
-            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 2)" type='button' class='btn btn-danger btn-sm' title='Inativar operador'><i class="fa-regular fa-xmark"></button>`;
+        if(row.group_permission_status === "1"){
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_group_permission}, 0)" type='button' class='btn btn-danger btn-sm mx-1' title='Inativar grupo'><i class="fa-regular fa-xmark"></button>`;
         }else{
-            botoes += `<button onclick="ConfirmToggleStatus(${row.id_sip}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar operador'><i class="fa-regular fa-check"></button>`;
+            botoes += `<button onclick="ConfirmToggleStatus(${row.id_group_permission}, 1)" type='button' class='btn btn-success btn-sm mx-1' title='Ativar grupo'><i class="fa-regular fa-check"></button>`;
         }
     {% endif %}
 
@@ -151,37 +169,69 @@ const renderAcoes = (data, type, row) => {
 }
 
 const NewGroup = () => {
-    try{
-        $("#formPermissionsUser input:checkbox").prop("checked", false);
-        $("#group_users").val("").change()
-        formGroup.show();
-    }catch(err){
-        
-    }
+    ClearGroupForm();
+    formGroup.show();
 }
 
-const ModalPermission = (id_user, nome) => {
-    $.ajax({url: `{{route().link("user-permissions")}}${id_user}`})
+const ModalEditGroup = (id_group, nome) => {
+    
+    $.ajax({url: `{{route().link("group-form")}}${id_group}`})
     .done(resp => {
-        $("#formPermissionsUser input:checkbox").prop("checked", false)
-        Array.from(resp).forEach((v) =>{
-            $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
+        console.log(resp)
+        ClearGroupForm();
+        Array.from(resp.permissions).forEach((v) =>{
+            $(`#accordionPermissions input:checkbox[value='${v}']`).prop("checked", true)
         })
-        $("#id_user").val(id_user)
+        $("#group_users").val(resp.users).change()
+        $("#id_group").val(id_group)
         $(".modal-title span").text(UcWords(nome))
-        permissionsUser.show();
+        $("#txtNomeGroup").val(UcWords(nome))
+        formGroup.show();
     })
     
 }
 
-const OpenModalPermission = (data) => {
-        $("#formPermissionsUser input:checkbox").prop("checked", false)
-        Array.from(data).forEach((v) =>{
-            $(`#formPermissionsUser input:checkbox[value='${v.id_permission}']`).prop("checked", true)
+const SaveFormGroup = () => {
+    let {permissions,id_group, group_users, txtNomeGroup} = $("#formGroupPermissions").serializeObject();
+
+    if(typeof group_users == 'string'){
+        group_users = [group_users];
+    }
+
+    let dataPost = {
+        group_users,
+        permissions,
+        nome_group: txtNomeGroup
+    }
+
+    if( id_group === "" ){
+        $.ajax({url: `{{route().link("new-group")}}`,type:"POST",dataType:"json", data: dataPost})
+        .done(resp => {
+            SaveGroupDone();
         })
-        $("#id_user").val(id_user)
-        $(".modal-title span").text(UcWords(nome))
-        permissionsUser.show();
+    }else{
+        $.ajax({url: `{{route().link("update-group")}}${id_group}`,type:"PUT",dataType:"json", data: dataPost})
+        .done(resp => {
+            SaveGroupDone();
+        })
+    }
+}
+
+const SaveGroupDone = () => {
+    alerta("Grupo de permissões salvo com sucesso!", "Sucesso", "success");
+    GeraTabela();
+    CloseModal();
+}
+
+const ClearGroupForm = () => {
+    $("#formPermissionsUser input:checkbox").prop("checked", false);
+    $("#group_users").val("").change();
+    validPermissions.refresh();
+}
+
+const CloseModal = () => {
+    formGroup.hide();
+    ClearGroupForm()
 }
 
 </script>

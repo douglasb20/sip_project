@@ -7,6 +7,9 @@ use Firebase\JWT\JWT;
 
 class UsersClass extends \Core\Defaults\DefaultClassController{
 
+    public \App\Model\GroupPermissionDAO $GroupPermissionDAO;
+    public \App\Model\GroupPermissionXUserDAO $GroupPermissionXUserDAO;
+    public \App\Model\GroupPermissionXPermissionDAO $GroupPermissionXPermissionDAO;
     public \App\Model\UsersDAO $UsersDAO;
     public \App\Model\UsersPermissionsDAO $UsersPermissionsDAO;
     public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
@@ -188,7 +191,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         }
     }
 
-    public function ValidaEmailUser($email, $id){
+    public function ValidaEmailUser($email, $id = ""){
         try{
             $user = $this->UsersDAO->getAll(" user_email = '{$email}'");
             if(!empty($user) ){
@@ -202,7 +205,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
         }
     }
 
-    public function ValidaLoginlUser($login, $id){
+    public function ValidaLoginlUser($login, $id = ""){
         try{
 
             $user = $this->UsersDAO->getAll(" user_login = '{$login}'");
@@ -256,6 +259,24 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
 
             $this->UsersDAO->update($bindUser, "id = {$id} AND id_empresa = {$id_empresa}");
 
+            if(!empty($id_group)){
+                $group = $this->GroupPermissionXUserDAO->getAll("id_user = {$id}");
+                if(!empty($group)){
+                    $group = $group[0];
+
+                    if($id_group !== $group['id_group_permission']){
+                        (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
+                        $permissions = $this->GroupPermissionXPermissionDAO->getAll("id_group_permission = {$id_group}");
+                        $permissions = [
+                            "permissions" => array_column($permissions, "id_permission")
+                        ];
+                        (new PermissionsClass)->SaveUserPermissions($id, $permissions);
+                    }
+                }else{
+                    (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
+                }
+            }
+
             if($id === GetSessao("id_usuario")){
                 SetSessao("ramal", $id_sip);
                 SetSessao("nome_usuario", $user_fullname);
@@ -284,6 +305,9 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
             $user_fullname = "{$user_nome} {$user_lastname}";
             $id_empresa    = GetSessao('id_empresa');
 
+            $this->ValidaLoginlUser($user_login);
+            $this->ValidaEmailUser($user_email);
+
             $bindUser = [
                 "user_fullname" => $user_fullname,
                 "user_login"    => $user_login,
@@ -296,77 +320,30 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                 "id_empresa"    => $id_empresa
             ];
 
-            $this->UsersDAO->insert($bindUser);
+            $id = $this->UsersDAO->insert($bindUser);
 
-        }catch(\Exception $e){
-            throw $e;
-        }
-    }
-
-    /**
-    * Função para adicionar dados do usuário
-    * @author Douglas A. Silva
-    * @param array $dados Dados do form que irá adicionar do usuário
-    * @return void
-    */
-    public function GetPermissions(){
-        try{
-            $permissions = $this->UsersPermissionsDAO->getAll();
-            $categorias  = $this->UsersPermissionsDAO->GetCategories();
-
-            $list = [];
-
-            foreach($categorias as $key => $v){
-                $list[$v['category']] = [];
-
-                foreach($permissions as $key => $perm){
-                    if($perm['category'] === $v['category']){
-                        $list[$v['category']][] = [
-                            "id"               => $perm['id'],
-                            "permission_label" => $perm['permission_label'],
-                            "type" => $perm['type'],
-                        ];
-                    }
-                }
-            }
-
-            return $list;
-        }catch(\Exception $e){
-            throw $e;
-        }
-    }
-
-    /**
-    * Função para salvar permissões do usuário
-    * @author Douglas A. Silva
-    * @param int $id_user id do usuário que irá alterar as permissões
-    * @param array $dados Dados do form que irá adicionar as permissões
-    * @return void
-    */
-    public function SaveUserPermissions(int $id_user, array $dados){
-        try{
-
-            $this->UsersPermissionsXUsersDAO->delete(" id_user = '{$id_user}'");
-            $same = $this->UsersPermissionsDAO->getAll( "  same_as is not null");
-            foreach($dados['permissions'] as $v){
-
-                $bindUserPermission[] = [
-                    "id_permission" => $v,
-                    "id_user"       => $id_user
+            if(!empty($id_group)){
+                (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
+                $permissions = $this->GroupPermissionXPermissionDAO->getAll("id_group_permission = {$id_group}");
+                $permissions = [
+                    "permissions" => array_column($permissions, "id_permission")
                 ];
-
-                foreach($same as $s){
-                    if($s['same_as'] === $v){
-                        $bindUserPermission[] = [
-                            "id_permission" => $s['id'],
-                            "id_user"       => $id_user
-                        ];
-                    }
-                }
+                (new PermissionsClass)->SaveUserPermissions($id, $permissions);
             }
 
-            $this->UsersPermissionsXUsersDAO->insertMultiplo($bindUserPermission);
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
 
+    /**
+    * Função para tratar grupo de permissão associado ao usuário
+    * @return void
+    */
+    public function TrataPermissoes($id_grupo){
+        try{
+            
+            
         }catch(\Exception $e){
             throw $e;
         }

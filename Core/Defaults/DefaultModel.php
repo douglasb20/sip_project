@@ -33,6 +33,10 @@ abstract class DefaultModel{
         }
     
     }
+
+    /**
+     * @return int Ultimo id adicionado
+     */
     public function getLastIdInserted()
     {
         try{
@@ -173,8 +177,11 @@ abstract class DefaultModel{
         } catch (Exception $e) {
             throw $e;
         }
-    }
+    }   
 
+    /**
+     * @return int Ultimo id adicionado
+     */
     public function insert($params){
         
         try{

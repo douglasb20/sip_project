@@ -6,6 +6,7 @@ class UsersController extends Controller{
 
     public \App\Model\UsersDAO $UsersDAO;
     public \App\Model\UsersPermissionsXUsersDAO $UsersPermissionsXUsersDAO;
+    public \App\Model\GroupPermissionXUserDAO $GroupPermissionXUserDAO;
     public \App\Model\SipDAO $SipDAO;
     
     /**
@@ -17,12 +18,14 @@ class UsersController extends Controller{
         try{
             $this->CheckSession();
 
-            $permissions = (new \App\Classes\UsersClass)->GetPermissions();
+            $permissions = (new \App\Classes\PermissionsClass)->GetPermissions();
             $sip         = $this->SipDAO->getAll(" id_empresa = " . GetSessao("id_empresa"));
+            $groups      = $this->GroupPermissionDAO->getAll(" id_empresa = " . GetSessao("id_empresa"));
+
 
             $this
             ->setBreadcrumb(["Sistema", "Usuários"])
-            ->render("System.Users", ["permissions" => $permissions, "sip" => $sip]);
+            ->render("System.Users", ["permissions" => $permissions, "sip" => $sip, "grupos" => $groups]);
         }catch(\Exception $e){
             throw $e;
         }
@@ -106,10 +109,13 @@ class UsersController extends Controller{
         try{
             $this->CheckSession();
 
-            $id         = $this->getQuery("id");
-            $id_empresa = GetSessao('id_empresa');
+            $id               = $this->getQuery("id");
+            $id_empresa       = GetSessao('id_empresa');
 
-            $user       = $this->UsersDAO->getView(" id={$id} AND id_empresa = {$id_empresa}")[0];
+            $user             = $this->UsersDAO->getView(" id={$id} AND id_empresa = {$id_empresa}")[0];
+
+            $group            = $this->GroupPermissionXUserDAO->getAll("id_user = {$id}");
+            $user['id_group'] = !empty($group) ? $group[0]['id_group_permission'] : "";
 
             $this->data = $user;
             $this->retorna();
@@ -191,7 +197,7 @@ class UsersController extends Controller{
             $id_user = $this->getQuery("id");
             $input   = $this->getPost();
 
-            (new \App\Classes\UsersClass)->SaveUserPermissions($id_user, $input);
+            (new \App\Classes\PermissionsClass)->SaveUserPermissions($id_user, $input);
 
             $this->masterMysqli->commit();
             $this->retorna();

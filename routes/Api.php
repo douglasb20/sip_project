@@ -42,6 +42,9 @@ Router::group("/api", function(){
 
         Router::group("/group_permission", function(){
             Router::post("/get_list", "GroupPermissionController@GetListGroup")->name("group-list");
+            Router::post("/new_group_permission", "GroupPermissionController@NewGroup")->name("new-group");
+            Router::get("/get_group_form/{id_group:[0-9]+}", "GroupPermissionController@GetGroupForm")->name("group-form");
+            Router::put("/update_group_permission/{id_group:[0-9]}", "GroupPermissionController@UpdateGroup")->name("update-group");
         });
     });
 

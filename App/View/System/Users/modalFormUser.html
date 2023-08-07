@@ -11,7 +11,37 @@
                         <div class="col-12 col-md-12">
                             <label for="user_login" class="form-label required-label">Login</label>
                             <input id="id" class="form-control " name="id" type="hidden" >
-                            <input id="user_login" class="form-control required" name="user_login" type="text" autocomplete="off">
+                            <input id="user_login" class="form-control" name="user_login" type="text" autocomplete="off">
+                        </div>
+                        <div class="col-12 col-md-12">
+                            <label for="user_email" class="form-label required-label">Email</label>
+                            <input id="user_email" class="form-control" name="user_email" type="email" >
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="user_nome" class="form-label required-label">Nome</label>
+                            <input id="user_nome" class="form-control" name="user_nome" type="text" >
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="user_lastname" class="form-label">Sobrenome</label>
+                            <input id="user_lastname" class="form-control " name="user_lastname" type="text" >
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_sip" class="form-label required-label">Ramal</label>
+                            <select name="id_sip" id="id_sip" class="form-select">
+                                <option value="">Nenhum ramal</option>
+                                {% for v in sip %}
+                                    <option value='{{ v.id_sip }}'>{{ v.id_sip ~ ' - ' ~ v.callerId }}</option>";
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="id_group" class="form-label required-label">Grupo de permissão</label>
+                            <select name="id_group" id="id_group" class="form-select">
+                                <option value="">Nenhum grupo</option>
+                                {% for v in grupos %}
+                                    <option value='{{ v.id_group_permission }}'>{{ v.group_permission_description }}</option>";
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="col-12 col-md-6">
                             <label for="user_pass" class="form-label">Senha</label>
@@ -20,27 +50,6 @@
                         <div class="col-12 col-md-6">
                             <label for="confirm_pass" class="form-label">Confirma senha</label>
                             <input id="confirm_pass" class="form-control " name="confirm_pass" type="password" >
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="user_nome" class="form-label required-label">Nome</label>
-                            <input id="user_nome" class="form-control required" name="user_nome" type="text" >
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="user_lastname" class="form-label">Sobrenome</label>
-                            <input id="user_lastname" class="form-control " name="user_lastname" type="text" >
-                        </div>
-                        <div class="col-12 col-md-12">
-                            <label for="user_email" class="form-label required-label">Email</label>
-                            <input id="user_email" class="form-control required" name="user_email" type="email" >
-                        </div>
-                        <div class="col-12 col-md-12">
-                            <label for="user_email" class="form-label required-label">Ramal</label>
-                            <select name="id_sip" id="id_sip" class="form-select">
-                                <option value="">Nenhum ramal</option>
-                                {% for v in sip %}
-                                    <option value='{{ v.id_sip }}'>{{ v.id_sip }} - {{ v.callerId }}</option>";
-                                {% endfor %}
-                            </select>
                         </div>
                     </div>
                 </div>
