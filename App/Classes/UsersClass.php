@@ -337,19 +337,6 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
     }
 
     /**
-    * Função para tratar grupo de permissão associado ao usuário
-    * @return void
-    */
-    public function TrataPermissoes($id_grupo){
-        try{
-            
-            
-        }catch(\Exception $e){
-            throw $e;
-        }
-    }
-
-    /**
     * Função alterar status do usuário
     * @author Douglas A. Silva
     * @param int $id_user id do usuário que irá alterar 
