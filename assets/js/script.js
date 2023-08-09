@@ -473,7 +473,7 @@ function ConnectToWS(host, jwt ="") {
             $(".extensionsSip")
             .addClass("offline")
             .find(".state")
-            .text("Off-Line");
+            .text("Off-line");
             tryReconnect = setInterval(() => ConnectToWS(host, jwt),5000)
         };
     
@@ -526,7 +526,7 @@ function ConnectToWS(host, jwt ="") {
                         qdCaller = document.querySelector(`.sip-${caller}`);
                         if (qdCaller) {
                             qdCaller.classList.remove(...["ringing","calling","onCall"]);
-                            document.querySelector(`.sip-${caller} .state`).innerHTML = `Sem Ligação`
+                            document.querySelector(`.sip-${caller} .state`).innerHTML = `On-line(Sem Ligação)`
                             document.querySelector(`.sip-${caller} .callDuration`).innerHTML = ``
                             
                             clearInterval(timers[`sip${caller}`]); // Para o primeiro intervalo após 5 segundos
@@ -582,13 +582,13 @@ function ConnectToWS(host, jwt ="") {
                                 qdSip
                                 .removeClass("offline")
                                 .find(".state")
-                                .text("Sem ligações")
+                                .text("On-line(Sem Ligação)")
                             }
                             if(evt.PeerStatus === "Unregistered"){
                                 qdSip
                                 .addClass("offline")
                                 .find(".state")
-                                .text("Off-Line");
+                                .text("Off-line");
                             }
                         }
                     break;
@@ -600,11 +600,11 @@ function ConnectToWS(host, jwt ="") {
                         if(qdSip){
                             if(evt.Status.includes("OK")){
                                 qdSip.removeClass("offline");
-                                qdSip.find(".state").text("Sem ligações")
+                                qdSip.find(".state").text("On-line(Sem Ligação)")
                             }
                             if(evt.Status === "UNKNOWN"){
                                 qdSip.addClass("offline");
-                                qdSip.find(".state").text("Off-Line")
+                                qdSip.find(".state").text("Off-line")
                             }
                         }
                     break;
