@@ -261,9 +261,20 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
 
             $group = $this->GroupPermissionXUserDAO->getAll("id_user = {$id}");
 
-            if(!empty($group)){
-                $group = $group[0];
-                if($id_group !== $group['id_group_permission']){
+            if(isset($id_group)){
+                if(!empty($group)){
+                    $group = $group[0];
+                    if($id_group !== $group['id_group_permission']){
+                        (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
+                        if(!empty($id_group)){
+                            $permissions = $this->GroupPermissionXPermissionDAO->getAll("id_group_permission = {$id_group}");
+                            $permissions = [
+                                "permissions" => array_column($permissions, "id_permission")
+                            ];
+                            (new PermissionsClass)->SaveUserPermissions($id, $permissions);
+                        }
+                    }
+                }else{
                     (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
                     if(!empty($id_group)){
                         $permissions = $this->GroupPermissionXPermissionDAO->getAll("id_group_permission = {$id_group}");
@@ -272,15 +283,6 @@ class UsersClass extends \Core\Defaults\DefaultClassController{
                         ];
                         (new PermissionsClass)->SaveUserPermissions($id, $permissions);
                     }
-                }
-            }else{
-                (new GroupPermissionClass)->AssocUserToGroup($id_group, $id);
-                if(!empty($id_group)){
-                    $permissions = $this->GroupPermissionXPermissionDAO->getAll("id_group_permission = {$id_group}");
-                    $permissions = [
-                        "permissions" => array_column($permissions, "id_permission")
-                    ];
-                    (new PermissionsClass)->SaveUserPermissions($id, $permissions);
                 }
             }
 
