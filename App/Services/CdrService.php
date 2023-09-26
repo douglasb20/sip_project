@@ -43,7 +43,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM {$this->dbname}.{$this->view}
                         WHERE {$this->view}.calldate BETWEEN '{$hora}:00:00' and '{$hora}:59:59' 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                        AND src NOT IN (SELECT id_sip FROM sip)
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -57,7 +57,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "  SELECT DATE_FORMAT( calldate, '%Y-%m-%d') AS data_truncada, COUNT(*) AS registros, status
                         FROM {$this->dbname}.{$this->view}
                         WHERE Date({$this->view}.calldate)= '{$data}' AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                        AND src NOT IN (SELECT id_sip FROM sip)
                         GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -74,7 +74,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM {$this->dbname}.{$this->view}
                         WHERE Date({$this->view}.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                        AND src NOT IN (SELECT id_sip FROM sip)
                         GROUP BY data_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -93,7 +93,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM {$this->dbname}.{$this->view}
                         WHERE {$where}
                         AND status IN ('ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                        AND src NOT IN (SELECT id_sip FROM sip)
                         GROUP BY hora_truncada, status
                     ";
             return $this->executeQuery($query);
@@ -109,7 +109,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         FROM {$this->dbname}.{$this->view}
                         WHERE Date({$this->view}.calldate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 DAY) and CURDATE() 
                         AND status IN ('BUSY','ANSWERED', 'NO ANSWER')
-                        AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                        AND src NOT IN (SELECT id_sip FROM sip)
                         GROUP BY data_truncada
                         order by calldate
                     ";
@@ -208,7 +208,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                         WHERE
                             1=1
                             AND {$where}
-                            AND src NOT IN (SELECT id_sip FROM sip_lanteca.sip)
+                            AND src NOT IN (SELECT id_sip FROM sip)
                         order by {$this->view}.calldate desc) as cdr_formatado
                         on cdr_formatado.status = subquery.status
                         group by subquery.status";
@@ -227,13 +227,13 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GetLinkedQueue(){
         try{
-            $query      = "SELECT * FROM sip_lanteca.queue where queue_code not in (99,9900)";
+            $query      = "SELECT * FROM queue where queue_code not in (99,9900)";
             $exts       = $this->executeQuery($query);
             $extensions = [];
             $re         = '/(\d+)@/m';
 
             foreach($exts as $key => $ext){
-                $qry                        = "SELECT member FROM sip_lanteca.queue_members WHERE id_queue = {$ext['id_queue']}";
+                $qry                        = "SELECT member FROM queue_members WHERE id_queue = {$ext['id_queue']}";
                 $resp                       = $this->executeQuery($qry);
                 $extensions[$ext['queue_code']]['nome']   = $ext["queue_name"];
                 $extensions[$ext['queue_code']]['ramais'] = array_column($resp,"member");
@@ -259,7 +259,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
                 $result = ["name" => $queue['nome']];
                 $query = "SELECT count(*) as qtd FROM {$this->dbname}.{$this->view}
                 WHERE {$where}
-                    AND src not in (SELECT id_sip FROM sip_lanteca.sip)
+                    AND src not in (SELECT id_sip FROM sip)
                     AND dstchannel in (".implode(",", $queue['ramais']).")";
                 
                 $registo = $this->executeQuery($query)[0]['qtd'];
@@ -276,7 +276,7 @@ class CdrService extends \Core\Defaults\DefaultModel{
 
     public function GetDevices(){
         try{
-            $query = "SELECT id_sip, concat(id_sip, ' - ', callerId) as text  FROM sip_lanteca.sip";
+            $query = "SELECT id_sip, concat(id_sip, ' - ', callerId) as text  FROM sip";
             $devices = $this->executeQuery($query);
 
             return $devices;
@@ -291,8 +291,8 @@ class CdrService extends \Core\Defaults\DefaultModel{
             $query = "SELECT 
                         c.*,
                         sec_to_time(cast(c.duration as int)) as time_duration,
-                        (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.dstchannel) as dst_name,
-                        (SELECT d.callerId FROM sip_lanteca.sip as d WHERE d.id_sip = c.src) as src_name
+                        (SELECT d.callerId FROM sip as d WHERE d.id_sip = c.dstchannel) as dst_name,
+                        (SELECT d.callerId FROM sip as d WHERE d.id_sip = c.src) as src_name
                     FROM
                         {$this->dbname}.{$this->view} as c
                     WHERE
