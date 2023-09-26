@@ -16,7 +16,7 @@ class HomeController extends Controller{
             $dataGraf        = $cdr->GeraDadosGraficoData();
             
             $where           = " DATE(calldate) = CURDATE() ";
-            $whereRealizadas = " {$where} and src IN (SELECT id_sip FROM sip)";
+            $whereRealizadas = " {$where} and src IN (SELECT id_sip FROM {$_ENV['DBNAME']}.sip)";
             $realizadas      = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount = count($realizadas);
             $reports         = [];
@@ -129,7 +129,7 @@ class HomeController extends Controller{
             }
             
 
-            $whereRealizadas     = " {$where} and src in (SELECT id_sip FROM sip)";
+            $whereRealizadas     = " {$where} and src in (SELECT id_sip FROM {$_ENV['DBNAME']}.sip)";
             $realizadas          = $cdr->getAll($whereRealizadas, "calldate desc");
             $realizadasCount     = count($realizadas);
 
