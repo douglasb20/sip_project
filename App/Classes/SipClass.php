@@ -5,6 +5,7 @@ use Symfony\Component\Config\FileLocator;
 class SipClass extends \Core\Defaults\DefaultClassController{
 
     public \App\Model\SipDAO $SipDAO;
+    public \App\Model\SystemConfigDAO $SystemConfigDAO;
 
     /**
     * Função para atualizar sip pelo arquivo config
@@ -14,7 +15,10 @@ class SipClass extends \Core\Defaults\DefaultClassController{
     public function UpdateSipsFromConfig(){
         try{
             
-            $arquivo = ROOT_PATH . '/sip-extensions.conf';
+            $system   = $this->SystemConfigDAO->getOne("keyword = 'sip_config' ");
+            $arquivo = str_replace("SISTEMA",ROOT_PATH, $system['value']);
+
+            // $arquivo = $sip_path['value'];
             $config  = (new  \App\Classes\ConfiLoaderClass)->loadConfig($arquivo);
 
             foreach($config as $key => $val){
