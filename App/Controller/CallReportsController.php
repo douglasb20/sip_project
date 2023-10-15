@@ -52,11 +52,16 @@ class CallReportsController extends Controller{
             }
             $file_path = $path. "/". $cdr['monitor'];
 
+            if(!file_exists($file_path)){
+                throw new \Exception("Gravação não encontrada", -1);
+            }
             $file = file_get_contents($file_path);
+
             $data = [
                 "name" => $cdr['monitor'],
                 "audio" => "data:audio/wav;base64," . base64_encode($file)
             ];
+
             $this->data = $data;
             $this->retorna();
         }catch(\Exception $e){
