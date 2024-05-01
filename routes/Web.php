@@ -26,8 +26,7 @@ Router::group("/system", function(){
 });
 
 Router::get("/teste", function(){
-    $twig = new TwigService;
-    echo $twig->render("teste.html");
+    printar((new \App\Classes\PhpSysInfoClass)->getCpuLoadPercentage());
 });
 
 
